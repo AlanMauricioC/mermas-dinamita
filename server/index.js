@@ -1,19 +1,24 @@
+var con = require('./DB/conection.js');
+
 const express = require("express");
 const bodyParser = require('body-parser');
 
+const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const app = express();
-app.listen(3001, () => {
-    console.log("El servidor está inicializado en el puerto 3001");
+app.listen(3002, () => {
+    console.log("El servidor está inicializado en el puerto 3002");
 });
 
-app.get('/', function (req, res) {
-    res.send('Saludos desde express');
+app.get('/', (req, res) => {
+    res.send('Saludos desde express').status(200);
 });
 
-app.post('/hola', function (req, res) {
-    res.send('[POST]Saludos desde express');
+app.get('/units', (req, res) => {
+    con.query("select * from units", null, function (data, error) {
+            if(error) throw error;
+            res.json(JSON.parse('{ "units" : ' + JSON.stringify(data) + '}')).status(200);
+    });
 });

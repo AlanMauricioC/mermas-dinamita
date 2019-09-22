@@ -68,7 +68,7 @@ CREATE TABLE orders(
     FOREIGN KEY (idRecipe) REFERENCES recipes (idRecipe) ON DELETE NO ACTION ON UPDATE NO ACTION,
     FOREIGN KEY (idUser) REFERENCES users (idUser) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
--- Tabla de detalle de orden
+-- Tabla de detalle de orden con insumos
 CREATE TABLE ordersupply(
     idOrder INT NOT NULL,
     idSupply INT NOT NULL,
@@ -86,14 +86,39 @@ CREATE TABLE providers(
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
 -- Tabla de reabastecimiento
 CREATE TABLE restock(
-    idRestock INT NOT NULL AUTO_INCREMENT,
-    dateRestock timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    quantityRestock DOUBLE NOT NULL,
     idSupply INT NOT NULL,
+    registrationDateRestock timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    quantityRestock DOUBLE NOT NULL,
+    costRestock DOUBLE NOT NULL,
+    arrivalDateRestock timestamp NULL,
+    sellByDateRestock timestamp NULL,
     idProvider INT NOT NULL,
     idUser INT NOT NULL,
     statusRestock TINYINT(1) NOT NULL DEFAULT 1,
-    PRIMARY KEY (idRestock),
+    commentaryRestock VARCHAR(300) NULL,
+    PRIMARY KEY (idSupply, registrationDateRestock),
     FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION,FOREIGN KEY (idProvider) REFERENCES providers (idProvider) ON DELETE NO ACTION ON UPDATE NO ACTION,
     FOREIGN KEY (idUser) REFERENCES users (idUser) ON DELETE NO ACTION ON UPDATE NO ACTION
+) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+-- Tabla de mermas
+CREATE TABLE wastes(
+    idWaste INT NOT NULL AUTO_INCREMENT,
+    idSupply INT NOT NULL,
+    registrationDateWaste timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    sellByDateWastetimestamp timestamp NULL,
+    quantityWaste DOUBLE NOT NULL,
+    idUser INT NOT NULL,
+    statusWaste TINYINT(1) NOT NULL DEFAULT 1,
+    PRIMARY KEY (idWaste),
+    FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    FOREIGN KEY (idUser) REFERENCES users (idUser) ON DELETE NO ACTION ON UPDATE NO ACTION
+) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+-- Tabla de detalle de orden con mermas
+CREATE TABLE orderwaste(
+    idOrder INT NOT NULL,
+    idWaste INT NOT NULL,
+    quantityOrderWaste DOUBLE NOT NULL,
+    PRIMARY KEY (idOrder, idWaste),
+    FOREIGN KEY (idOrder) REFERENCES orders (idOrder) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    FOREIGN KEY (idWaste) REFERENCES wastes (idWaste) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
