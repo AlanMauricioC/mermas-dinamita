@@ -10,7 +10,7 @@ const pool = mysql.createPool({
 var con = (function () {
 
     function _query(query, params, callback) {
-        pool.getConnection((err, connection) => {
+        pool.getConnection( (err, connection) => {
             if (err) {
                 connection.release();
                 callback(null, err);
