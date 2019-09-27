@@ -1,5 +1,6 @@
 import React from 'react';
 import { Grid } from "@material-ui/core";
+import DataTable from "../DataTable";
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -11,8 +12,8 @@ const useStyles = makeStyles(theme => ({
 const selectContent=(menuItem)=>{
 
     switch(menuItem){
-        default:
-            return <h6>Holi</h6>
+        default://Aquí va la página de verdad
+            return <DataTable/>
     }
 }
 
