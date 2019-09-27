@@ -86,19 +86,27 @@ CREATE TABLE providers(
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
 -- Tabla de reabastecimiento
 CREATE TABLE restock(
-    idSupply INT NOT NULL,
+    idRestock INT NOT NULL AUTO_INCREMENT,
     registrationDateRestock timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    quantityRestock DOUBLE NOT NULL,
-    costRestock DOUBLE NOT NULL,
-    arrivalDateRestock timestamp NULL,
-    sellByDateRestock timestamp NULL,
-    idProvider INT NOT NULL,
     idUser INT NOT NULL,
-    statusRestock TINYINT(1) NOT NULL DEFAULT 1,
-    commentaryRestock VARCHAR(300) NULL,
-    PRIMARY KEY (idSupply, registrationDateRestock),
-    FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION,FOREIGN KEY (idProvider) REFERENCES providers (idProvider) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    statusRestock VARCHAR(15) NOT NULL,
+    PRIMARY KEY (idRestock),
     FOREIGN KEY (idUser) REFERENCES users (idUser) ON DELETE NO ACTION ON UPDATE NO ACTION
+) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+-- Tabla de detalle de restock con insumos
+CREATE TABLE restocksupply(
+    idRestock INT NOT NULL,
+    idSupply INT NOT NULL,
+    quantityRestockSupply DOUBLE NOT NULL,
+    costRestockSupply DOUBLE NOT NULL,
+    arrivalDateRestockSupply timestamp NULL,
+    sellByDateRestockSupply timestamp NULL,
+    idProvider INT NOT NULL,
+    statusRestockSupply VARCHAR(15) NOT NULL,
+    commentaryRestockSupply VARCHAR(300) NULL,
+    PRIMARY KEY (idRestock, idSupply),
+    FOREIGN KEY (idRestock) REFERENCES restock (idRestock) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION,FOREIGN KEY (idProvider) REFERENCES providers (idProvider) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
 -- Tabla de mermas
 CREATE TABLE wastes(
