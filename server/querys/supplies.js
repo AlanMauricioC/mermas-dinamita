@@ -7,6 +7,14 @@ function insertSupply(req, res){
     });   
 };
 
+function getSupplies(req, res){
+	con.query("SELECT idUnit, idUser, maxQuantitySupply, minQuantitySupply, nameSupply, statusSupply FROM supplies", null, function (err, result, fields) {
+		if (err) throw err;
+		res.json(JSON.parse('{ "supplies" :' + JSON.stringify(result) + '}')).status(200);
+	});
+};
+
 module.exports = {
-    insertSupply
+    insertSupply,
+    getSupplies
 };

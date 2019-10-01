@@ -18,4 +18,6 @@ router.get('/units', units.getUnits);
 
 router.post('/insertSupply', supplies.insertSupply);
 
+router.get('/getSupplies', supplies.getSupplies);
+
 module.exports = router;
