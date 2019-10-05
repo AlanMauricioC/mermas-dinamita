@@ -3,6 +3,7 @@ import { Grid } from "@material-ui/core";
 import DataTable from "../DataTable";
 import { makeStyles } from '@material-ui/styles';
 import { Switch, Route } from "react-router-dom";
+import Supplies from "./Supplies";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -20,7 +21,7 @@ const Container = ()=>{
                 <DataTable />
             </Route>
             <Route exact path="/insumos">
-                insumos
+                <Supplies/>
             </Route>
             <Route exact path="/recetas">
                 recetas
