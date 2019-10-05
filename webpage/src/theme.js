@@ -8,7 +8,13 @@ const theme = createMuiTheme({
         },
         secondary: {
             main: '#B5243E'
+        },
+        feedback:{
+            ok:'green',
+            warning: '#ffbb33',
+            error: 'red',
         }
+
     }
 })
 
