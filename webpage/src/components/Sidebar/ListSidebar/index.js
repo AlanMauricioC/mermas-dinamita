@@ -12,22 +12,27 @@ const data = [
     {
         title: "Insumos",
         icon: <FoodIcon/>,
+        link:'insumos'
     },
     {
         title: "Recetas",
         icon: <RecipiesIcon/>,
+        link:'recetas'
     },
     {
         title: "Órdenes",
         icon: <RecipiesIcon/>,
+        link:'ordenes'
     },
     {
         title: "Reportes",
         icon: <ChartIcon/>,
+        link:'reportes'
     },
     {
         title: "Pedidos",
         icon: <StoreIcon/>,
+        link:'pedidos'
     },
 ];
 

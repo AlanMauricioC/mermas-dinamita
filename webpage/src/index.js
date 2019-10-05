@@ -8,6 +8,8 @@ import theme from './theme';
 import { createStore } from "redux";
 import reducer from "./reducer"
 import { Provider } from "react-redux";
+import { BrowserRouter as Router } from "react-router-dom";
+
 const store = createStore(
     reducer, 
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
@@ -17,7 +19,9 @@ const store = createStore(
 ReactDOM.render(
 	<MuiThemeProvider theme={theme}>
         <Provider store={store}> 
-            <App />
+            <Router>
+                <App />
+            </Router>
         </Provider>
 	</MuiThemeProvider>,
 	document.getElementById('root')
