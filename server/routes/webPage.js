@@ -14,12 +14,17 @@ router.get('/', (req, res) => {
     res.send('Saludos desde express').status(200);
 });
 
-// get units
+// Obtener unidades existentes
 router.get('/units', units.getUnits);
 
+// Insertar nuevos insumos
 router.post('/insertSupply', supplies.insertSupply);
 
-router.get('/getSupplies', supplies.getSupplies);
+// Obtener los insumos existentes
+router.post('/getSupplies', supplies.getSupplies);
+
+// Eliminar insumo
+router.post('/deleteSupply', supplies.deleteSupply);
 
 // Insertar pedido de restock y todos sus insumos
 router.post('/insertRestock', restock.insertRestock);
