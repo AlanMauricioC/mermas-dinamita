@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 });
 
 // Obtener unidades existentes
-router.get('/units', units.getUnits);
+router.get('/getUnits', units.getUnits);
 
 // Insertar nuevos insumos
 router.post('/insertSupply', supplies.insertSupply);
