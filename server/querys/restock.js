@@ -56,11 +56,11 @@ function promise_query(query , param , v){
 }
 
 function getRestock(req, res){
-	con.query("SELECT r.idRestock, r.registrationDateRestock, r.idUser, r.statusRestock FROM restock AS r", function (err, result, fields) {
+	con.query("SELECT r.idRestock, r.registrationDateRestock, r.idUser, u.nameUser, r.statusRestock FROM restock AS r INNER JOIN users AS u ON r.idUser=u.idUser", function (err, result, fields) {
         if (err) throw err;
         let queries = []
         result.forEach(function(element){
-            let query = "SELECT r.idSupply, r.quantityRestockSupply, r.costRestockSupply, r.arrivalDateRestockSupply, r.sellByDateRestockSupply, r.idProvider, r.statusRestockSupply, r.commentaryRestockSupply FROM restocksupply AS r WHERE r.idRestock=?"
+            let query = "SELECT r.idSupply, r.quantityRestockSupply, r.costRestockSupply, r.arrivalDateRestockSupply, r.sellByDateRestockSupply, r.idProvider, p.nameProvider, r.statusRestockSupply, r.commentaryRestockSupply FROM restocksupply AS r INNER JOIN providers AS p ON r.idProvider=p.idProvider WHERE r.idRestock=?"
             queries.push(promise_query(query , element.idRestock, element))
         });
         Promise.all(queries).then(values => {
