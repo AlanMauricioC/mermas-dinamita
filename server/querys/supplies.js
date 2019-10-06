@@ -37,6 +37,13 @@ function getSupplies(req, res) {
 	});
 };
 
+function updateSupply(req, res) {
+    con.query("UPDATE supplies SET nameSupply=?, quantitySupply=?, minQuantitySupply=?, maxQuantitySupply=?, idUnit=? WHERE idSupply=?", [req.body.name, req.body.quantity, req.body.min, req.body.max, req.body.idUnit, req.body.idSupply], function(err, result, fields) {
+        if (err) throw err;
+        res.send("update "+result.affectedRows+" supply, idSupply: "+ req.body.idSupply).status(200);
+    });
+}
+
 function deleteSupply(req, res) {
     con.query("UPDATE supplies SET statusSupply=0 WHERE idSupply=?", [req.body.idSupply], function(err, result, fields) {
         if (err) throw err;
@@ -47,5 +54,6 @@ function deleteSupply(req, res) {
 module.exports = {
     insertSupply,
     getSupplies,
+    updateSupply,
     deleteSupply
 };

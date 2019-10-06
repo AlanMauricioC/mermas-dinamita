@@ -23,6 +23,9 @@ router.post('/insertSupply', supplies.insertSupply);
 // Obtener los insumos existentes
 router.post('/getSupplies', supplies.getSupplies);
 
+// Actualizar un insumo
+router.post('/updateSupply', supplies.updateSupply);
+
 // Eliminar insumo
 router.post('/deleteSupply', supplies.deleteSupply);
 
