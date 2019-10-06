@@ -89,7 +89,7 @@ CREATE TABLE restock(
     idRestock INT NOT NULL AUTO_INCREMENT,
     registrationDateRestock timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     idUser INT NOT NULL,
-    statusRestock VARCHAR(15) NOT NULL,
+    statusRestock TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (idRestock),
     FOREIGN KEY (idUser) REFERENCES users (idUser) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
@@ -102,7 +102,7 @@ CREATE TABLE restocksupply(
     arrivalDateRestockSupply timestamp NULL,
     sellByDateRestockSupply timestamp NULL,
     idProvider INT NOT NULL,
-    statusRestockSupply VARCHAR(15) NOT NULL,
+    statusRestockSupply TINYINT(1) NOT NULL DEFAULT 1,
     commentaryRestockSupply VARCHAR(300) NULL,
     PRIMARY KEY (idRestock, idSupply),
     FOREIGN KEY (idRestock) REFERENCES restock (idRestock) ON DELETE NO ACTION ON UPDATE NO ACTION,
