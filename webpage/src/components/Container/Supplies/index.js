@@ -16,7 +16,6 @@ export default class Supplies extends Component {
             <ClasificationButtons/>
           </Grid>
         </Grid>
-        <br/>
         <Grid item container>
           <CardList />
         </Grid>

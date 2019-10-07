@@ -38,12 +38,12 @@ export default function CenteredGrid() {
   
     const classes = useStyles();
     return (
-        <Drawer open={useSelector(state => state.menu.open)} onClose={toggleDrawer( false)}>
+        <Drawer open={useSelector(state => state.menu.open)} onClose={toggleDrawer(false)}>
             <Grid container className={classes.root}>
                 <Grid item xs={12} className={classes.backgoundGradient}>
                     <Avatar alt="Logo Vivall" src="logo192.png" className={classes.imageLogo} />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} onClick={toggleDrawer(false)}>
                     <ListSidebar />
                 </Grid>
             </Grid>

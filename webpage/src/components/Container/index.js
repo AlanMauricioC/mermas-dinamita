@@ -4,6 +4,8 @@ import DataTable from "../DataTable";
 import { makeStyles } from '@material-ui/styles';
 import { Switch, Route } from "react-router-dom";
 import Supplies from "./Supplies";
+import 'alertifyjs/build/css/alertify.min.css'
+import 'alertifyjs/build/css/themes/default.css'
 import Table from "../Table";
 
 const useStyles = makeStyles(theme => ({

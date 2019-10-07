@@ -5,9 +5,9 @@ import CardContent from '@material-ui/core/CardContent';
 import { makeStyles } from '@material-ui/styles';
 import { Grid, Grow } from '@material-ui/core';
 import ProductCardContent from "./ProductCardContent";
-import DialogUpdateProduct from "./DialogUpdateProduct";
+import DialogUpdateSupply from "../DialogUpdateSupply";
 
-const ProductCard = ({ card }) => {
+const ProductCard = ({ supply,handleOpenDialog,handleDelete }) => {
     const useStyles = makeStyles({
         root: {
             border: 0,
@@ -23,20 +23,14 @@ const ProductCard = ({ card }) => {
     });
 
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
-
-    const handleClickOpen = () => setOpen(true)
-    const handleClose = () => setOpen(false)
-
     return <Grid item xs={12} sm={6} md={4} lg={3}>
         <Grow in={true}>
-            <Card className={classes.root} onClick={handleClickOpen}>
+            <Card className={classes.root}>
                 <CardContent>
-                    <ProductCardContent content={card}></ProductCardContent>
+                    <ProductCardContent content={supply} handleDelete={handleDelete} handleOpenDialog={handleOpenDialog}></ProductCardContent >
                 </CardContent>
             </Card>
         </Grow>
-        <DialogUpdateProduct handleClose={handleClose} open={open} card={card}></DialogUpdateProduct>
     </Grid>
 }
 //julioalarcon962@gmail.com

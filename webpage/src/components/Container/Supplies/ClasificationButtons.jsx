@@ -23,25 +23,37 @@ export default function ClasificationButtons(props) {
         }
     })
     const classes= styles()
+    const searchOk=()=>{
+        
+    }
+    const searchWarning=()=>{
+        
+    }
+    const searchError=()=>{
+        
+    }
     return (
         <div>
             <Grid container 
                 alignItems="center"
                 spacing={1}>
                 <Grid item>
-                    <Chip 
+                    <Chip
+                    onClick={searchOk} 
                     className={classes.chip} 
                     avatar={<Avatar className={classes.okButton} >G</Avatar>} 
                     label='verdecito' />
                 </Grid>
                 <Grid item>
-                    <Chip 
+                    <Chip
+                    onClick={searchWarning} 
                     className={classes.chip} 
                     avatar={<Avatar className={classes.warningButton} >O</Avatar>} 
                     label='naranjita' />
                 </Grid>
                 <Grid item>
-                    <Chip 
+                    <Chip
+                    onClick={searchError} 
                     className={classes.chip} 
                     avatar={<Avatar className={classes.errorButton} >R</Avatar>} 
                     label='rojito' />
