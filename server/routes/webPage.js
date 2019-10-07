@@ -1,9 +1,10 @@
-var express = require('express');
-var router = express.Router();
-var units = require('../querys/units');
-var supplies = require('../querys/supplies');
-var restock = require('../querys/restock');
-var wastes = require('../querys/wastes');
+const express = require('express');
+const router = express.Router();
+const units = require('../querys/units');
+const supplies = require('../querys/supplies');
+const restock = require('../querys/restock');
+const wastes = require('../querys/wastes');
+const recipes = require('../querys/recipes');
 
 // middleware specific to this router
 router.use(function timeLog(req, res, next) {
@@ -58,5 +59,23 @@ router.post('/deleteSupplyRestock', restock.deleteRestockSupply);
 
 // Eliminar una merma
 router.post('/deleteWaste', wastes.deleteWaste);
+
+// Insertar receta y todos sus insumos
+router.post('/insertRecipe', recipes.insertRecipe);
+
+// Obtener recetas y todos sus insumos
+router.get('/recipes', recipes.getRecipes);
+
+// Modificar receta
+router.post('/updateRecipe', recipes.updateRecipe);
+
+// Insertar insumo a receta
+router.post('/insertSupplyRecipe', recipes.insertRecipeSupply);
+
+// Modificar insumo de receta
+router.post('/updateSupplyRecipe', recipes.updateRecipeSupply);
+
+// Eliminar insumo de receta
+router.post('/deleteSupplyRecipe', recipes.deleteRecipeSupply);
 
 module.exports = router;

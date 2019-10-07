@@ -43,7 +43,7 @@ CREATE TABLE recipes(
     idRecipe INT NOT NULL AUTO_INCREMENT,
     nameRecipe VARCHAR(45) NOT NULL,
     detailRecipe VARCHAR(200) NULL,
-    idSupply INT NOT NULL,
+    idSupply INT NULL,
     statusRecipe TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (idRecipe),
     FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION
