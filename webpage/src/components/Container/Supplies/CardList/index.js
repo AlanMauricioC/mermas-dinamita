@@ -40,7 +40,10 @@ class CardList extends PureComponent {
 
     async getSupplies() {
         //llamada a servidor
-        this.props.setSupplies(supplies)
+        const suppliesData=await supplies('',null)
+        console.log('supplies', suppliesData);
+        
+        this.props.setSupplies(suppliesData.supplies)
     }
     componentDidMount() {
         this.getSupplies()

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { validateNumber, validateText } from "../../../../services/validations";
 import { connect } from 'react-redux'
 import { updateSupply, setSupplies } from '../../../../actions'
-import { getSupplies } from "../../../../services/supplies";
+import { updateSupplies as updateService, getSupplies, insertSupplies } from "../../../../services/supplies";
 import alertifyjs from "alertifyjs";
 
 const styles = theme => (
@@ -33,27 +33,31 @@ class DialogUpdateSupply extends Component {
 		super(props);
 		const { supply: { name, quantity, min, max, unit } } = props;
 		this.state = {
-			name,
-			quantity,
-			min,
-			max,
-			unit,
+			supply:{
+				name,
+				quantity,
+				min,
+				max,
+				unit,
+			}
 		}
 	}
 
 	componentDidUpdate(prevProps, prevState) {
 		if (this.props.supply.id === prevProps.supply.id) return null
-		const { supply: { name, quantity, min, max, avg,unit, idUnit, id } } = this.props;
+		const { supply: { name, quantity, min, max, avg, unit, idUnit, id } } = this.props;
 
 		this.setState({
-			name,
-			quantity,
-			min,
-			max,
-			unit,
-			idUnit,
-			avg,
-			id
+			supply:{
+				name,
+				quantity,
+				min,
+				max,
+				unit,
+				idUnit,
+				avg,
+				id
+			}
 		})
 	}
 
@@ -61,35 +65,54 @@ class DialogUpdateSupply extends Component {
 		const { handleClose, classes, open } = this.props
 		const handleOnChangeNumber = event => {
 			const number = event.target.value
-			if (validateNumber(number, 1)) {
-				this.setState({ [event.target.name]: number })
+			if (validateNumber(number, 0)) {
+				this.setState({ supply: { ...this.state.supply, [event.target.name]: number} })
 			}
 		}
-		const handleOnChangeSelect = event => this.setState({ [event.target.name]: event.target.value })
-		const handleOnChangeName = event => this.setState({ [event.target.name]: event.target.value })
+		const handleOnChangeSelect = event => this.setState({ supply: {...this.state.supply, [event.target.name]: event.target.value }})
+		const handleOnChangeName = event => this.setState({ supply: {...this.state.supply, [event.target.name]: event.target.value } })
 		const handleOnEnter = ev => {
 			if (ev.key === 'Enter') {
-				const enter = this.state.id ? updateSupply : createSupply
+				const enter = this.state.supply.id ? updateSupply : createSupply
 				enter()
 				ev.preventDefault();
 			}
 		}
 
-		const updateSupply = () => {
+		const updateSupply = async () => {
 			console.log('actualizar insumo');
-			const supply = this.state
-			this.props.updateSupply({ supply })
-			handleClose()
+			const {supply} = this.state
+			supply.idSupply = supply.id
+			const updated = await updateService(supply)
 			alertifyjs.set('notifier', 'position', 'bottom-center');
-			alertifyjs.success('Insumo actualizado correctamente')
+			if (updated) {
+				this.props.updateSupply({ supply })
+				alertifyjs.success('Insumo actualizado correctamente')
+				handleClose()
+			} else {
+				alertifyjs.error('No se pudo actualizar este insumo')
+			}
+
 		}
-		const createSupply = () => {
+		const createSupply = async () => {
 			console.log('crear insumo');
-			//const supply = this.state
-			this.props.setSupplies(getSupplies)
-			handleClose()
+			//const supply = this.state.supply
+			const supply = this.state.supply
+			supply.idSupply = supply.id
+			supply.idUser=1// esto no debe de ser así :0!!
+			const  inserted=await insertSupplies(supply)
 			alertifyjs.set('notifier', 'position', 'bottom-center');
-			alertifyjs.success('Insumo creado correctamente')
+			if (inserted) {
+				handleClose()
+				alertifyjs.success('Insumo creado correctamente')
+				const { supplies } = await getSupplies('', null)
+				this.props.setSupplies(supplies)
+			} else {
+				alertifyjs.success('Error al crear el insumo')
+				const { supplies } = await getSupplies('', null)
+				this.props.setSupplies(supplies)
+			}
+			
 		}
 		return (
 			<Dialog
@@ -99,20 +122,20 @@ class DialogUpdateSupply extends Component {
 				fullWidth={true}
 				maxWidth={'md'}
 			>
-				<DialogTitle id="form-dialog-title" className={classes.top}>{this.state.id ? 'Modificar' : 'Crear'} Insumo</DialogTitle>
+				<DialogTitle id="form-dialog-title" className={classes.top}>{this.state.supply.id ? 'Modificar' : 'Crear'} Insumo</DialogTitle>
 				<DialogContent>
 					<Grid container alignItems={'center'}>
 						<Grid item className={classes.input} xs={12} md={8}>
-							<TextField name='name' onKeyPress={handleOnEnter} autoFocus required fullWidth type='text' margin="dense" label={'Nombre del insumo'} value={this.state.name} onChange={handleOnChangeName} />
+							<TextField name='name' onKeyPress={handleOnEnter} autoFocus required fullWidth type='text' margin="dense" label={'Nombre del insumo'} value={this.state.supply.name} onChange={handleOnChangeName} />
 						</Grid>
 						<Grid item className={classes.input} xs={12} md={4}>
-							<TextField name='quantity' onKeyPress={handleOnEnter} required fullWidth type='number' margin="dense" label={'Cantidad actual'} value={this.state.quantity} onChange={handleOnChangeNumber} />
+							<TextField name='quantity' onKeyPress={handleOnEnter} required fullWidth type='number' margin="dense" label={'Cantidad actual'} value={this.state.supply.quantity} onChange={handleOnChangeNumber} />
 						</Grid>
 						<Grid item className={classes.input} xs={12} md={4}>
-							<TextField name='min' onKeyPress={handleOnEnter} required fullWidth type='number' margin="dense" label={'Cantidad minima aceptable'} value={this.state.min} onChange={handleOnChangeNumber} />
+							<TextField name='min' onKeyPress={handleOnEnter} required fullWidth type='number' margin="dense" label={'Cantidad minima aceptable'} value={this.state.supply.min} onChange={handleOnChangeNumber} />
 						</Grid>
 						<Grid item className={classes.input} xs={12} md={4}>
-							<TextField name='max' onKeyPress={handleOnEnter} required fullWidth type='number' margin="dense" label={'Cantidad maxima'} value={this.state.max} onChange={handleOnChangeNumber} />
+							<TextField name='max' onKeyPress={handleOnEnter} required fullWidth type='number' margin="dense" label={'Cantidad maxima'} value={this.state.supply.max} onChange={handleOnChangeNumber} />
 						</Grid>
 						<Grid item className={classes.input} xs={12} md={4}>
 							<FormControl className={classes.select} required >
@@ -120,7 +143,7 @@ class DialogUpdateSupply extends Component {
 									Unidades
 								</InputLabel>
 								<Select
-									value={this.state.idUnit}
+									value={this.state.supply.idUnit}
 									onChange={handleOnChangeSelect}
 									displayEmpty
 									name="idUnit"
@@ -141,7 +164,7 @@ class DialogUpdateSupply extends Component {
 					<Button onClick={handleClose} variant="outlined" color="primary">
 						Cancelar
 				</Button>
-					<Button onClick={this.state.id ? updateSupply : createSupply} variant="contained" color="primary">
+					<Button onClick={this.state.supply.id ? updateSupply : createSupply} variant="contained" color="primary">
 						Aceptar
 				</Button>
 				</DialogActions>

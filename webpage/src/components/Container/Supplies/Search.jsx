@@ -2,6 +2,9 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper, InputBase, IconButton} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+import { setSupplies } from "../../../actions";
+import { useDispatch } from "react-redux";
+import { getSupplies } from "../../../services/supplies";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -20,8 +23,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function CustomizedInputBase() {
     const classes = useStyles();
+    const dispatch=useDispatch()
     const handleOnChangeSearch=e=>{
-        console.log('estoy buscando :u');
+        const inputValue = e.target.value
+        console.log('estoy buscando :u', inputValue);
+        getSupplies(inputValue, null).then(({ supplies }) => dispatch(setSupplies(supplies)))
         
     }
     return (
