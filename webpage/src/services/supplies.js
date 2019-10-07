@@ -58,3 +58,23 @@ export const insertSupplies = async function (supply) {
         return false
     }
 }
+
+
+export const deleteSupplies = async function (supply) {
+    try {
+        const response = await fetch(SERVER_URL + `deleteSupply`, {
+            method: 'POST',
+            body: JSON.stringify(supply),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        return true
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}

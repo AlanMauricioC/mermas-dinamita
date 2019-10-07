@@ -2,6 +2,7 @@ import { DialogContent, DialogActions, Button, Dialog, DialogTitle,withStyles, D
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { deleteSupply } from "../../../../actions";
+import { deleteSupplies } from "../../../../services/supplies";
 import alertifyjs from "alertifyjs";
 
 
@@ -51,11 +52,20 @@ class DialogUpdateSupply extends Component {
 
 	render() {
 		const { handleClose, classes, open,id } = this.props
-		const handleOnDelete=e=>{
-			this.props.deleteSupply(this.props.supply)
-			handleClose()
+		const handleOnDelete= async ()=>{
+			console.log('eliminar insumo');
+			//const supply = this.state.supply
+			const supply = this.props.supply
+			supply.idUser = 1// esto no debe de ser así :0!!
+			const deleted = await deleteSupplies(supply)
 			alertifyjs.set('notifier', 'position', 'bottom-center');
-			alertifyjs.success('Insumo eliminado satisfactoriamente')
+			if (deleted) {
+				handleClose()
+				alertifyjs.success('Insumo eliminado satisfactoriamente')
+				this.props.deleteSupply(this.props.supply)
+			} else {
+				alertifyjs.error('Error al eliminar el insumo')
+			}
 		}
 		return (
 			<Dialog
