@@ -39,24 +39,32 @@ const tableIcons = {
 
 export default function MaterialTableDemo() {
 
+  /*
+  fetch('http://example.com/movies.json')
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(myJson) {
+    console.log(myJson);
+  });*/
   const [state, setState] = React.useState({
     columns: [
-      { title: 'Name', field: 'name' },
-      { title: 'Surname', field: 'surname' },
-      { title: 'Birth Year', field: 'birthYear', type: 'numeric' },
+      { title: 'Nombre del usuario', field: 'nombre' },
+      { title: 'Nombre de la receta', field: 'receta' },
+      { title: 'Fecha', field: 'fecha', type: 'date' },
       {
-        title: 'Birth Place',
-        field: 'birthCity',
-        lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' },
+        title: 'Estado',
+        field: 'estado',
+        lookup: { 1: 'Activo', 0: 'Inactivo' },
       },
     ],
     data: [
-      { name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
+      { nombre: 'Mehmet', receta: 'Mole', fecha: '8/10/2019', estado: 1 },
       {
-        name: 'Zerya Betül',
-        surname: 'Baran',
-        birthYear: 2017,
-        birthCity: 34,
+        nombre: 'Karina',
+        receta: 'Chilaquiles',
+        fecha: '8/10/2019',
+        estado: 0,
       },
     ],
   });
@@ -64,7 +72,7 @@ export default function MaterialTableDemo() {
   return (
     <div style={{ minWidth: "100%" }}>
         <MaterialTable
-            title="Recetas"
+            title="Pedidos"
             columns={state.columns}
             data={state.data}
             icons={tableIcons}

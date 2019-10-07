@@ -28,7 +28,7 @@ const Container = ()=>{
                 <Supplies/>
             </Route>
             <Route exact path="/recetas">
-                <Table/>
+                
             </Route>
             <Route exact path="/ordenes">
                 {/* no estoy seguro de se este si va aquí .3. pero pos ya */}
@@ -38,7 +38,7 @@ const Container = ()=>{
                 reportes
             </Route>
             <Route exact path="/pedidos">
-                pedidos
+                <Table/>
             </Route>
             <Route>
                 404 :c Not Found
