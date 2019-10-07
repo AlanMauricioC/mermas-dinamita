@@ -4,6 +4,8 @@ import { validateNumber, validateText } from "../../../../services/validations";
 import { connect } from 'react-redux'
 import { updateSupply, setSupplies } from '../../../../actions'
 import { updateSupplies as updateService, getSupplies, insertSupplies } from "../../../../services/supplies";
+import { getUnits } from "../../../../services/units";
+
 import alertifyjs from "alertifyjs";
 
 const styles = theme => (
@@ -39,9 +41,16 @@ class DialogUpdateSupply extends Component {
 				min,
 				max,
 				unit,
-			}
+			},
+			units:[]
 		}
 	}
+
+	async componentDidMount() {
+		const units = await getUnits()
+		this.setState({units})
+	}
+	
 
 	componentDidUpdate(prevProps, prevState) {
 		if (this.props.supply.id === prevProps.supply.id) return null
@@ -69,7 +78,16 @@ class DialogUpdateSupply extends Component {
 				this.setState({ supply: { ...this.state.supply, [event.target.name]: number} })
 			}
 		}
-		const handleOnChangeSelect = event => this.setState({ supply: {...this.state.supply, [event.target.name]: event.target.value }})
+		const handleOnChangeSelect = event => {
+			console.log('hallo');
+			
+			const idUnit = event.target.value 
+			const unit=this.state.units.find(unit=>idUnit===unit.idUnit)
+			
+			if (!unit) return null
+			this.setState({ supply: { ...this.state.supply, idUnit, unit:unit.nameUnit } })
+			console.log({ ...this.state.supply, unit: unit.nameUnit});
+		}
 		const handleOnChangeName = event => this.setState({ supply: {...this.state.supply, [event.target.name]: event.target.value } })
 		const handleOnEnter = ev => {
 			if (ev.key === 'Enter') {
@@ -82,7 +100,6 @@ class DialogUpdateSupply extends Component {
 		const updateSupply = async () => {
 			console.log('actualizar insumo');
 			const {supply} = this.state
-			supply.idSupply = supply.id
 			const updated = await updateService(supply)
 			alertifyjs.set('notifier', 'position', 'bottom-center');
 			if (updated) {
@@ -98,7 +115,6 @@ class DialogUpdateSupply extends Component {
 			console.log('crear insumo');
 			//const supply = this.state.supply
 			const supply = this.state.supply
-			supply.idSupply = supply.id
 			supply.idUser=1// esto no debe de ser así :0!!
 			const  inserted=await insertSupplies(supply)
 			alertifyjs.set('notifier', 'position', 'bottom-center');
@@ -149,12 +165,10 @@ class DialogUpdateSupply extends Component {
 									name="idUnit"
 
 								>
-									<MenuItem value={0}>
+									<MenuItem value={-1}>
 										<em>None</em>
 									</MenuItem>
-									<MenuItem value={1}>Ten</MenuItem>
-									<MenuItem value={20}>Twenty</MenuItem>
-									<MenuItem value={30}>Thirty</MenuItem>
+									{this.state.units.map(({ idUnit, nameUnit }) => <MenuItem key={idUnit} value={idUnit}>{nameUnit}</MenuItem>)}
 								</Select>
 							</FormControl>
 						</Grid>

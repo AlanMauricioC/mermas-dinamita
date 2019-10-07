@@ -32,7 +32,7 @@ class CardList extends PureComponent {
                 min: 0,
                 max: 0,
                 quantity: 0,
-                idUnit: null,
+                idUnit: -1,
                 id: null
             }
         }
@@ -41,8 +41,6 @@ class CardList extends PureComponent {
     async getSupplies() {
         //llamada a servidor
         const suppliesData=await supplies('',null)
-        console.log('supplies', suppliesData);
-        
         this.props.setSupplies(suppliesData.supplies)
     }
     componentDidMount() {
