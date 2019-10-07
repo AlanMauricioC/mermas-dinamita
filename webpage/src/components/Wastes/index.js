@@ -39,14 +39,14 @@ const tableIcons = {
 
 export default function MaterialTableDemo() {
 
-  /*
+  
   fetch('http://example.com/movies.json')
   .then(function(response) {
     return response.json();
   })
   .then(function(myJson) {
     console.log(myJson);
-  });*/
+  });
   const [state, setState] = React.useState({
     columns: [
       { title: 'Nombre del insumo', field: 'nombre' },
