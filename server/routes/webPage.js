@@ -57,6 +57,15 @@ router.post('/updateSupplyRestock', restock.updateRestockSupply);
 // Eliminar insumo de pedido restock
 router.post('/deleteSupplyRestock', restock.deleteRestockSupply);
 
+// Insertar merma de de un insumo
+router.post('/insertWaste', wastes.insertWaste);
+
+// Obtener las memas 
+router.post('/getWastes', wastes.getWastes);
+
+// Actualizar una merma
+router.post('/updateWaste', wastes.updateWaste);
+
 // Eliminar una merma
 router.post('/deleteWaste', wastes.deleteWaste);
 
