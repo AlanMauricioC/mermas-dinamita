@@ -6,7 +6,8 @@ export const getSupplies=[
         avg: 7,
         max:10,
         quantity:4,
-        unit:'gr'
+        unit:'gr',
+        idUnit:1,
     },
     {
         id: 2,
@@ -15,16 +16,18 @@ export const getSupplies=[
         avg: 7,
         max: 100,
         quantity: 9,
-        unit: 'Pza'
+        unit: 'Pza',
+        idUnit:1,
     },
     {
-        id: 1,
+        id: 3,
         name: 'leche',
         min: 3,
         avg: 7,
         max: 10,
         quantity: 1,
-        unit: 'L'
+        unit: 'L',
+        idUnit:1,
     },
     {
         id: 11,
@@ -33,7 +36,8 @@ export const getSupplies=[
         avg: 7,
         max: 10,
         quantity: 4,
-        unit: 'gr'
+        unit: 'gr',
+        idUnit:1,
     },
     {
         id: 12,
@@ -42,15 +46,17 @@ export const getSupplies=[
         avg: 7,
         max: 100,
         quantity: 9,
-        unit: 'Pza'
+        unit: 'Pza',
+        idUnit:1,
     },
     {
-        id: 11,
+        id: 13,
         name: 'leche',
         min: 3,
         avg: 7,
         max: 10,
         quantity: 1,
-        unit: 'L'
+        unit: 'L',
+        idUnit:1,
     },
 ]
