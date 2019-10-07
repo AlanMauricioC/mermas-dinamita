@@ -3,6 +3,7 @@ var router = express.Router();
 var units = require('../querys/units');
 var supplies = require('../querys/supplies');
 var restock = require('../querys/restock');
+var wastes = require('../querys/wastes');
 
 // middleware specific to this router
 router.use(function timeLog(req, res, next) {
@@ -54,5 +55,8 @@ router.post('/updateSupplyRestock', restock.updateRestockSupply);
 
 // Eliminar insumo de pedido restock
 router.post('/deleteSupplyRestock', restock.deleteRestockSupply);
+
+// Eliminar una merma
+router.post('/deleteWaste', wastes.deleteWaste);
 
 module.exports = router;
