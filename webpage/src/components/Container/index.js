@@ -7,6 +7,7 @@ import Supplies from "./Supplies";
 import 'alertifyjs/build/css/alertify.min.css'
 import 'alertifyjs/build/css/themes/default.css'
 import Table from "../Table";
+import Wastes from "../Wastes";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -38,6 +39,7 @@ const Container = ()=>{
             </Route>
             <Route exact path="/reportes">
                 reportes
+                <Wastes/>
             </Route>
             <Route exact path="/pedidos">
                 <Table/>
