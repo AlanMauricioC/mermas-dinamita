@@ -1,2 +1,6 @@
 
 .vs/
+
+server/node_modules/
+
+webPage/node_modules/
