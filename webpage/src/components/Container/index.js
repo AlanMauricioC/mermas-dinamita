@@ -8,6 +8,8 @@ import 'alertifyjs/build/css/alertify.min.css'
 import 'alertifyjs/build/css/themes/default.css'
 import Table from "../Table";
 import Wastes from "../Wastes";
+import Orders from "./Orders"
+import Recipes from "./Recipes"
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -31,7 +33,7 @@ const Container = ()=>{
                 <Supplies/>
             </Route>
             <Route exact path="/recetas">
-                
+                <Recipes/>
             </Route>
             <Route exact path="/ordenes">
                 {/* no estoy seguro de se este si va aquí .3. pero pos ya */}
@@ -42,10 +44,10 @@ const Container = ()=>{
                 <Wastes/>
             </Route>
             <Route exact path="/pedidos">
-                <Table/>
+                <Orders/>
             </Route>
             <Route>
-                404 :c Not Found
+                
             </Route>
 
         </Switch>
