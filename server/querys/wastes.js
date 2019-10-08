@@ -1,12 +1,75 @@
 var con = require('../DB/connection');
 
-function deleteWaste(req, res) {
-    con.query("UPDATE wastes SET statusWaste=0 WHERE idWaste=?", [req.body.idWaste], function(err, result, fields) {
-        if (err) throw err;
-        res.send("delete "+result.affectedRows+" waste, idWaste: "+ req.body.idWaste).status(200);
+function insertWaste(req, res) {
+	con.query("INSERT INTO wastes(idSupply, quantityWaste, idUser, sellByDateWastetimestamp) VALUES(?, ?, ?, ?)", [req.body.id, req.body.quantity, req.body.idUser, req.body.sellByDate], function (err, result, fields) {
+		if (err) {
+            console.log("Error" , err)
+            res.json({err}).status(500);
+        }
+        else {
+            console.log('{ "wastes" :' + JSON.stringify(result) + '}');
+            res.json("insert "+result.affectedRows+" waste, ID: "+ result.insertId).status(200);
+        }
+    });   
+};
+
+function getWastes(req, res) {
+	if(req.body.startDate && req.body.endDate) {
+		qry = "SELECT idWaste, s.idSupply, sp.nameSupply, registrationDateWaste, sellByDateWastetimestamp, quantityWaste, s.idUser FROM wastes AS s INNER JOIN supplies AS sp ON s.idSupply=sp.idSupply WHERE statusWaste=1 AND registrationDateWaste<=? AND registrationDateWaste>=?";
+		values = [req.body.startDate, req.body.endDate];
+	}
+	else {
+		qry = "SELECT idWaste, s.idSupply, sp.nameSupply, registrationDateWaste, sellByDateWastetimestamp, quantityWaste, s.idUser FROM wastes AS s INNER JOIN supplies AS sp ON s.idSupply=sp.idSupply WHERE statusWaste=1 AND registrationDateWaste=?";
+		values = [dateNow()];
+	}
+
+	con.query(qry, values, function (err, result, fields) {
+		if (err) {
+            console.log("Error" , err)
+            res.json({err}).status(500);
+        }
+        else {
+            res.json(JSON.parse('{ "wastes" :' + JSON.stringify(result) + '}')).status(200);
+        }		
+	});
+};
+
+function updateWaste(req, res) {
+	con.query("UPDATE wastes SET quantityWaste=?, idUser=?, sellByDateWastetimestamp=? WHERE idWaste=?", [req.body.quantity, req.body.idUser, req.body.sellByDate, req.body.id], function(err, result, fields) {
+        if (err) {
+            console.log("Error" , err)
+            res.json({err}).status(500);
+        }
+        else {
+            console.log("update "+result.affectedRows+" waste, ID: "+ req.body.id);
+            res.json("update "+result.affectedRows+" waste, ID: "+ req.body.id).status(200);
+        }
     });
 };
 
+function deleteWaste(req, res) {
+    con.query("UPDATE wastes SET statusWaste=0 WHERE idWaste=?", [req.body.id], function(err, result, fields) {
+        if (err) {
+            console.log("Error" , err)
+            res.json({err}).status(500);
+        }
+        else {
+            console.log("delete "+result.affectedRows+" waste, ID: "+ req.body.id);
+            res.json("delete "+result.affectedRows+" waste, ID: "+ req.body.id).status(200);
+        }
+    });
+};
+
+function dateNow() {
+	let date = new Date();
+	let today = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+
+	return today;
+};
+
 module.exports = {
+    insertWaste,
+    getWastes,
+    updateWaste,
     deleteWaste
 };
