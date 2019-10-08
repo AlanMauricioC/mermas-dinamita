@@ -1,14 +1,14 @@
 const con = require('../DB/connection');
 
 function insertRecipe(req, res){
-    con.query("INSERT INTO recipes (nameRecipe, detailRecipe, idSupply) VALUES (?, ?, ?)", [req.body.name, req.body.detail, req.body.idSupply], function (err, result, fields) {
+    con.query("INSERT INTO recipes (nameRecipe, detailRecipe, idSupply) VALUES (?, ?, ?)", [req.body.nameRecipe, req.body.detailRecipe, req.body.idSupply], function (err, result, fields) {
         if (err) {
             console.log("Error" , err)
             res.json({err}).status(500);
         }else{
             var arr = JSON.parse(req.body.idSupplies);
             arr.forEach(function(v){
-                con.query("INSERT INTO recipesupply (idRecipe, idSupply, quantityRecipeSupply) VALUES (?, ?, ?)", [result.insertId, v.idSupply, v.quantity], function (err, resul, fields) {
+                con.query("INSERT INTO recipesupply (idRecipe, idSupply, quantityRecipeSupply) VALUES (?, ?, ?)", [result.insertId, v.idSupply, v.quantityRecipeSupply], function (err, resul, fields) {
                     if (err) {
                         console.log("Error" , err)
                         res.json({err}).status(500);
@@ -22,24 +22,22 @@ function insertRecipe(req, res){
 }
 
 function insertRecipeSupply(req, res){
-    con.query("INSERT INTO recipesupply (idRecipe, idSupply, quantityRecipeSupply) VALUES (?, ?, ?)", [req.body.idRecipe, req.body.idSupply, req.body.quantity], function (err, result, fields) {
+    con.query("INSERT INTO recipesupply (idRecipe, idSupply, quantityRecipeSupply) VALUES (?, ?, ?)", [req.body.idRecipe, req.body.idSupply, req.body.quantityRecipeSupply], function (err, result, fields) {
         if (err) {
             console.log("Error" , err)
             res.json({err}).status(500);
-        }else{
+        }else
             res.json("insert "+result.affectedRows+" recipe supply, ID: "+ result.insertId).status(200);
-        }
     });   
 };
 
 function updateRecipeSupply(req, res){
-    con.query("UPDATE recipesupply SET quantityRecipeSupply = ? WHERE idRecipe = ? AND idSupply = ?", [req.body.quantity, req.body.idRecipe, req.body.idSupply], function (err, result, fields) {
+    con.query("UPDATE recipesupply SET quantityRecipeSupply = ? WHERE idRecipe = ? AND idSupply = ?", [req.body.quantityRecipeSupply, req.body.idRecipe, req.body.idSupply], function (err, result, fields) {
         if (err) {
             console.log("Error" , err)
             res.json({err}).status(500);
-        }else{
+        }else
             res.json("update "+result.affectedRows+" recipe supply, id recipe: "+ req.body.idRestock+" id supply: "+req.body.idSupply).status(200);
-        }
     });   
 };
 
@@ -87,7 +85,7 @@ function getRecipes(req, res){
 };
 
 function updateRecipe(req, res){
-	con.query("UPDATE recipes AS r SET r.nameRecipe=?, r.detailRecipe=?, r.idSupply=?, r.statusRecipe=? WHERE r.idRecipe=?", [req.body.name, req.body.detail, req.body.idSupply, req.body.status, req.body.idRecipe], function (err, result, fields) {
+	con.query("UPDATE recipes AS r SET r.nameRecipe=?, r.detailRecipe=?, r.idSupply=?, r.statusRecipe=? WHERE r.idRecipe=?", [req.body.nameRecipe, req.body.detailRecipe, req.body.idSupply, req.body.statusRecipe, req.body.idRecipe], function (err, result, fields) {
         if (err) {
             console.log("Error" , err)
             res.json({err}).status(500);

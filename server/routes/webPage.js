@@ -34,6 +34,9 @@ router.post('/deleteSupply', supplies.deleteSupply);
 // Insertar pedido de restock y todos sus insumos
 router.post('/insertRestock', restock.insertRestock);
 
+// Insertar solo pedido de restock
+router.post('/insertOnlyRestock', restock.insertOnlyRestock);
+
 // Obtener pedidos de restock y todos sus insumos
 router.get('/restock', restock.getRestock);
 

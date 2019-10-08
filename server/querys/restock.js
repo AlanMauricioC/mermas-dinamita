@@ -1,16 +1,33 @@
-var con = require('../DB/connection');
+const con = require('../DB/connection');
 
 function insertRestock(req, res){
     con.query("INSERT INTO restock (idUser) VALUES (?)", [req.body.idUser], function (err, result, fields) {
-        if (err) throw err;
-        var arr = JSON.parse(req.body.idSupplies);
-        arr.forEach(function(v){
-            con.query("INSERT INTO restocksupply (idRestock, idSupply, quantityRestockSupply, costRestockSupply, idProvider, commentaryRestockSupply) VALUES (?, ?, ?, ?, ?, ?)", [result.insertId, v.idSupply, v.quantity, v.cost, v.idProvider, v.commentary], function (err, resul, fields) {
-                if (err) throw err;
-                console.log("insert "+resul.affectedRows+" restock supply");
+        if (err) {
+            console.log("Error" , err)
+            res.json({err}).status(500);
+        }else{
+            var arr = JSON.parse(req.body.idSupplies);
+            arr.forEach(function(v){
+                con.query("INSERT INTO restocksupply (idRestock, idSupply, quantityRestockSupply, costRestockSupply, idProvider, commentaryRestockSupply) VALUES (?, ?, ?, ?, ?, ?)", [result.insertId, v.idSupply, v.quantityRestockSupply, v.costRestockSupply, v.idProvider, v.commentaryRestockSupply], function (err, resul, fields) {
+                    if (err) {
+                        console.log("Error" , err)
+                        res.json({err}).status(500);
+                    }else
+                        console.log("insert "+resul.affectedRows+" restock supply");
+                });
             });
-        });
-        res.json("insert "+result.affectedRows+" restock, ID: "+ result.insertId).status(200);
+            res.json("insert "+result.affectedRows+" restock, ID: "+ result.insertId).status(200);
+        }
+    });
+}
+
+function insertOnlyRestock(req, res){
+    con.query("INSERT INTO restock (idUser) VALUES (?)", [req.body.idUser], function (err, result, fields) {
+        if (err) {
+            console.log("Error" , err)
+            res.json({err}).status(500);
+        }else
+            res.json( { idRestock : result.insertId }).status(200);
     });
 }
 
@@ -57,30 +74,42 @@ function promise_query(query , param , v){
 
 function getRestock(req, res){
 	con.query("SELECT r.idRestock, r.registrationDateRestock, r.idUser, u.nameUser, r.statusRestock FROM restock AS r INNER JOIN users AS u ON r.idUser=u.idUser", function (err, result, fields) {
-        if (err) throw err;
-        let queries = []
-        result.forEach(function(element){
-            let query = "SELECT r.idSupply, r.quantityRestockSupply, r.costRestockSupply, r.arrivalDateRestockSupply, r.sellByDateRestockSupply, r.idProvider, p.nameProvider, r.statusRestockSupply, r.commentaryRestockSupply FROM restocksupply AS r INNER JOIN providers AS p ON r.idProvider=p.idProvider WHERE r.idRestock=?"
-            queries.push(promise_query(query , element.idRestock, element))
-        });
-        Promise.all(queries).then(values => {
-            res.json({ restock : values }).status(200);
-        }).catch(reason => { 
-            console.log("Error" , reason)
-            res.json({reason}).status(500);
-        });
+        if (err) {
+            console.log("Error" , err)
+            res.json({err}).status(500);
+        }else{
+            let queries = []
+            result.forEach(function(element){
+                let query = "SELECT r.idSupply, r.quantityRestockSupply, r.costRestockSupply, r.arrivalDateRestockSupply, r.sellByDateRestockSupply, r.idProvider, p.nameProvider, r.statusRestockSupply, r.commentaryRestockSupply FROM restocksupply AS r INNER JOIN providers AS p ON r.idProvider=p.idProvider WHERE r.idRestock=?"
+                queries.push(promise_query(query , element.idRestock, element))
+            });
+            Promise.all(queries).then(values => {
+                res.json({ restock : values }).status(200);
+            }).catch(reason => { 
+                console.log("Error" , reason)
+                res.json({reason}).status(500);
+            });
+        }
     });
 };
 
 function statusRestock(req, res){
 	con.query("UPDATE restock AS r SET r.statusRestock=? WHERE r.idRestock=?", [req.body.status, req.body.idRestock], function (err, result, fields) {
-        if (err) throw err;
-        console.log("update restock");
-        con.query("UPDATE restocksupply AS rs SET rs.statusRestockSupply=? WHERE rs.idRestock=?", [req.body.status, req.body.idRestock], function (err, resul, fields) {
-            if (err) throw err;
-            console.log("update supplies restock");
-            res.json("update state of restock ID: "+ req.body.idRestock + " and "+resul.affectedRows+" restocksupplies").status(200);
-        });
+        if (err) {
+            console.log("Error" , err)
+            res.json({err}).status(500);
+        }else{
+            console.log("update restock");
+            con.query("UPDATE restocksupply AS rs SET rs.statusRestockSupply=? WHERE rs.idRestock=?", [req.body.status, req.body.idRestock], function (err, resul, fields) {
+                if (err) {
+                    console.log("Error" , err)
+                    res.json({err}).status(500);
+                }else{
+                    console.log("update supplies restock");
+                    res.json("update state of restock ID: "+ req.body.idRestock + " and "+resul.affectedRows+" restocksupplies").status(200);
+                }
+            });
+        }
     });
 };
 
@@ -90,5 +119,7 @@ module.exports = {
     statusRestock,
     insertRestockSupply,
     updateRestockSupply,
-    deleteRestockSupply
+    deleteRestockSupply,
+
+    insertOnlyRestock
 };
