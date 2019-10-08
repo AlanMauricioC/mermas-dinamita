@@ -4,12 +4,26 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import { Grid, Fab } from '@material-ui/core';
+import { Grid, Fab, useTheme, makeStyles } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TableSupplies from './TableSupplies'
 
-function DialogCreate({classes}){
+function DialogCreate({classes, change}){
+
+    const theme = useTheme();
+    const useStyles = makeStyles({
+		top: {
+			backgroundColor: theme.palette.primary.main,
+			color: 'white'
+		},
+        fab: {
+          position: 'absolute',
+          bottom: theme.spacing(2),
+          right: theme.spacing(2),
+        },
+	})
+    const classes2 = useStyles();
 
     const [open, setOpen] = React.useState(false);
 
@@ -31,11 +45,14 @@ function DialogCreate({classes}){
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
+                <DialogTitle className={classes2.top}>
+                    Nuevo pedido
+                </DialogTitle>
                 <DialogContent>
-                    <TableSupplies />
+                    <TableSupplies change={change} handleClose={handleClose}/>
                 </DialogContent>
             </Dialog>
-            <Fab aria-label='Add' className={classes.fab} color='primary' onClick={handleClickOpen}>
+            <Fab aria-label='Add' className={classes2.fab} color='primary' onClick={handleClickOpen}>
                 <AddIcon />
             </Fab>
         </div>

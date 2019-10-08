@@ -34,7 +34,6 @@ export default function Orders(){
                     <Table classes={classes}/>
                 </Grid>
                 <Grid item xs={12}>
-                    <DialogCreate classes={classes}/>
                 </Grid>
             </Grid>
         </div>

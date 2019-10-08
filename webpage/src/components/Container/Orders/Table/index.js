@@ -3,6 +3,7 @@ import MaterialTable from 'material-table';
 import { tableIcons, headCells, data, getOrderDetail, getRestock, localization } from './../../../../services/orders'
 import AlertDialog from './Dialog';
 import WatchIcon from '@material-ui/icons/RemoveRedEye'
+import DialogCreate from '../DialogCreate';
 
 
 class Table extends Component {
@@ -44,6 +45,10 @@ class Table extends Component {
         });
     };
 
+    change=()=>{
+        this.getData();
+    }
+
     handleOpenCreate = () => {
         this.setState({open:true})
     };
@@ -79,7 +84,7 @@ class Table extends Component {
                     }}
                 />
                 <AlertDialog open={this.state.open} handleClose={this.handleClose} row={this.state.row}/>
-                
+                <DialogCreate change={this.change}/>
             </div>
         )
     }

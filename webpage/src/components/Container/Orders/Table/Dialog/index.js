@@ -6,8 +6,17 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TableSupplies from './TableSupplies'
+import { makeStyles,useTheme } from '@material-ui/core';
 
 function AlertDialog({open, handleClose, row}){
+    const theme = useTheme();
+    const useStyles = makeStyles({
+		top: {
+			backgroundColor: theme.palette.primary.main,
+			color: 'white'
+		}
+	})
+    const classes = useStyles();
     return (
         <div>
             <Dialog
@@ -17,6 +26,9 @@ function AlertDialog({open, handleClose, row}){
                 onClose={handleClose}
                 aria-labelledby="customized-dialog-title"
             >
+                <DialogTitle className={classes.top}>
+                    Modificar pedido
+                </DialogTitle>
                 <DialogContent>
                     <TableSupplies row={row}/>
                 </DialogContent>
