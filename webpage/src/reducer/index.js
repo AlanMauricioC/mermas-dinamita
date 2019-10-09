@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
-import categoryReducer from './categoryReducer'
 import isLogged from './isLogged'
 import menuReducer from "./menu";
+import supplies from "./suppliesReducer";
 
 const reducer = combineReducers({
-    category: categoryReducer,
     isLogged,
-    menu:menuReducer
+    menu:menuReducer,
+    supplies
 })
 
 export default reducer
