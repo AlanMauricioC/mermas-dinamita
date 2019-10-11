@@ -16,6 +16,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import { SERVER_URL } from "../../constants";
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -36,17 +37,43 @@ const tableIcons = {
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
-
-export default function MaterialTableDemo() {
-
+  /*try {
+    const response = fetch(SERVER_URL +`getWastes`,{
+        method: 'POST',
+        body: JSON.stringify({search, state}),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    const json = response.json();
+    console.log(json);
   
-  fetch('http://example.com/movies.json')
+    return json;
+  } catch (error) {
+    console.log(error);
+    return []
+  }*/
+export default function MaterialTableDemo() {
+  /*const response = fetch(SERVER_URL +`getWastes`,{
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  });
+  
+  fetch(SERVER_URL +`getWastes`)
   .then(function(response) {
     return response.json();
   })
   .then(function(myJson) {
     console.log(myJson);
   });
+  url += 'per_page=' + query.pageSize
+                url += '&page=' + (query.page + 1)
+  */
   const [state, setState] = React.useState({
     columns: [
       { title: 'Nombre del insumo', field: 'nombre' },
@@ -67,18 +94,20 @@ export default function MaterialTableDemo() {
     ],
   });
 
+
   return (
     <div style={{ minWidth: "100%" }}>
         <MaterialTable
             title="Mermas"
             columns={state.columns}
             data={state.data}
+            
             data={query =>
               new Promise((resolve, reject) => {
-                let url = 'https://reqres.in/api/users?'
-                url += 'per_page=' + query.pageSize
-                url += '&page=' + (query.page + 1)
-                fetch(url)
+                let url = SERVER_URL +`getWastes`
+                fetch(url,{
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json'}})
                   .then(response => response.json())
                   .then(result => {
                     resolve({
