@@ -64,7 +64,16 @@ function promise_query(query , param , v){
 }
 
 function getRecipes(req, res){
-	con.query("SELECT r.idRecipe, r.nameRecipe, r.detailRecipe, r.idSupply, s.nameSupply, r.statusRecipe FROM recipes AS r INNER JOIN supplies AS s ON r.idSupply=s.idSupply", function (err, result, fields) {
+    if(req.body.search) {
+        qry = "SELECT r.idRecipe, r.nameRecipe, r.detailRecipe, r.idSupply, s.nameSupply, r.statusRecipe FROM recipes AS r LEFT JOIN supplies AS s ON r.idSupply=s.idSupply WHERE nameRecipe LIKE ?";
+        values = ["%"+req.body.search+"%"];
+    }
+    else {
+        qry = "SELECT r.idRecipe, r.nameRecipe, r.detailRecipe, r.idSupply, s.nameSupply, r.statusRecipe FROM recipes AS r LEFT JOIN supplies AS s ON r.idSupply=s.idSupply";
+        values = [];
+    }
+
+	con.query(qry, values, function (err, result, fields) {
         if (err) {
             console.log("Error" , err)
             res.json({err}).status(500);
