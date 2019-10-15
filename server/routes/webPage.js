@@ -76,7 +76,7 @@ router.post('/deleteWaste', wastes.deleteWaste);
 router.post('/insertRecipe', recipes.insertRecipe);
 
 // Obtener recetas y todos sus insumos
-router.get('/recipes', recipes.getRecipes);
+router.post('/getRecipes', recipes.getRecipes);
 
 // Modificar receta
 router.post('/updateRecipe', recipes.updateRecipe);
