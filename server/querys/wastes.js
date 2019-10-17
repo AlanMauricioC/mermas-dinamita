@@ -14,14 +14,8 @@ function insertWaste(req, res) {
 };
 
 function getWastes(req, res) {
-	if(req.body.startDate && req.body.endDate) {
-		qry = "SELECT idWaste, s.idSupply, sp.nameSupply, registrationDateWaste, sellByDateWastetimestamp, quantityWaste, s.idUser FROM wastes AS s INNER JOIN supplies AS sp ON s.idSupply=sp.idSupply WHERE statusWaste=1 AND DATE(registrationDateWaste) BETWEEN ? AND ?";
-		values = [req.body.startDate, req.body.endDate];
-	}
-	else {
-		qry = "SELECT idWaste, s.idSupply, sp.nameSupply, registrationDateWaste, sellByDateWastetimestamp, quantityWaste, s.idUser FROM wastes AS s INNER JOIN supplies AS sp ON s.idSupply=sp.idSupply WHERE statusWaste=1 AND DATE(registrationDateWaste)=?";
-		values = [dateNow()];
-	}
+    qry = "SELECT idWaste, s.idSupply, sp.nameSupply, registrationDateWaste, sellByDateWastetimestamp, quantityWaste, s.idUser FROM wastes AS s INNER JOIN supplies AS sp ON s.idSupply=sp.idSupply WHERE statusWaste=1 AND DATE(sellByDateWastetimestamp)>=?";
+    values = [dateNow()];
 
 	con.query(qry, values, function (err, result, fields) {
 		if (err) {
