@@ -4,3 +4,7 @@
 server/node_modules/
 
 webPage/node_modules/
+
+.scannerwork/
+
+sonar-proyect.properties
