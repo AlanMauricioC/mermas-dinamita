@@ -11,7 +11,7 @@ function insertOrder(req, res){
             var as = req.body.supplies
             as.forEach(function(v){
                 con.query("INSERT INTO ordersupply (idOrder, idSupply, quantityOrderSupply) VALUES (?, ?, ?)", 
-                    [result.insertId, v.idSupply, v.quantityOrderSupply], 
+                    [result.insertId, v.idSupply, v.quantityRecipeSupply], 
                     function (err, resul) {
                         if (err) {
                             console.log("Error" , err)
