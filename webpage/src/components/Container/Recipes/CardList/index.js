@@ -79,7 +79,7 @@ class CardList extends PureComponent {
                 }
             })
         }
-
+        
         return (
             <Grid container
                 direction="row"
