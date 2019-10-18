@@ -8,7 +8,7 @@ function insertOrder(req, res){
             console.log("Error" , err)
             res.status(500).json({err})
         }else{
-            var as = JSON.parse(req.body.supplies)
+            var as = req.body.supplies
             as.forEach(function(v){
                 con.query("INSERT INTO ordersupply (idOrder, idSupply, quantityOrderSupply) VALUES (?, ?, ?)", 
                     [result.insertId, v.idSupply, v.quantityOrderSupply], 
@@ -22,7 +22,7 @@ function insertOrder(req, res){
                 )
             })
             if(req.body.wastes){
-                var aw = JSON.parse(req.body.wastes)
+                var aw = req.body.wastes
                 aw.forEach(function(v){
                     con.query("INSERT INTO orderwaste (idOrder, idWaste, quantityOrderWaste) VALUES (?, ?, ?)", 
                         [result.insertId, v.idWaste, v.quantityOrderWaste],  
