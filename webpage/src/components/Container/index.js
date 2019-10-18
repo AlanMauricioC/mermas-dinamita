@@ -40,7 +40,6 @@ const Container = ()=>{
                 <DataTable />
             </Route>
             <Route exact path="/reportes">
-                reportes
                 <Wastes/>
             </Route>
             <Route exact path="/pedidos">
