@@ -1,135 +1,148 @@
-import { DialogContent, TextField, DialogActions, Button, Dialog, DialogTitle, Grid, withStyles, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
+import {
+	DialogContent,
+	TextField,
+	DialogActions,
+	Button,
+	Dialog,
+	DialogTitle,
+	Grid,
+	withStyles,
+	Select,
+	MenuItem,
+	InputLabel,
+	FormControl
+} from '@material-ui/core';
 import React, { Component } from 'react';
-import { validateNumber, validateText } from "../../../../services/validations";
-import { connect } from 'react-redux'
-import { updateSupply, setSupplies } from '../../../../actions'
-import { updateSupplies as updateService, getSupplies, insertSupplies } from "../../../../services/supplies";
-import { getUnits } from "../../../../services/units";
+import { validateNumber, validateText } from '../../../../services/validations';
+import { connect } from 'react-redux';
+import { updateRecipe, setRecipes } from '../../../../actions';
+import { updateRecipes as updateService, getRecipes, insertRecipes } from '../../../../services/recipes';
+import { getSupplies } from '../../../../services/supplies';
+import { getUnits } from '../../../../services/units';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
-import alertifyjs from "alertifyjs";
+import alertifyjs from 'alertifyjs';
 
-const styles = theme => (
-	{
-		media: {
-			width: '75%',
-		},
-		top: {
-			backgroundColor: theme.palette.primary.main,
-			color: 'white'
-		},
-		button: {
-			margin: theme.spacing.unit,
-		},
-		input: {
-			padding: 10,
-			width: '100%',
-		},
-		select: {
-			width: '100%',
-		}
+const styles = (theme) => ({
+	media: {
+		width: '75%'
+	},
+	top: {
+		backgroundColor: theme.palette.primary.main,
+		color: 'white'
+	},
+	button: {
+		margin: theme.spacing.unit
+	},
+	input: {
+		padding: 10,
+		width: '100%'
+	},
+	select: {
+		width: '100%'
 	}
-)
+});
 
-class DialogUpdateSupply extends Component {
+class DialogUpdateRecipe extends Component {
 	constructor(props) {
 		super(props);
-		const { supply: { name, quantity, min, max, unit } } = props;
+		const { recipe: { detailRecipe, idRecipe, nameRecipe, nameSupply, supplies,idSupply } } = props;
 		this.state = {
-			supply:{
-				name,
-				quantity,
-				min,
-				max,
-				unit,
+			recipe: {
+				detailRecipe,
+				idRecipe,
+				idRecipe,
+				nameRecipe,
+				nameSupply,
+				supplies,
+				idSupply
 			},
-			units:[]
-		}
+			units: [],
+			supplies: []
+		};
 	}
 
 	async componentDidMount() {
-		const units = await getUnits()
-		this.setState({units})
+		const units = await getUnits();
+		const {supplies} = await getSupplies();
+		
+		this.setState({ units, supplies });
+		console.log('supplies',this.state.supplies);
 	}
-	
 
 	componentDidUpdate(prevProps, prevState) {
-		if (this.props.supply.id === prevProps.supply.id) return null
-		const { supply: { name, quantity, min, max, avg, unit, idUnit, id } } = this.props;
+		if (this.props.recipe.idRecipe === prevProps.recipe.idRecipe) return null;
+		const { recipe: { detailRecipe, idRecipe, nameRecipe, nameSupply, supplies,idSupply } } = this.props;
 
 		this.setState({
-			supply:{
-				name,
-				quantity,
-				min,
-				max,
-				unit,
-				idUnit,
-				avg,
-				id
+			recipe: {
+				detailRecipe,
+				idRecipe,
+				idSupply,
+				nameRecipe,
+				nameSupply,
+				supplies
 			}
-		})
+		});
 	}
 
 	render() {
-		const { handleClose, classes, open } = this.props
-		const handleOnChangeNumber = event => {
-			const number = event.target.value
+		const { handleClose, classes, open } = this.props;
+		const handleOnChangeNumber = (event) => {
+			const number = event.target.value;
 			if (validateNumber(number, 0)) {
-				this.setState({ supply: { ...this.state.supply, [event.target.name]: number} })
+				this.setState({ recipe: { ...this.state.recipe, [event.target.name]: number } });
 			}
-		}
-		const handleOnChangeSelect = event => {
-			console.log('hallo');
-			
-			const idUnit = event.target.value 
-			const unit=this.state.units.find(unit=>idUnit===unit.idUnit)
-			
-			if (!unit) return null
-			this.setState({ supply: { ...this.state.supply, idUnit, unit:unit.nameUnit } })
-			console.log({ ...this.state.supply, unit: unit.nameUnit});
-		}
-		const handleOnChangeName = event => this.setState({ supply: {...this.state.supply, [event.target.name]: event.target.value } })
-		const handleOnEnter = ev => {
+		};
+		const handleOnChangeSelect = (event) => {
+			const id = event.target.value;
+			const supply = this.state.supplies.find((supply) => id === supply.id);
+
+			if (!supply) return null;
+			this.setState({ recipe: { ...this.state.recipe, id, supply: supply.name } });
+			console.log({ ...this.state.recipe, supply: supply.name });
+		};
+		const handleOnChangeName = (event) =>
+			this.setState({ recipe: { ...this.state.recipe, [event.target.name]: event.target.value } });
+		const handleOnEnter = (ev) => {
 			if (ev.key === 'Enter') {
-				const enter = this.state.supply.id ? updateSupply : createSupply
-				enter()
+				const enter = this.state.recipe.idRecipe ? updateRecipe : createRecipe;
+				enter();
 				ev.preventDefault();
 			}
-		}
+		};
 
-		const updateSupply = async () => {
-			console.log('actualizar insumo');
-			const {supply} = this.state
-			const updated = await updateService(supply)
+		const updateRecipe = async () => {
+			console.log('actualizar receta');
+			const { recipe } = this.state;
+			const updated = await updateService(recipe);
 			alertifyjs.set('notifier', 'position', 'bottom-center');
 			if (updated) {
-				this.props.updateSupply({ supply })
-				alertifyjs.success('Insumo actualizado correctamente')
-				handleClose()
+				this.props.updateRecipe({ recipe });
+				alertifyjs.success('Insumo actualizado correctamente');
+				handleClose();
 			} else {
-				alertifyjs.error('No se pudo actualizar este insumo')
+				alertifyjs.error('No se pudo actualizar este receta');
 			}
-
-		}
-		const createSupply = async () => {
-			console.log('crear insumo');
-			//const supply = this.state.supply
-			const supply = this.state.supply
-			supply.idUser=1// esto no debe de ser así :0!!
-			const  inserted=await insertSupplies(supply)
+		};
+		const createRecipe = async () => {
+			console.log('crear receta');
+			//const recipe = this.state.recipe
+			const recipe = this.state.recipe;
+			recipe.idUser = 1; // esto no debe de ser así :0!!
+			const inserted = await insertRecipes(recipe);
 			alertifyjs.set('notifier', 'position', 'bottom-center');
 			if (inserted) {
-				handleClose()
-				alertifyjs.success('Insumo creado correctamente')
-				const { supplies } = await getSupplies('', null)
-				this.props.setSupplies(supplies)
+				handleClose();
+				alertifyjs.success('Insumo creado correctamente');
+				const { supplies } = await getRecipes('', null);
+				this.props.setRecipes(supplies);
 			} else {
-				alertifyjs.success('Error al crear el insumo')
-				const { supplies } = await getSupplies('', null)
-				this.props.setSupplies(supplies)
+				alertifyjs.success('Error al crear el receta');
+				const { supplies } = await getRecipes('', null);
+				this.props.setRecipes(supplies);
 			}
-			
-		}
+		};
 		return (
 			<Dialog
 				open={open}
@@ -137,38 +150,58 @@ class DialogUpdateSupply extends Component {
 				aria-labelledby="form-dialog-title"
 				fullWidth={true}
 				maxWidth={'md'}
+				fullScreen
 			>
-				<DialogTitle id="form-dialog-title" className={classes.top}>{this.state.supply.id ? 'Modificar' : 'Crear'} Insumo</DialogTitle>
+				<DialogTitle id="form-dialog-title" className={classes.top}>
+					{this.state.recipe.idRecipe ? 'Modificar' : 'Crear'} Insumo
+				</DialogTitle>
 				<DialogContent>
 					<Grid container alignItems={'center'}>
-						<Grid item className={classes.input} xs={12} md={8}>
-							<TextField name='name' onKeyPress={handleOnEnter} autoFocus required fullWidth type='text' margin="dense" label={'Nombre del insumo'} value={this.state.supply.name} onChange={handleOnChangeName} />
+						<Grid item className={classes.input} xs={12} md={12}>
+							<TextField
+								name="nameRecipe"
+								onKeyPress={handleOnEnter}
+								autoFocus
+								required
+								fullWidth
+								type="text"
+								margin="dense"
+								label={'Nombre del receta'}
+								value={this.state.recipe.nameRecipe}
+								onChange={handleOnChangeName}
+							/>
+						</Grid>
+						<Grid item className={classes.input} xs={12} md={12}>
+							<TextField
+								name="detailRecipe"
+								fullWidth
+								margin="dense"
+								multiline
+								rowsMax="4"
+								label={'Descripción de la receta'}
+								value={this.state.recipe.detailRecipe}
+								onChange={handleOnChangeName}
+							/>
 						</Grid>
 						<Grid item className={classes.input} xs={12} md={4}>
-							<TextField name='quantity' onKeyPress={handleOnEnter} required fullWidth type='number' margin="dense" label={'Cantidad actual'} value={this.state.supply.quantity} onChange={handleOnChangeNumber} />
-						</Grid>
-						<Grid item className={classes.input} xs={12} md={4}>
-							<TextField name='min' onKeyPress={handleOnEnter} required fullWidth type='number' margin="dense" label={'Cantidad minima aceptable'} value={this.state.supply.min} onChange={handleOnChangeNumber} />
-						</Grid>
-						<Grid item className={classes.input} xs={12} md={4}>
-							<TextField name='max' onKeyPress={handleOnEnter} required fullWidth type='number' margin="dense" label={'Cantidad maxima'} value={this.state.supply.max} onChange={handleOnChangeNumber} />
-						</Grid>
-						<Grid item className={classes.input} xs={12} md={4}>
-							<FormControl className={classes.select} required >
+							<FormControl className={classes.select} required>
 								<InputLabel shrink htmlFor="idSelectUnit">
 									Unidades
 								</InputLabel>
 								<Select
-									value={this.state.supply.idUnit}
+									value={this.state.recipe.idSupply}
 									onChange={handleOnChangeSelect}
 									displayEmpty
 									name="idUnit"
-
 								>
 									<MenuItem value={-1}>
 										<em>None</em>
 									</MenuItem>
-									{this.state.units.map(({ idUnit, nameUnit }) => <MenuItem key={idUnit} value={idUnit}>{nameUnit}</MenuItem>)}
+									{this.state.supplies.map(({ id, name }) => (
+										<MenuItem key={id} value={id}>
+											{name}
+										</MenuItem>
+									))}
 								</Select>
 							</FormControl>
 						</Grid>
@@ -177,14 +210,18 @@ class DialogUpdateSupply extends Component {
 				<DialogActions>
 					<Button onClick={handleClose} variant="outlined" color="primary">
 						Cancelar
-				</Button>
-					<Button onClick={this.state.supply.id ? updateSupply : createSupply} variant="contained" color="primary">
+					</Button>
+					<Button
+						onClick={this.state.recipe.idRecipe ? updateRecipe : createRecipe}
+						variant="contained"
+						color="primary"
+					>
 						Aceptar
-				</Button>
+					</Button>
 				</DialogActions>
 			</Dialog>
 		);
 	}
 }
 
-export default connect(null, { updateSupply, setSupplies })(withStyles(styles)(DialogUpdateSupply));
+export default connect(null, { updateRecipe, setRecipes })(withStyles(styles)(DialogUpdateRecipe));

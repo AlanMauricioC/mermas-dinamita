@@ -1,8 +1,8 @@
 import { DialogContent, DialogActions, Button, Dialog, DialogTitle,withStyles, DialogContentText } from '@material-ui/core';
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { deleteSupply } from "../../../../actions";
-import { deleteSupplies } from "../../../../services/supplies";
+import { deleteRecipe } from "../../../../actions";
+import { deleteRecipes } from "../../../../services/recipes";
 import alertifyjs from "alertifyjs";
 
 
@@ -28,10 +28,12 @@ const styles = theme => (
 	}
 )
 
-class DialogUpdateSupply extends Component {
+class DialogUpdateRecipe extends Component {
 	constructor(props) {
 		super(props);
-		const { supply: { name, quantity, min, max, unit } } = props;
+		const { recipe: {nameRecipe: name, quantity, min, max, unit } } = props;
+		console.log('props',props);
+		
 		this.state = {
 			name,
 			quantity,
@@ -42,8 +44,8 @@ class DialogUpdateSupply extends Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (this.props.supply.id === prevProps.supply.id) return null
-		const { supply: { name} } = this.props;
+		if (this.props.recipe.id === prevProps.recipe.id) return null
+		const { recipe: { nameRecipe:name} } = this.props;
 
 		this.setState({
 			name
@@ -53,18 +55,18 @@ class DialogUpdateSupply extends Component {
 	render() {
 		const { handleClose, classes, open,id } = this.props
 		const handleOnDelete= async ()=>{
-			console.log('eliminar insumo');
-			//const supply = this.state.supply
-			const supply = this.props.supply
-			supply.idUser = 1// esto no debe de ser así :0!!
-			const deleted = await deleteSupplies(supply)
+			console.log('eliminla receta');
+			//const recipe = this.state.recipe
+			const recipe = this.props.recipe
+			recipe.idUser = 1// esto no debe de ser así :0!!
+			const deleted = await deleteRecipes(recipe)
 			alertifyjs.set('notifier', 'position', 'bottom-center');
 			if (deleted) {
 				handleClose()
 				alertifyjs.success('Insumo eliminado satisfactoriamente')
-				this.props.deleteSupply(this.props.supply)
+				this.props.deleteRecipe(this.props.recipe)
 			} else {
-				alertifyjs.error('Error al eliminar el insumo')
+				alertifyjs.error('Error al eliminar la receta')
 			}
 		}
 		return (
@@ -79,7 +81,7 @@ class DialogUpdateSupply extends Component {
 				<DialogContent>
 					<DialogContentText>
 						Esta acción es irreversible
-						¿Está seguro de que desea eliminar el insumo {this.state.name}?
+						¿Está seguro de que desea eliminar la receta {this.state.name}?
           			</DialogContentText>
 				</DialogContent>
 				<DialogActions>
@@ -95,4 +97,4 @@ class DialogUpdateSupply extends Component {
 	}
 }
 
-export default connect(null, { deleteSupply})(withStyles(styles)(DialogUpdateSupply))
+export default connect(null, { deleteRecipe})(withStyles(styles)(DialogUpdateRecipe))

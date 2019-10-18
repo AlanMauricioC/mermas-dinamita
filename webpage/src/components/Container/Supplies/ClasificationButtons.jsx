@@ -45,6 +45,11 @@ export default function ClasificationButtons(props) {
             dispatch(setSupplies(supplies))
         })
     }
+    const clearSearch = () => {
+        getSupplies(null, null).then(({ supplies }) => {
+            dispatch(setSupplies(supplies))
+        })
+    }
     return (
         <div>
             <Grid container
@@ -54,22 +59,29 @@ export default function ClasificationButtons(props) {
                     <Chip
                         onClick={searchOk}
                         className={classes.chip}
-                        avatar={<Avatar className={classes.okButton} >G</Avatar>}
-                        label='verdecito' />
+                        avatar={<Avatar className={classes.okButton} >O</Avatar>}
+                        label='optimo' />
                 </Grid>
                 <Grid item>
                     <Chip
                         onClick={searchWarning}
                         className={classes.chip}
-                        avatar={<Avatar className={classes.warningButton} >O</Avatar>}
-                        label='naranjita' />
+                        avatar={<Avatar className={classes.warningButton} >C</Avatar>}
+                        label='cuidado' />
                 </Grid>
                 <Grid item>
                     <Chip
                         onClick={searchError}
                         className={classes.chip}
-                        avatar={<Avatar className={classes.errorButton} >R</Avatar>}
-                        label='rojito' />
+                        avatar={<Avatar className={classes.errorButton} >E</Avatar>}
+                        label='Error' />
+                </Grid>
+                <Grid item>
+                    <Chip
+                        onClick={clearSearch}
+                        className={classes.chip}
+                        avatar={<Avatar  >L</Avatar>}
+                        label='limpiar' />
                 </Grid>
             </Grid>
         </div>

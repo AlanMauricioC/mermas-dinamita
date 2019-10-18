@@ -27,7 +27,7 @@ const Container = ()=>{
         <Switch>
             <Route exact path="/">
                 {/* home page */}
-                <DataTable />
+                <Supplies/>
             </Route>
             <Route exact path="/insumos">
                 <Supplies/>

@@ -2,9 +2,10 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper, InputBase, IconButton} from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-import { setSupplies } from "../../../actions";
+import { setRecipes } from "../../../actions";
 import { useDispatch } from "react-redux";
-import { getSupplies } from "../../../services/supplies";
+import { getRecipes } from "../../../services/recipes";
+
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -26,8 +27,7 @@ export default function CustomizedInputBase() {
     const dispatch=useDispatch()
     const handleOnChangeSearch=e=>{
         const inputValue = e.target.value
-        console.log('estoy buscando :u', inputValue);
-        getSupplies(inputValue, null).then(({ supplies }) => dispatch(setSupplies(supplies)))
+        getRecipes(inputValue, null).then(({recipes}) => dispatch(setRecipes(recipes)))
         
     }
     return (

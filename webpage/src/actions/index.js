@@ -46,3 +46,30 @@ export const setSupplies = (supplies) => {
         payload: supplies
     }
 }
+
+export const deleteRecipe=(recipe)=>{
+    return {
+        type: 'DELETE_RECIPE',
+        payload:recipe
+    }
+}
+
+export const updateRecipe = (recipe) => {
+    return {
+        type: 'UPDATE_RECIPE',
+        payload: recipe
+    }
+}
+export const insertRecipe = (recipe) => {
+    return {
+        type: 'INSERT_RECIPE',
+        payload: recipe
+    }
+}
+
+export const setRecipes = (recipes) => {
+    return {
+        type: 'SET_RECIPES',
+        payload: recipes
+    }
+}

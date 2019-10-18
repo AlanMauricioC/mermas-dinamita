@@ -8,7 +8,7 @@ export default class Supplies extends Component {
     return (
       <Grid container>
         <Grid item container  spacing={3}>
-          <Grid item xs={12} md={8} lg={9}>
+          <Grid item xs={12} >
             <Search />
           </Grid>
         </Grid>
