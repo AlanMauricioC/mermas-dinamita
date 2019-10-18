@@ -1,15 +1,15 @@
-const con = require('../DB/connection');
+const con = require('../DB/connection')
 
 function getUnits (req, res){
-    con.query("select * from units", null, function (err, result, fields) {
+    con.query("select * from units", function (err, result) {
         if (err) {
             console.log("Error" , err)
-            res.json({err}).status(500);
+            res.status(500).json({err})
         }else
-            res.json({ units : result }).status(200);
-    });    
-};
+            res.status(200).json({ units : result })
+    })
+}
 
 module.exports = {
     getUnits
-};
+}
