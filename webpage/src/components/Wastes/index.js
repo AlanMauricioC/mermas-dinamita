@@ -39,50 +39,21 @@ const tableIcons = {
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
   };
-  /*try {
-    const response = fetch(SERVER_URL +`getWastes`,{
-        method: 'POST',
-        body: JSON.stringify({search, state}),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    if (!response.ok) {
-        throw Error(response.statusText);
-    }
-    const json = response.json();
-    console.log(json);
-  
-    return json;
-  } catch (error) {
-    console.log(error);
-    return []
-  }*/
+
 export default function MaterialTableDemo() {
-  /*const response = fetch(SERVER_URL +`getWastes`,{
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      }
-  });
-  
-  fetch(SERVER_URL +`getWastes`)
-  .then(function(response) {
-    return response.json();
-  })
-  .then(function(myJson) {
-    console.log(myJson);
-  });
+  /*
   url += 'per_page=' + query.pageSize
                 url += '&page=' + (query.page + 1)
+                {title: 'Estado', field: 'statusWaste', lookup: { 1: 'Activo', 0: 'Inactivo' }},
   */
   const [state, setState] = React.useState({
     columns: [
       { title: 'Nombre del insumo', field: 'nameSupply' },
       { title: 'Fecha', field: 'registrationDateWaste', type: 'date' },
+      { title: 'Fecha de caducidad', field: 'sellByDate', type: 'date' },
       { title: 'Cantidad', field: 'quantityWaste', type:'double'},
       { title: 'Nombre del empleado', field: 'idUser' },
-      {title: 'Estado', field: 'statusWaste', lookup: { 1: 'Activo', 0: 'Inactivo' }},
+      
     ],
     data: [
       { nombre: 'Tomates', fecha: '8/10/2019',quantityWaste:10, empleado:'Omar', estado: 1 },
@@ -161,9 +132,8 @@ export default function MaterialTableDemo() {
                     data[data.indexOf(oldData)] = newData;
                     setState({ ...state, data });
                     let url = SERVER_URL +`updateWaste`;
-                    console.log(newData);
                     //req.body.quantity, req.body.idUser, req.body.sellByDate, req.body.id
-                    /*var datos = { 'id' : newData.idSupply,
+                    var datos = { 'id' : oldData.idWaste,
                       'quantity':newData.quantityWaste,
                       'sellByDate' : newData.sellByDate,
                       'idUser':newData.idUser
@@ -176,8 +146,8 @@ export default function MaterialTableDemo() {
                     })
                     .then(response => response.json())
                       .then(result => {
-                        console.log("Registrado");
-                    })*/
+                        console.log("Registro Actualizado");
+                    })
 
                     }, 600);
                 }),
