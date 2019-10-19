@@ -8,7 +8,7 @@ function insertRestock(req, res){
                 console.log("Error" , err)
                 res.status(500).json({err})
             }else{
-                var arr = JSON.parse(req.body.idSupplies)
+                var arr = req.body.idSupplies
                 arr.forEach(function(v){
                     con.query(`INSERT INTO restocksupply (idRestock, idSupply, quantityRestockSupply, 
                         costRestockSupply, idProvider, commentaryRestockSupply) VALUES (?, ?, ?, ?, ?, ?)`,
