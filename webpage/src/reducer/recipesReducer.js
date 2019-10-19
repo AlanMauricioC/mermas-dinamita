@@ -2,9 +2,9 @@ const reducer = (state = [], action) => {
 
     switch (action.type) {
         case 'DELETE_RECIPE':
-            return state.filter(recipe=>recipe.id!==action.payload.id)
+            return state.filter(recipe=>recipe.idRecipe!==action.payload.idRecipe)
         case 'UPDATE_RECIPE':
-            const updated = state.map(recipe => recipe.id === action.payload.recipe.id ? action.payload.recipe : recipe)
+            const updated = state.map(recipe => recipe.idRecipe === action.payload.recipe.idRecipe ? action.payload.recipe : recipe)
             return updated
         case 'SET_RECIPES':
             return action.payload
