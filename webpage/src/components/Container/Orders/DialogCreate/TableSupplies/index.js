@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
-import { headCells3, getOrderDetail, deleteRestockSupply, updateRestockSupply, createRestock, tableIcons, localization, insertOnlyRestock, insertRestockSupply } from './../../../../../services/orders'
+import { headCells3, getOrderDetail, deleteRestockSupply, updateRestockSupply, createRestock, tableIcons, localization, insertOnlyRestock, insertRestockSupply } from './../../../../../services/restock'
 import { Button, Grid } from '@material-ui/core';
+import alertifyjs from "alertifyjs";
 
 class Table extends Component {
     constructor(props) {
@@ -83,9 +84,11 @@ class Table extends Component {
                         idSupply: newData.idSupply,
                     }
                 ];
+                alertifyjs.success("El pedido ha sido creado y se encuentra pendiente de aprobación");
                 insertRestockSupply(data2[0]).then(()=>{
                     this.setState({create: false})
                     change();
+                    alertifyjs.success("Se ha añadido un insumo al pedido");
                 }, (e) => console.error(e))
             }, (e) => console.error(e))
         }else{
@@ -100,8 +103,7 @@ class Table extends Component {
                 }
             ]
             insertRestockSupply(data[0]).then(()=>{
-				//handleOpenSuccessToast()//abrir toast
-				//actualizar página
+				alertifyjs.success("Se ha añadido un insumo al pedido")
 			}, (e) => console.error(e))
         }
         /*const data=[

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
-import { tableIcons, headCells2, getOrderDetail, updateRestockSupply, deleteRestockSupply, insertRestockSupply, setStatusRestock, localization } from './../../../../../../services/orders'
+import { tableIcons, headCells2, getOrderDetail, updateRestockSupply, deleteRestockSupply, insertRestockSupply, setStatusRestock, localization } from './../../../../../../services/restock'
 import { TextField, MenuItem } from '@material-ui/core';
+import alertifyjs from "alertifyjs";
 
 class Table extends Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class Table extends Component {
     
 
     render() {
-        const {row}=this.props;
+        const {row, change}=this.props;
 
         const handleChange = event => {
 			const val = event.target.value
@@ -36,8 +37,9 @@ class Table extends Component {
             ]
             console.log(data)
             setStatusRestock(data[0]).then(()=>{
-				//handleOpenSuccessToast()//abrir toast
-				//actualizar página
+                change();
+                alertifyjs.success("Se ha actualizado el estado del pedido")
+                
 			}, (e) => console.error(e))
         }
 
@@ -56,8 +58,7 @@ class Table extends Component {
                 }
             ]
             updateRestockSupply(data[0]).then(()=>{
-				//handleOpenSuccessToast()//abrir toast
-				//actualizar página
+				alertifyjs.success("El insumo ha sido actualizado correctamente")
 			}, (e) => console.error(e))
         }
 
@@ -74,7 +75,8 @@ class Table extends Component {
             ]
             insertRestockSupply(data[0]).then(()=>{
 				//handleOpenSuccessToast()//abrir toast
-				//actualizar página
+                //actualizar página
+                alertifyjs.success("El insumo ha sido añadido correctamente")
 			}, (e) => console.error(e))
         }
 
@@ -86,8 +88,7 @@ class Table extends Component {
                 }
             ]
             deleteRestockSupply(data[0]).then(()=>{
-				//handleOpenSuccessToast()//abrir toast
-				//actualizar página
+				alertifyjs.success("El insumo se ha eliminado correctamente")
 			}, (e) => console.error(e))
         }
         

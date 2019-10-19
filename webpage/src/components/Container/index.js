@@ -8,8 +8,10 @@ import 'alertifyjs/build/css/alertify.min.css'
 import 'alertifyjs/build/css/themes/default.css'
 import Table from "../Table";
 import Wastes from "../Wastes";
-import Orders from "./Orders"
-import Recipes from "./Recipes"
+import Orders from "./Orders";
+import Recipes from "./Recipes";
+import OrdersT from "./OrdersT"
+
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -27,7 +29,7 @@ const Container = ()=>{
         <Switch>
             <Route exact path="/">
                 {/* home page */}
-                <DataTable />
+                <Supplies/>
             </Route>
             <Route exact path="/insumos">
                 <Supplies/>
@@ -36,11 +38,9 @@ const Container = ()=>{
                 <Recipes/>
             </Route>
             <Route exact path="/ordenes">
-                {/* no estoy seguro de se este si va aquí .3. pero pos ya */}
-                <DataTable />
+                <OrdersT />
             </Route>
             <Route exact path="/reportes">
-                reportes
                 <Wastes/>
             </Route>
             <Route exact path="/pedidos">

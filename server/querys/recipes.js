@@ -8,10 +8,10 @@ function insertRecipe(req, res){
                 console.log("Error" , err)
                 res.status(500).json({err})
             }else{
-                var arr = req.body.idSupplies
+                var arr = req.body.supplies
                 arr.forEach(function(v){
                     con.query("INSERT INTO recipesupply (idRecipe, idSupply, quantityRecipeSupply) VALUES (?, ?, ?)", 
-                        [result.insertId, v.idSupply, v.quantityRecipeSupply], 
+                        [result.insertId, v.id, v.quantity], 
                         function (err, resul) {
                             if (err) {
                                 console.log("Error" , err)
@@ -29,7 +29,7 @@ function insertRecipe(req, res){
 
 function insertRecipeSupply(req, res){
     con.query("INSERT INTO recipesupply (idRecipe, idSupply, quantityRecipeSupply) VALUES (?, ?, ?)", 
-        [req.body.idRecipe, req.body.idSupply, req.body.quantityRecipeSupply], 
+        [req.body.idRecipe, req.body.idSupply, req.body.quantity], 
         function (err, result) {
             if (err) {
                 console.log("Error" , err)
@@ -42,7 +42,7 @@ function insertRecipeSupply(req, res){
 
 function updateRecipeSupply(req, res){
     con.query("UPDATE recipesupply SET quantityRecipeSupply = ? WHERE idRecipe = ? AND idSupply = ?", 
-        [req.body.quantityRecipeSupply, req.body.idRecipe, req.body.idSupply], 
+        [req.body.quantity, req.body.idRecipe, req.body.idSupply], 
         function (err, result) {
             if (err) {
                 console.log("Error" , err)
@@ -93,8 +93,11 @@ function getRecipes(req, res){
         }else{
             let queries = []
             result.forEach(function(element){
-                let query = `SELECT r.idSupply, r.quantityRecipeSupply FROM recipesupply AS r 
-                INNER JOIN supplies AS s ON r.idSupply=s.idSupply WHERE r.idRecipe=?`
+                let query = `SELECT r.idSupply as id, r.quantityRecipeSupply as quantity, s.nameSupply as name,u.nameUnit 
+                FROM recipesupply AS r 
+                INNER JOIN supplies AS s ON r.idSupply=s.idSupply 
+                INNER JOIN units AS u on u.idUnit=s.idUnit
+                WHERE r.idRecipe=?`
                 queries.push(promise_query(query , element.idRecipe, element))
             })
             Promise.all(queries).then(values => {

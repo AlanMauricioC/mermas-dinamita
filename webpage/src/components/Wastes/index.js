@@ -16,6 +16,9 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import { SERVER_URL } from "../../constants";
+import DatePicker from './DatePicker';
+
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -38,25 +41,22 @@ const tableIcons = {
   };
 
 export default function MaterialTableDemo() {
-
-  
-  fetch('http://example.com/movies.json')
-  .then(function(response) {
-    return response.json();
-  })
-  .then(function(myJson) {
-    console.log(myJson);
-  });
+  /*
+  url += 'per_page=' + query.pageSize
+                url += '&page=' + (query.page + 1)
+                {title: 'Estado', field: 'statusWaste', lookup: { 1: 'Activo', 0: 'Inactivo' }},
+  */
   const [state, setState] = React.useState({
     columns: [
-      { title: 'Nombre del insumo', field: 'nombre' },
-      { title: 'Fecha', field: 'fecha', type: 'date' },
-      { title: 'Cantidad', field: 'cantidad', type:'double'},
-      { title: 'Nombre del empleado', field: 'empleado' },
-      {title: 'Estado', field: 'estado', lookup: { 1: 'Activo', 0: 'Inactivo' }},
+      { title: 'Nombre del insumo', field: 'nameSupply' },
+      { title: 'Fecha', field: 'registrationDateWaste', type: 'date' },
+      { title: 'Fecha de caducidad', field: 'sellByDate', type: 'date' },
+      { title: 'Cantidad', field: 'quantityWaste', type:'double'},
+      { title: 'Nombre del empleado', field: 'idUser' },
+      
     ],
     data: [
-      { nombre: 'Tomates', fecha: '8/10/2019',cantidad:10, empleado:'Omar', estado: 1 },
+      { nombre: 'Tomates', fecha: '8/10/2019',quantityWaste:10, empleado:'Omar', estado: 1 },
       {
         nombre: 'Papas',
         cantidad:30,
@@ -67,24 +67,30 @@ export default function MaterialTableDemo() {
     ],
   });
 
+
   return (
     <div style={{ minWidth: "100%" }}>
+      
         <MaterialTable
             title="Mermas"
             columns={state.columns}
-            data={state.data}
+            //data={state.data}
+            
             data={query =>
               new Promise((resolve, reject) => {
-                let url = 'https://reqres.in/api/users?'
-                url += 'per_page=' + query.pageSize
-                url += '&page=' + (query.page + 1)
-                fetch(url)
+                let url = SERVER_URL +`getWastes`
+                fetch(url,{
+                  method: 'POST',
+                  headers: {'Content-Type': 'application/json',
+                  }})
                   .then(response => response.json())
                   .then(result => {
+                    state.data = result.wastes;
                     resolve({
-                      data: result.data,
-                      page: result.page - 1,
-                      totalCount: result.total,
+                      
+                      data: state.data,
+                      //page: result.page - 1,
+                      //totalCount: result.total,
                     })
                   })
               })
@@ -98,6 +104,24 @@ export default function MaterialTableDemo() {
                     const data = [...state.data];
                     data.push(newData);
                     setState({ ...state, data });
+                    let url = SERVER_URL +`insertWaste`;
+                    console.log(newData);
+                    //req.body.id, req.body.quantity, req.body.idUser, req.body.sellByDate
+                    /*var datos = { 'id' : newData.idSupply,
+                      'quantity':newData.quantityWaste,
+                      'sellByDate' : newData.sellByDate
+                    };
+                    fetch(url,{
+                      method: 'POST',
+                      headers: {'Content-Type': 'application/json'
+                      },
+                      body : JSON.stringify(datos),
+                    })
+                    .then(response => response.json())
+                      .then(result => {
+                        console.log("Registrado");
+                    })*/
+
                     }, 600);
                 }),
                 onRowUpdate: (newData, oldData) =>
@@ -107,6 +131,24 @@ export default function MaterialTableDemo() {
                     const data = [...state.data];
                     data[data.indexOf(oldData)] = newData;
                     setState({ ...state, data });
+                    let url = SERVER_URL +`updateWaste`;
+                    //req.body.quantity, req.body.idUser, req.body.sellByDate, req.body.id
+                    var datos = { 'id' : oldData.idWaste,
+                      'quantity':newData.quantityWaste,
+                      'sellByDate' : newData.sellByDate,
+                      'idUser':newData.idUser
+                    };
+                    fetch(url,{
+                      method: 'POST',
+                      headers: {'Content-Type': 'application/json'
+                      },
+                      body : JSON.stringify(datos),
+                    })
+                    .then(response => response.json())
+                      .then(result => {
+                        console.log("Registro Actualizado");
+                    })
+
                     }, 600);
                 }),
                 onRowDelete: oldData =>
@@ -116,6 +158,19 @@ export default function MaterialTableDemo() {
                     const data = [...state.data];
                     data.splice(data.indexOf(oldData), 1);
                     setState({ ...state, data });
+                    var dato = { 'id' : oldData.idWaste};
+                    let url = SERVER_URL +`deleteWaste`
+                    fetch(url,{
+                      method: 'POST',
+                      headers: {'Content-Type': 'application/json'
+                      },
+                      body : JSON.stringify(dato),
+                    })
+                      .then(response => response.json())
+                      .then(result => {
+                        console.log("HEcho");
+                        })
+                    
                     }, 600);
                 }),
             }}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
-import { tableIcons, headCells, data, getOrderDetail, getRestock, localization } from './../../../../services/orders'
+import { tableIcons, headCells, data, getOrderDetail, getRestock, localization } from './../../../../services/restock'
 import AlertDialog from './Dialog';
 import WatchIcon from '@material-ui/icons/RemoveRedEye'
 import DialogCreate from '../DialogCreate';
@@ -69,7 +69,7 @@ class Table extends Component {
                     }}
                     actions={[
                     {
-                        icon: "o",
+                        icon: tableIcons.SeeIcon,
                         tooltip: 'Ver detalles de pedido',
                         onClick: (event, rowData) => {
                             this.setState({
@@ -83,7 +83,7 @@ class Table extends Component {
                     editable={{
                     }}
                 />
-                <AlertDialog open={this.state.open} handleClose={this.handleClose} row={this.state.row}/>
+                <AlertDialog open={this.state.open} handleClose={this.handleClose} change={this.change} row={this.state.row}/>
                 <DialogCreate change={this.change}/>
             </div>
         )

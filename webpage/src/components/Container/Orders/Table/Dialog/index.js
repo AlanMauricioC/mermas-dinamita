@@ -8,7 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TableSupplies from './TableSupplies'
 import { makeStyles,useTheme } from '@material-ui/core';
 
-function AlertDialog({open, handleClose, row}){
+function AlertDialog({open, handleClose, row, change}){
     const theme = useTheme();
     const useStyles = makeStyles({
 		top: {
@@ -30,7 +30,7 @@ function AlertDialog({open, handleClose, row}){
                     Modificar pedido
                 </DialogTitle>
                 <DialogContent>
-                    <TableSupplies row={row}/>
+                    <TableSupplies row={row} change={change}/>
                 </DialogContent>
                 <DialogActions>
                 </DialogActions>
