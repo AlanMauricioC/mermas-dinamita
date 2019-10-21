@@ -93,3 +93,69 @@ export const insertOrder = async function (data) {
         return []
     }
 }
+
+export const updateSupplyOrder = async function (data) {
+    try {
+        const response = await fetch(SERVER_URL + `updateSupplyOrder`, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }else{
+            const json = await response.json();
+            return json;
+        }
+        
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+}
+
+export const insertSupplyOrder = async function (data) {
+    try {
+        const response = await fetch(SERVER_URL + `insertSupplyOrder`, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }else{
+            const json = await response.json();
+            return json;
+        }
+        
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+}
+
+export const deleteSupplyOrder = async function (data) {
+    try {
+        const response = await fetch(SERVER_URL + `deleteSupplyOrder`, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }else{
+            const json = await response.json();
+            return json;
+        }
+        
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+}

@@ -71,7 +71,7 @@ class OrdersElements extends React.Component {
                             this.setState({ selectedRow });
                             togglePanel();
                         })}
-                        /*actions={[
+                        actions={[
                             {
                                 icon: tableIcons.Edit,
                                 tooltip: 'Modificar orden',
@@ -80,7 +80,7 @@ class OrdersElements extends React.Component {
                                     this.setState({view: "orderDetail", idOrder: rowData.idOrder, orderDetail: rowData});
                                 }
                             },
-                        ]}*/
+                        ]}
                         options={{
                             actionsColumnIndex: -1,
                         }}
