@@ -17,11 +17,12 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import { SERVER_URL } from "../../constants";
+import SimpleModal from "./AddWaste";
 import DatePicker from './DatePicker';
 
 
 const tableIcons = {
-    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+    /*Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),*/
     Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
     Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
     Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
@@ -70,7 +71,7 @@ export default function MaterialTableDemo() {
 
   return (
     <div style={{ minWidth: "100%" }}>
-      
+        <SimpleModal></SimpleModal>
         <MaterialTable
             title="Mermas"
             columns={state.columns}
@@ -97,7 +98,7 @@ export default function MaterialTableDemo() {
             }
             icons={tableIcons}
             editable={{
-                onRowAdd: newData =>
+                /*onRowAdd: newData =>
                 new Promise(resolve => {
                     setTimeout(() => {
                     resolve();
@@ -120,10 +121,10 @@ export default function MaterialTableDemo() {
                     .then(response => response.json())
                       .then(result => {
                         console.log("Registrado");
-                    })*/
+                    })
 
                     }, 600);
-                }),
+                }),*/
                 onRowUpdate: (newData, oldData) =>
                 new Promise(resolve => {
                     setTimeout(() => {
