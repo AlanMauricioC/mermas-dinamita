@@ -72,7 +72,7 @@ export default function MaterialTableDemo() {
 
   return (
     <div style={{ minWidth: "100%" }}>
-        <AddWaste></AddWaste>
+        <AddWaste2></AddWaste2>
         <br/>
         <MaterialTable
             title="Mermas"

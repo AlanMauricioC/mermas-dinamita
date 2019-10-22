@@ -49,9 +49,7 @@ export default class AddWaste extends Component {
             this.setState({open:!this.state.open})
         }
         
-        const [supplies, setValues] = React.useState({
-            supplies: 'EUR',
-          });
+        
         return (
             <div>
                 <Button type="button" color="primary"  className={classes.button} variant="contained" onClick={handleToggle}>
