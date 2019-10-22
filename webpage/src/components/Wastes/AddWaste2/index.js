@@ -18,12 +18,16 @@ const styles = theme => ({
         marginRight: theme.spacing(1),
         width: 200,
     },
+    button: {
+		margin: theme.spacing.unit,
+		width: '100%'
+	},
 });
 
 export default class AddWaste extends Component {
 
     constructor(props) {
-        this.super(props)
+        super(props)
         this.state = {
             supplies: [],
             open:false,
@@ -48,11 +52,11 @@ export default class AddWaste extends Component {
         const handleToggle=e=>{
             this.setState({open:!this.state.open})
         }
-        
+        /*className={classes.button} , className={classes.top},className={classes.paper}, className={classes.select}*/
         
         return (
             <div>
-                <Button type="button" color="primary"  className={classes.button} variant="contained" onClick={handleToggle}>
+                <Button type="button" color="primary" variant="contained" onClick={handleToggle}>
                     Agregar merma
                 </Button>
                 <Dialog
@@ -62,11 +66,11 @@ export default class AddWaste extends Component {
                     fullWidth={true}
                     maxWidth={'md'}
                 >
-                    <DialogTitle id="form-dialog-title" className={classes.top}>Eliminar Insumo</DialogTitle>
+                    <DialogTitle id="form-dialog-title" >Eliminar Insumo</DialogTitle>
                     <DialogContent>
-                        <div className={classes.paper}>
+                        <div >
                             <h3 id="simple-modal-title">Añadir una nueva merma</h3>
-                            <FormControl className={classes.select} required>
+                            <FormControl   required>
                                 <InputLabel shrink htmlFor="idSelectUnit">
                                     Agregar un insumo
 								</InputLabel>
@@ -91,12 +95,12 @@ export default class AddWaste extends Component {
                             <TextField
                                 id="standard-name"
                                 label="Cantidad"
-                                className={classes.textField}
-                                //onChange={handleOnChangeSupply}
+                                
+                                //className={classes.textField} onChange={handleOnChangeSupply}
                                 margin="normal"
                             />
                             <br />
-                            <Button type="button" color="primary" className={classes.button} variant="contained" onClick={console.log("algo")}>
+                            <Button type="button" color="primary" variant="contained" onClick={console.log("algo")}>
                                 Agregar
                             </Button>
 
