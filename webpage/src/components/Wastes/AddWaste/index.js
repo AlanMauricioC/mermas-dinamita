@@ -49,31 +49,27 @@ export default function SimpleModal() {
   const handleClose = () => {
     setOpen(false);
   };
-  const currencies = [
+  //aqui empieza insumos
+  const insumos = [
     {
-      value: 'USD',
-      label: '$',
+      value: '1',
+      label: 'Jitomate',
     },
     {
-      value: 'EUR',
-      label: '€',
+      value: '2',
+      label: 'Chiles',
     },
-    {
-      value: 'BTC',
-      label: '฿',
-    },
-    {
-      value: 'JPY',
-      label: '¥',
-    },
+    
   ];
   const [values, setValues] = React.useState({
-
     currency: 'EUR',
   });
   const handleChange = name => event => {
     setValues({ ...values, [name]: event.target.value });
   };
+ 
+ 
+
 
   return (
     <div>
@@ -89,21 +85,29 @@ export default function SimpleModal() {
       >
         <div style={modalStyle} className={classes.paper}>
           <h3 id="simple-modal-title">Añadir una nueva merma</h3>
-          <TextField
-            id="standard-select-currency"
-            select
-            label="Selecciona una merma"
-            className={classes.textField}
-            value={values.currency}
-            onChange={handleChange('currency')}
-            SelectProps={{
-            MenuProps: {
-                className: classes.menu,
-            },
-            }}
-            
-            margin="normal"
-          ></TextField>
+           <TextField
+                id="standard-select-currency-native"
+                select
+                label="Selecciona una merma"
+                className={classes.textField}
+                value={values.insumos}
+                onChange={handleChange('insumos')}
+                SelectProps={{
+                native: true,
+                MenuProps: {
+                    className: classes.menu,
+                },
+                }}
+                margin="normal">
+                {
+                
+                insumos.map(option => (
+                  <option key={option.value} value={option.value}>
+                      {option.label}
+                  </option>
+                ))
+                }
+            </TextField>
 
           <TextField
             id="standard-name"
