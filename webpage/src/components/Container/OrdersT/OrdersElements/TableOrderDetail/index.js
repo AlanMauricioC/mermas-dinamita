@@ -31,6 +31,7 @@ class TableOrderDetail extends Component{
             selectSupply: null,
             quantityRecipeSupply: [],
         }
+        console.log("constructor!")
     }
 
     componentDidMount() {
@@ -59,6 +60,17 @@ class TableOrderDetail extends Component{
     
     async getRecipes() {
         getRecipes("").then(({ recipes }) => {
+            for(let i=0;i<recipes.length;i++){
+                let newSupplies=[];
+                for(let j=0;j<recipes[i].supplies.length;j++){
+                    const idSupply=recipes[i].supplies[j].id;
+                    const nameSupply=recipes[i].supplies[j].name;
+                    const quantityRecipeSupply=recipes[i].supplies[j].quantity;
+                    const unitSupply=recipes[i].supplies[j].nameUnit;
+                    newSupplies.push({idSupply, nameSupply, quantityRecipeSupply, unitSupply});
+                }
+                recipes[i].supplies=newSupplies;
+            }
             this.setState({ recipes: recipes })
         })
     }
@@ -97,7 +109,6 @@ class TableOrderDetail extends Component{
         }else{
             for(let i=0; i<data.supplies.length; i++){
                 //Hace falta arreglar esto
-                alert(this.props.idOrder)
                 const updataData={idOrder: this.props.idOrder, idSupply: data.supplies[i].idSupply, quantityOrderSupply: data.supplies[i].quantityRecipeSupply}
                 updateSupplyOrder(updataData).then(()=>{
                     insertSupplyOrder(updataData).then(()=>{
@@ -157,7 +168,6 @@ class TableOrderDetail extends Component{
                     break;
                 case "selectSupply":
                     if(val){
-                            alert("crear")
                             let dataSupply=orderRecipe;
                             let duplicated=false;
                             for(let i=0;i<dataSupply.supplies.length;i++) if(dataSupply.supplies[i].idSupply===val) duplicated=true;
@@ -331,7 +341,7 @@ class TableOrderDetail extends Component{
         return (
             <Grid container>
                 <Grid item xs={12}>
-                    {idOrder ? alert(idOrder) : selectRecipe}
+                    {idOrder ? console.log(idOrder) : selectRecipe}
                 </Grid>
                     {orderRecipe.idRecipe ? selectSupplies : null}
                 <Grid item xs={12}>
