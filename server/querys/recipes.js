@@ -126,10 +126,26 @@ function updateRecipe(req, res){
     )
 }
 
+function deleteRecipe(req, res){
+    con.query(`UPDATE recipes AS r SET r.statusRecipe=0 WHERE r.idRecipe=?`, 
+        [req.body.idRecipe], 
+        function (err, result) {
+            if (err) {
+                console.log("Error" , err)
+                res.status(500).json({err})
+            }else{
+                console.log("delete recipe")
+                res.status(200).json("delete recipe ID: "+ req.body.idRecipe)
+            }
+        }
+    )
+}
+
 module.exports = {
     insertRecipe,
     getRecipes,
     updateRecipe,
+    deleteRecipe,
     insertRecipeSupply,
     updateRecipeSupply,
     deleteRecipeSupply

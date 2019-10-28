@@ -41,6 +41,9 @@ router.post('/insertOnlyRestock', restock.insertOnlyRestock)
 // Obtener pedidos de restock y todos sus insumos
 router.get('/restock', restock.getRestock)
 
+// Obtener recomendación de pedido de restock y todos sus insumos
+router.get('/recommendationRestock', restock.getRestockRecommendation)
+
 // Modificar el estado de un pedido de restock y de todos sus insumos
 router.post('/statusRestock', restock.statusRestock)
 // Estados:
@@ -81,6 +84,13 @@ router.post('/getRecipes', recipes.getRecipes)
 
 // Modificar receta
 router.post('/updateRecipe', recipes.updateRecipe)
+// Estados de la receta:
+// 0: eliminada
+// 1: activa
+// 2: inactiva
+
+// Eliminar receta
+router.post('/deleteRecipe', recipes.deleteRecipe)
 
 // Insertar insumo a receta
 router.post('/insertSupplyRecipe', recipes.insertRecipeSupply)
