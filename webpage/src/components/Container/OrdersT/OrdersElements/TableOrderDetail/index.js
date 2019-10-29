@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Button, Grid, TextField, MenuItem, Paper, Divider } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete'
-import { recipes, getRecipes, supplies, wastes, insertOrder } from "./../../../../../services/orders";
+import { recipes, getRecipes, supplies, wastes, insertOrder, updateSupplyOrder, insertSupplyOrder, deleteSupplyOrder } from "./../../../../../services/orders";
 import { getSupplies } from "./../../../../../services/supplies";
 //import { getWastes } from "./../../../../../services/wastes";
 import TableSuppliesOrderDetail from './TableSuppliesOrderDetail';
@@ -19,6 +19,10 @@ class TableOrderDetail extends Component{
                 wastes:[
                 ],
             },
+            updateSupplies:[],
+            deleteSupplies:[],
+            updateWastes:[],
+            deleteWastes:[],
             recipes:recipes,
             supplies:supplies,
             wastes:wastes,
@@ -27,6 +31,7 @@ class TableOrderDetail extends Component{
             selectSupply: null,
             quantityRecipeSupply: [],
         }
+        console.log("constructor!")
     }
 
     componentDidMount() {
@@ -55,6 +60,17 @@ class TableOrderDetail extends Component{
     
     async getRecipes() {
         getRecipes("").then(({ recipes }) => {
+            for(let i=0;i<recipes.length;i++){
+                let newSupplies=[];
+                for(let j=0;j<recipes[i].supplies.length;j++){
+                    const idSupply=recipes[i].supplies[j].id;
+                    const nameSupply=recipes[i].supplies[j].name;
+                    const quantityRecipeSupply=recipes[i].supplies[j].quantity;
+                    const unitSupply=recipes[i].supplies[j].nameUnit;
+                    newSupplies.push({idSupply, nameSupply, quantityRecipeSupply, unitSupply});
+                }
+                recipes[i].supplies=newSupplies;
+            }
             this.setState({ recipes: recipes })
         })
     }
@@ -78,30 +94,56 @@ class TableOrderDetail extends Component{
 
     handleClickInsertOrder=()=>{
         const {orderRecipe, orderWastes}=this.state;
+        const {idOrder}=this.props;
         const data={
             idRecipe: orderRecipe.idRecipe,
             idUser: 1,
             supplies:orderRecipe.supplies,
             wastes: orderWastes,
         }
-        insertOrder(data).then(()=>{
-            //handleOpenSuccessToast()//abrir toast
-            //actualizar página
-            
-            alertifyjs.success('Orden creada correctamente');
-            this.props.handleReturnOrdersView();
-        }, (e) => console.error(e))
+        if(!idOrder){
+            insertOrder(data).then(()=>{
+                alertifyjs.success('Orden creada correctamente');
+                this.props.handleReturnOrdersView();
+            }, (e) => console.error(e))
+        }else{
+            for(let i=0; i<data.supplies.length; i++){
+                //Hace falta arreglar esto
+                const updataData={idOrder: this.props.idOrder, idSupply: data.supplies[i].idSupply, quantityOrderSupply: data.supplies[i].quantityRecipeSupply}
+                updateSupplyOrder(updataData).then(()=>{
+                    insertSupplyOrder(updataData).then(()=>{
+                        this.props.handleReturnOrdersView();
+                    }, (e) => console.error(e))
+                }, (e) => console.error(e))
+            }
+            for(let i=0; i<this.state.deleteSupplies.length; i++){
+                const deleteData={idOrder: this.props.idOrder, idSupply: this.state.deleteSupplies[i].idSupply};
+                deleteSupplyOrder(deleteData).then(()=>{
+                    this.props.handleReturnOrdersView();
+                }, (e) => console.error(e))
+            }
+            alertifyjs.success('Orden actualizada correctamente');
+        }
     }
 
     
 
     render(){
         const {handleReturnOrdersView, idOrder, classes}=this.props;
-        const {recipes, supplies, wastes, orderRecipe, orderWastes}=this.state;
-        const handleClickDeleteSupply=(event)=>{
+        const {recipes, supplies, wastes, orderRecipe, orderWastes, updateSupplies, deleteSupplies, updateWastes, deleteWastes}=this.state;
+        const handleClickDeleteSupply=(supply)=>{
+            const idSupply=supply.supply.idSupply;
+            const indexSupply=getIDSupply(idSupply);
             let data=orderRecipe;
-            data.supplies.splice(getIDSupply(event.target.id),1)
+            if(idOrder){
+                const newDeletionSupply={idOrder: idOrder, idSupply:data.supplies[indexSupply].idSupply};
+                let oldDataDeletion=deleteSupplies;
+                oldDataDeletion.push(newDeletionSupply);
+                this.setState({deleteSupplies: oldDataDeletion});
+            }
+            data.supplies.splice(indexSupply,1)
             this.setState({orderDetail:data});
+            console.log(deleteSupplies);
         }
         const getIDSupply=(idSupply)=>{
             for(let i=0;i<orderRecipe.supplies.length;i++) if(orderRecipe.supplies[i].idSupply===idSupply) return i;
@@ -126,11 +168,12 @@ class TableOrderDetail extends Component{
                     break;
                 case "selectSupply":
                     if(val){
-                        let dataSupply=orderRecipe;
-                        let duplicated=false;
-                        for(let i=0;i<dataSupply.supplies.length;i++) if(dataSupply.supplies[i].idSupply===val) duplicated=true;
-                        if(!duplicated) dataSupply.supplies.push({idSupply: val, quantityRecipeSupply: 0});
-                        this.setState({orderRecipe: dataSupply,});
+                            let dataSupply=orderRecipe;
+                            let duplicated=false;
+                            for(let i=0;i<dataSupply.supplies.length;i++) if(dataSupply.supplies[i].idSupply===val) duplicated=true;
+                            if(!duplicated) dataSupply.supplies.push({idSupply: val, quantityRecipeSupply: 0});
+                            this.setState({orderRecipe: dataSupply,});
+                            console.log(orderRecipe)
                     }
                     break;
                 case "selectWaste":
@@ -219,7 +262,7 @@ class TableOrderDetail extends Component{
                                 margin="normal"
                             />
                         </Grid>
-                            <Button id={supply.idSupply}  onClick={handleClickDeleteSupply}><DeleteIcon id={supply.idSupply} onClick={handleClickDeleteSupply}/></Button>
+                            <Button id={supply.idSupply}  onClick={()=>handleClickDeleteSupply({supply})}><DeleteIcon id={supply.idSupply}/></Button>
                     </Grid>
                 </div>
             ))
@@ -298,7 +341,7 @@ class TableOrderDetail extends Component{
         return (
             <Grid container>
                 <Grid item xs={12}>
-                    {idOrder ? alert(idOrder) : selectRecipe}
+                    {idOrder ? console.log(idOrder) : selectRecipe}
                 </Grid>
                     {orderRecipe.idRecipe ? selectSupplies : null}
                 <Grid item xs={12}>
