@@ -122,3 +122,22 @@ export const insertRecipeSupply = async function(idRecipe, idSupply,quantity) {
 		return false;
 	}
 };
+
+export const updateSupplyRecipe = async function (quantity,idRecipe,idSupply) {
+    try {
+        const response = await fetch(SERVER_URL + `updateSupplyRecipe`, {
+            method: 'POST',
+            body: JSON.stringify({quantity,idRecipe,idSupply}),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        return true
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
