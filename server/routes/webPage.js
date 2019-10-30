@@ -20,6 +20,15 @@ router.get('/', (req, res) => {
 // Obtener unidades existentes
 router.get('/getUnits', units.getUnits)
 
+// Insertar nueva unidade
+router.post('/insertUnit', units.insertUnit)
+
+// Actualizar una unidades
+router.post('/updateUnit', units.updateUnit)
+
+// Eliminar una unidad
+router.post('/deleteUnit', units.deleteUnit)
+
 // Insertar nuevos insumos
 router.post('/insertSupply', supplies.insertSupply)
 
@@ -127,5 +136,9 @@ router.post('/updateWasteOrder', orders.updateOrderWaste)
 
 // Eliminar merma de orden
 router.post('/deleteWasteOrder', orders.deleteOrderWaste)
+
+// Obtiene alarmas de restock
+
+// Obtiene alarmas de caducidad
 
 module.exports = router
