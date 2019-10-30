@@ -34,6 +34,11 @@ const data = [
         icon: <StoreIcon/>,
         link:'pedidos'
     },
+    {
+        title: "Unidades de medida",
+        icon: <ChartIcon/>,
+        link:'unidades'
+    }
 ];
 
 const useStyles = makeStyles(theme => ({
