@@ -19,7 +19,14 @@ import alertifyjs from 'alertifyjs';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setRecipes, updateRecipe } from '../../../../actions';
-import { getRecipes, insertRecipes, updateRecipes as updateService,deleteRecipeSupply,insertRecipeSupply } from '../../../../services/recipes';
+import {
+	getRecipes,
+	insertRecipes,
+	updateRecipes as updateService,
+	deleteRecipeSupply,
+	insertRecipeSupply,
+	updateSupplyRecipe
+} from '../../../../services/recipes';
 import { getSupplies } from '../../../../services/supplies';
 import { getUnits } from '../../../../services/units';
 import { validateText } from '../../../../services/validations';
@@ -64,7 +71,6 @@ class DialogUpdateRecipe extends Component {
 			recipe: {
 				detailRecipe,
 				idRecipe,
-				idRecipe,
 				nameRecipe,
 				nameSupply,
 				supplies,
@@ -83,9 +89,9 @@ class DialogUpdateRecipe extends Component {
 	async componentDidMount() {
 		const units = await getUnits();
 		const { supplies } = await getSupplies();
-
+		if (!supplies) return;
+		supplies.map((supply) => (supply.quantity = 1));
 		this.setState({ units, supplies });
-		console.log('supplies', this.state.supplies);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -98,7 +104,7 @@ class DialogUpdateRecipe extends Component {
 				nameSupply = '',
 				supplies = [],
 				idSupply,
-				status=1,
+				status = 1
 			}
 		} = this.props;
 
@@ -113,7 +119,7 @@ class DialogUpdateRecipe extends Component {
 			},
 			isSupply: !!idSupply,
 			isUpdate: !!idRecipe,
-			isEnable: status === 1,
+			isEnable: status === 1
 		});
 		console.log(this.state.recipe);
 	}
@@ -151,7 +157,7 @@ class DialogUpdateRecipe extends Component {
 			supplies.push(supply);
 			this.setState({ recipe: { ...this.state.recipe, supplies } });
 			if (this.state.isUpdate) {
-				insertRecipeSupply(this.state.recipe.idRecipe,idSupply,1)
+				insertRecipeSupply(this.props.recipe.idRecipe, idSupply, 1);
 			}
 		};
 
@@ -163,8 +169,19 @@ class DialogUpdateRecipe extends Component {
 			const supplies = this.state.recipe.supplies.filter((supply) => idSupply !== supply.id);
 			this.setState({ recipe: { ...this.state.recipe, supplies } });
 			if (this.state.isUpdate) {
-				deleteRecipeSupply(this.state.recipe.idRecipe,idSupply)
+				deleteRecipeSupply(this.props.recipe.idRecipe, idSupply);
 			}
+		};
+
+		/**
+		 * elimina insumos de la lista de la receta
+		 * @param {Object} supplyToUpdate insumo a actualiza de la lista de la receta
+		 */
+		const handleUpdateSupply = (supplyToUpdate) => {
+			const supplies = this.state.recipe.supplies.map(
+				(supply) => (supply.id === supplyToUpdate.id ? supplyToUpdate : supply)
+			);
+			this.setState({ recipe: { ...this.state.recipe, supplies } });
 		};
 
 		/**
@@ -181,7 +198,7 @@ class DialogUpdateRecipe extends Component {
 		 */
 		const handleOnEnter = (ev) => {
 			if (ev.key === 'Enter') {
-				const enter = this.state.isUpdate? updateRecipe : createRecipe;
+				const enter = this.state.isUpdate ? updateRecipe : createRecipe;
 				enter();
 				ev.preventDefault();
 			}
@@ -195,7 +212,9 @@ class DialogUpdateRecipe extends Component {
 		};
 		/**llama al servidor para actualizar una receta*/
 		const updateRecipe = async () => {
-			console.log('actualizar receta');
+			for (const supplyToUpdate of this.state.recipe.supplies) {
+				updateSupplyRecipe(supplyToUpdate.quantity, this.props.recipe.idRecipe, supplyToUpdate.id);
+			}
 			const { recipe } = this.state;
 			const updated = await updateService(recipe);
 			alertifyjs.set('notifier', 'position', 'bottom-center');
@@ -257,7 +276,7 @@ class DialogUpdateRecipe extends Component {
 				fullScreen
 			>
 				<DialogTitle id="form-dialog-title" className={classes.top}>
-					{this.state.recipe.idRecipe ? 'Modificar' : 'Crear'} Receta
+					{this.props.recipe.idRecipe ? 'Modificar' : 'Crear'} Receta
 				</DialogTitle>
 				<DialogContent>
 					<Grid container alignItems={'center'}>
@@ -341,7 +360,12 @@ class DialogUpdateRecipe extends Component {
 						</Grid>
 						<Grid item xs={12}>
 							{this.state.recipe.supplies.map((supply) => (
-								<OptionSupply supply={supply} key={supply.id} handleDeleteSupply={handleDeleteSupply} />
+								<OptionSupply
+									supply={supply}
+									key={supply.id}
+									handleDeleteSupply={handleDeleteSupply}
+									handleUpdateSupply={handleUpdateSupply}
+								/>
 							))}
 						</Grid>
 						<Grid item className={classes.input} xs={12} md={8}>
@@ -386,7 +410,7 @@ class DialogUpdateRecipe extends Component {
 						Cancelar
 					</Button>
 					<Button
-						onClick={this.state.recipe.idRecipe ? updateRecipe : createRecipe}
+						onClick={this.props.recipe.idRecipe ? updateRecipe : createRecipe}
 						variant="contained"
 						color="primary"
 					>

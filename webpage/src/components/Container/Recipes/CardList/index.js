@@ -5,8 +5,8 @@ import React, { PureComponent } from 'react';
 import { connect } from "react-redux";
 import { setRecipes } from "../../../../actions";
 import { getRecipes as recipes } from "../../../../services/recipes";
-import DialogDeleteSupply from './DialogDeleteSupply';
-import DialogUpdateSupply from './DialogUpdateSupply';
+import DialogDelete from './DialogDelete';
+import DialogUpdate from './DialogUpdate';
 import Card from "./ProductCard";
 
 const styles = theme => ({
@@ -87,8 +87,8 @@ class CardList extends PureComponent {
                 spacing={2}
                 className={classes.root} >
                 {this.props.recipes.map((card) => <Card key={card.idRecipe} card={card} handleOpenDialog={handleOpenDialog} handleDelete={handleOpenDialogDelete} />)}
-                <DialogUpdateSupply open={this.state.openUpdateDialog} handleClose={handleCloseDialog} recipe={this.state.recipeToUpdate} />
-                <DialogDeleteSupply open={this.state.openDeleteDialog} handleClose={handleCloseDialogDelete} recipe={this.state.recipeToUpdate} />
+                <DialogUpdate open={this.state.openUpdateDialog} handleClose={handleCloseDialog} recipe={this.state.recipeToUpdate} />
+                <DialogDelete open={this.state.openDeleteDialog} handleClose={handleCloseDialogDelete} recipe={this.state.recipeToUpdate} />
                 <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleOpenDialogInsert} >
                     <AddIcon />
                 </Fab>
