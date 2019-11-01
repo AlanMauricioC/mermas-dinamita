@@ -39,7 +39,7 @@ export const tableIcons = {
 
 export const headCells = 
 [
-    { title: 'Unidad', field: 'nameUnit' },
+    { title: 'Unidad', field: 'name' },
       
 ]
 
@@ -108,15 +108,65 @@ export const getUnits = async function () {
         return []
     }
 }
-
-export const insertUnit = async function () {
+export const insertUnit = async function (unit) {
     try {
-        const response = await fetch(SERVER_URL + `getUnits`);
+        console.log(unit);
+        const response = await fetch(SERVER_URL +`insertUnit`,{
+            method: 'POST',
+            body: JSON.stringify(unit),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
         if (!response.ok) {
             throw Error(response.statusText);
         }
         const json = await response.json();
-        console.log(json.units);
+        console.log(json);
+
+        return json;
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+}
+
+export const updateUnit = async function(data){
+    try {
+        const response = await fetch(SERVER_URL +`updateUnit`,{
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        const json = await response.json();
+        console.log(json);
+
+        return json;
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+}
+
+export const deleteUnit = async function(unit){
+    try {
+        const response = await fetch(SERVER_URL +`deleteUnit`,{
+            method: 'POST',
+            body: JSON.stringify(unit),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        const json = await response.json();
+        console.log(json);
 
         return json;
     } catch (error) {

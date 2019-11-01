@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
-import { getUnits, tableIcons, headCells,data} from '../../services/units';
+import { getUnits, deleteUnit,updateUnit,insertUnit, tableIcons, headCells,data} from '../../services/units';
 
 
 
@@ -57,7 +57,20 @@ class Table extends Component {
               data={this.state.data}
               icons={tableIcons}
               editable={{
+                onRowAdd: newData =>
+                new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        {
+                            const data = this.state.data;
+                            data.push(newData);
+                            var unidad = {'name':newData.name};
 
+                            insertUnit(unidad);
+                            this.setState({ data }, () => resolve());
+                        }
+                        resolve();
+                    }, 1000);
+                }),
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
@@ -65,10 +78,10 @@ class Table extends Component {
                         const data = this.state.data;
                         const index = data.indexOf(oldData);
                         data[index] = newData;
-                        var datos = { 'idUnit' : oldData.idUnit,
-                          'nameUnit':newData.nameUnit
+                        var datos = { 'id' : oldData.id,
+                          'name':newData.name
                         };
-                        
+                        updateUnit(datos);
                         this.setState({ data }, () => resolve());
                       }
                       resolve()
@@ -80,9 +93,9 @@ class Table extends Component {
                       {
                         let data = this.state.data;
                         const index = data.indexOf(oldData);
-                        console.log("id"+oldData.idUnit);
-                        var datos = { 'id' : oldData.idUnit};
-                        
+                        console.log("id"+oldData.id);
+                        var dato = { 'id' : oldData.id};
+                        deleteUnit(dato);
                         data.splice(index, 1);
                         this.setState({ data }, () => resolve());
                       }
