@@ -20,6 +20,15 @@ router.get('/', (req, res) => {
 // Obtener unidades existentes
 router.get('/getUnits', units.getUnits)
 
+// Insertar nueva unidade
+router.post('/insertUnit', units.insertUnit)
+
+// Actualizar una unidades
+router.post('/updateUnit', units.updateUnit)
+
+// Eliminar una unidad
+router.post('/deleteUnit', units.deleteUnit)
+
 // Insertar nuevos insumos
 router.post('/insertSupply', supplies.insertSupply)
 
@@ -40,6 +49,9 @@ router.post('/insertOnlyRestock', restock.insertOnlyRestock)
 
 // Obtener pedidos de restock y todos sus insumos
 router.get('/restock', restock.getRestock)
+
+// Obtener recomendación de pedido de restock y todos sus insumos
+router.get('/recommendationRestock', restock.getRestockRecommendation)
 
 // Modificar el estado de un pedido de restock y de todos sus insumos
 router.post('/statusRestock', restock.statusRestock)
@@ -81,6 +93,13 @@ router.post('/getRecipes', recipes.getRecipes)
 
 // Modificar receta
 router.post('/updateRecipe', recipes.updateRecipe)
+// Estados de la receta:
+// 0: eliminada
+// 1: activa
+// 2: inactiva
+
+// Eliminar receta
+router.post('/deleteRecipe', recipes.deleteRecipe)
 
 // Insertar insumo a receta
 router.post('/insertSupplyRecipe', recipes.insertRecipeSupply)
@@ -117,5 +136,9 @@ router.post('/updateWasteOrder', orders.updateOrderWaste)
 
 // Eliminar merma de orden
 router.post('/deleteWasteOrder', orders.deleteOrderWaste)
+
+// Obtiene alarmas de restock
+
+// Obtiene alarmas de caducidad
 
 module.exports = router

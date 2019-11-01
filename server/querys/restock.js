@@ -129,6 +129,33 @@ function getRestock(req, res){
     )
 }
 
+function getRestockRecommendation(req, res){
+    con.query(`SELECT null as idRestock, null as registrationDateRestock, null as idUser, null as nameUser,
+        null as statusRestock`,
+        function (err, result, fields) {
+            if (err) {
+                console.log("Error" , err)
+                res.status(500).json({err})
+            }else{
+                let queries = []
+                result.forEach(function(element){
+                    let query = `SELECT s.idSupply, (s.maxQuantitySupply-s.quantitySupply) as quantityRestockSupply,
+                    null as costRestockSupply, null as arrivalDateRestockSupply, null sellByDateRestockSupply, 
+                    null as idProvider, null as nameProvider, 1 as statusRestockSupply, null as commentaryRestockSupply 
+                    FROM supplies AS s WHERE s.quantitySupply<s.minQuantitySupply and s.statusSupply=1`
+                    queries.push(promise_query(query , null, element))
+                })
+                Promise.all(queries).then(values => {
+                    res.status(200).json({ restock : values })
+                }).catch(reason => { 
+                    console.log("Error" , reason)
+                    res.status(500).json({reason})
+                })
+            }
+        }
+    )
+}
+
 function statusRestock(req, res){
     con.query("UPDATE restock AS r SET r.statusRestock=? WHERE r.idRestock=?", 
         [req.body.status, req.body.idRestock], 
@@ -159,6 +186,7 @@ function statusRestock(req, res){
 module.exports = {
     insertRestock,
     getRestock,
+    getRestockRecommendation,
     statusRestock,
     insertRestockSupply,
     updateRestockSupply,

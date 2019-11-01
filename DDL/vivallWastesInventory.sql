@@ -30,7 +30,7 @@ CREATE TABLE supplies(
     nameSupply VARCHAR(45) NOT NULL,
     minQuantitySupply DOUBLE NOT NULL,
     maxQuantitySupply DOUBLE NOT NULL,
-    quantitySupply DOUBLE NOT NULL,
+    quantitySupply DOUBLE NOT NULL DEFAULT 0,
     idUser INT NOT NULL,
     idUnit INT NOT NULL,
     statusSupply TINYINT(1) NOT NULL DEFAULT 1,
@@ -130,3 +130,19 @@ CREATE TABLE orderwaste(
     FOREIGN KEY (idOrder) REFERENCES orders (idOrder) ON DELETE NO ACTION ON UPDATE NO ACTION,
     FOREIGN KEY (idWaste) REFERENCES wastes (idWaste) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+
+
+-- Crear evento o trigger para actualizar la cantidad una vez que se recibió el pedido 
+-- trigger para disminuir cantidad de inusmo por cada orden 
+-- evento para disminuir cantidad de insumo por mermas y crear la merma de almacenamiento
+
+-- Trigger para actualizar cantidad de insumo cada que se inserta en restocksupply
+-- DELIMITER //
+-- CREATE OR REPLACE TRIGGER insertQuantitySupply AFTER INSERT ON restocksupply FOR EACH ROW 
+--     BEGIN
+--         DECLARE quantity INT;
+--         SELECT quantitySupply INTO quantity FROM supplies WHERE idSupply=NEW.idSupply;
+--         SET quantity = NEW.quantityRestockSupply + quantity;
+--         UPDATE supplies SET quantitySupply=quantity WHERE idSupply=NEW.idSupply;
+--     END//
+-- DELIMITER ;
