@@ -39,7 +39,7 @@ export const tableIcons = {
 
 export const headCells = 
 [
-    { title: 'Unidad', field: 'nameSupply' },
+    { title: 'Unidad', field: 'nameUnit' },
       
 ]
 
@@ -102,7 +102,23 @@ export const getUnits = async function () {
         const json = await response.json();
         console.log(json.units);
 
-        return json.units;
+        return json;
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+}
+
+export const insertUnit = async function () {
+    try {
+        const response = await fetch(SERVER_URL + `getUnits`);
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        const json = await response.json();
+        console.log(json.units);
+
+        return json;
     } catch (error) {
         console.log(error);
         return []

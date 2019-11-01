@@ -69,13 +69,13 @@ class AddWaste extends Component {
         }
         const sendData=e=>{
             var datos = { 
-                'idSupply':this.state.selectSupply,
-                'quantityWaste':this.state.quantity,
+                'id':this.state.selectSupply,
+                'quantity':this.state.quantity,
                 'idUser':1,
-                'sellByDateWastetimestamp' : this.state.date,
+                'sellByDate' : this.state.date,
                 
             };
-            console.log(datos);
+            
             insertWaste(datos);
             this.setState({open:false});
         }
