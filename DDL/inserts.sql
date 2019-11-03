@@ -8,10 +8,10 @@ INSERT INTO users VALUES (NULL, 'Diana', 'diana', 'chef', 1234, 1);
 INSERT INTO providers VALUES (NULL, 'lala', 1);
 
 -- insumos
-INSERT INTO supplies (idSupply, nameSupply, minQuantitySupply, maxQuantitySupply, idUser, idUnit, statusSupply) VALUES (NULL, 'Leche', 3, 8, 1, 1, 1);
+INSERT INTO supplies (idSupply, nameSupply, minQuantitySupply, maxQuantitySupply, idUser, idUnit, statusSupply) VALUES (NULL, 'Leche', 3, 8, 1, 1, 1), (NULL, 'chocolate', 3, 8, 1, 1, 1);
 
 -- recetas
-INSERT INTO recipes VALUES (NULL, 'chocomilk', 'sdfghj', NULL, 1);
+INSERT INTO recipes VALUES (NULL, 'chocomilk', 'recipes/default.jpg', 'sdfghj', NULL, 1);
 
 -- insumo de la receta
 INSERT INTO recipesupply VALUES (1, 1, 2);
