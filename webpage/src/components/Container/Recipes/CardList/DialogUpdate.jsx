@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import alertifyjs from 'alertifyjs';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { setRecipes, updateRecipe } from '../../../../actions';
 import {
@@ -31,6 +31,7 @@ import { getSupplies } from '../../../../services/supplies';
 import { getUnits } from '../../../../services/units';
 import { validateText } from '../../../../services/validations';
 import OptionSupply from './OptionSupply';
+import { SERVER_URL } from '../../../../constants';
 
 const styles = (theme) => ({
 	media: {
@@ -41,8 +42,8 @@ const styles = (theme) => ({
 		color: 'white'
 	},
 	button: {
-		margin: theme.spacing.unit,
-		width: '100%'
+		margin: 50,
+		width: '80%'
 	},
 	input: {
 		padding: 10,
@@ -50,10 +51,13 @@ const styles = (theme) => ({
 	},
 	select: {
 		width: '100%'
+	},
+	files:{
+		display: 'none',
 	}
 });
 
-class DialogUpdateRecipe extends Component {
+class DialogUpdateRecipe extends PureComponent {
 	constructor(props) {
 		super(props);
 		const {
@@ -64,7 +68,8 @@ class DialogUpdateRecipe extends Component {
 				nameSupply = '',
 				supplies = [],
 				idSupply,
-				status = 1
+				status = 1,
+				imageRecipe
 			}
 		} = props;
 		this.state = {
@@ -74,6 +79,7 @@ class DialogUpdateRecipe extends Component {
 				nameRecipe,
 				nameSupply,
 				supplies,
+				image: SERVER_URL + (imageRecipe ? imageRecipe : 'recipes/default.jpg'),
 				idSupply,
 				status
 			},
@@ -104,7 +110,8 @@ class DialogUpdateRecipe extends Component {
 				nameSupply = '',
 				supplies = [],
 				idSupply,
-				status = 1
+				statusRecipe: status = 1,
+				imageRecipe
 			}
 		} = this.props;
 
@@ -114,8 +121,10 @@ class DialogUpdateRecipe extends Component {
 				idRecipe,
 				idSupply,
 				nameRecipe,
+				image: SERVER_URL + (imageRecipe ? imageRecipe : 'recipes/default.jpg'),
 				nameSupply,
-				supplies
+				supplies,
+				statusRecipe: status
 			},
 			isSupply: !!idSupply,
 			isUpdate: !!idRecipe,
@@ -204,6 +213,11 @@ class DialogUpdateRecipe extends Component {
 			}
 		};
 
+		const handleOnChangeImage = (event) => {
+			const file = event.target.files[0]
+			const image = URL.createObjectURL(file)
+			this.setState({ recipe:{...this.state.recipe,image, file} })
+		}
 		const handleSwitchSupply = (e) => {
 			this.setState({ isSupply: !this.state.isSupply });
 		};
@@ -216,6 +230,8 @@ class DialogUpdateRecipe extends Component {
 				updateSupplyRecipe(supplyToUpdate.quantity, this.props.recipe.idRecipe, supplyToUpdate.id);
 			}
 			const { recipe } = this.state;
+			recipe.statusRecipe = this.state.isEnable ? 1 : 2;
+			console.log(recipe);
 			const updated = await updateService(recipe);
 			alertifyjs.set('notifier', 'position', 'bottom-center');
 			if (updated) {
@@ -235,6 +251,8 @@ class DialogUpdateRecipe extends Component {
 				return;
 			}
 			recipe.idUser = 1; // esto no debe de ser así :0!!
+			recipe.statusRecipe = this.state.isEnable ? 1 : 2;
+
 			const inserted = await insertRecipes(recipe);
 			alertifyjs.set('notifier', 'position', 'bottom-center');
 			if (inserted) {
@@ -280,8 +298,35 @@ class DialogUpdateRecipe extends Component {
 				</DialogTitle>
 				<DialogContent>
 					<Grid container alignItems={'center'}>
-						<Grid item container xs={12} direction="row" justify="flex-end" alignItems="center">
-							<Grid item>
+						<Grid item container xs={12} direction="row" justify="flex-start" alignItems="flex-start">
+							<Grid item xs={4}>
+								<img
+									src={this.state.recipe.image}
+									alt={this.state.recipe.nameRecipe}
+									className={classes.media}
+								/>
+							</Grid>
+							<Grid item xs={6}>
+								<input
+									accept="image/*"
+									className={classes.files}
+									id="raised-button-file"
+									multiple
+									type="file"
+									onChange={handleOnChangeImage}
+								/>
+								<label htmlFor="raised-button-file">
+									<Button
+										component="span"
+										variant="contained"
+										color="primary"
+										className={classes.button}
+									>
+										Subir archivo
+									</Button>
+								</label>
+							</Grid>
+							<Grid item xs={2}>
 								<FormControlLabel
 									control={
 										<Switch

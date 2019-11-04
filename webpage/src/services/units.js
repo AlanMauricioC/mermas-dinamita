@@ -100,9 +100,7 @@ export const getUnits = async function () {
             throw Error(response.statusText);
         }
         const json = await response.json();
-        console.log(json.units);
-
-        return json;
+        return json.units ? json.units : []
     } catch (error) {
         console.log(error);
         return []
