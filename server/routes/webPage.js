@@ -91,6 +91,9 @@ router.post('/insertRecipe', recipes.insertRecipe)
 // Obtener recetas y todos sus insumos
 router.post('/getRecipes', recipes.getRecipes)
 
+// obtener imagen de recetas
+router.get('/recipes/:image', recipes.getRecipeImage)
+
 // Modificar receta
 router.post('/updateRecipe', recipes.updateRecipe)
 // Estados de la receta:

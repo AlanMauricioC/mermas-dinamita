@@ -42,6 +42,7 @@ CREATE TABLE supplies(
 CREATE TABLE recipes(
     idRecipe INT NOT NULL AUTO_INCREMENT,
     nameRecipe VARCHAR(45) NOT NULL,
+    imageRecipe VARCHAR(100) NOT NULL DEFAULT "recipes/default.jpg",
     detailRecipe VARCHAR(200) NULL,
     idSupply INT NULL,
     statusRecipe TINYINT(1) NOT NULL DEFAULT 1,

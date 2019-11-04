@@ -1,30 +1,55 @@
 const con = require('../DB/connection')
+const formidable = require('formidable')
+const path = require('path')
 
 function insertRecipe(req, res){
-    con.query("INSERT INTO recipes (nameRecipe, detailRecipe, idSupply) VALUES (?, ?, ?)",
-        [req.body.nameRecipe, req.body.detailRecipe, req.body.idSupply],
-        function (err, result) {
-            if (err) {
-                console.log("Error" , err)
-                res.status(500).json({err})
-            }else{
-                var arr = req.body.supplies
-                arr.forEach(function(v){
-                    con.query("INSERT INTO recipesupply (idRecipe, idSupply, quantityRecipeSupply) VALUES (?, ?, ?)", 
-                        [result.insertId, v.id, v.quantity], 
-                        function (err, resul) {
-                            if (err) {
-                                console.log("Error" , err)
-                                res.status(500).json({err})
-                            }else
-                                console.log("insert "+resul.affectedRows+" recipe supply")
-                        })
-                    }
-                )
-                res.status(200).json("insert "+result.affectedRows+" recipe, ID: "+ result.insertId)
+    var form = new formidable.IncomingForm()
+    form.keepExtensions = true
+    form.parse(req, function(err, fields, files) {
+        if(fields){
+            var qry = `INSERT INTO recipes VALUES (NULL, ?, ?, ?, ?, 1)`
+            var values = []
+            if(!files.image){
+                values = [fields.nameRecipe, 'recipes/default.jpg', fields.detailRecipe, fields.idSupply]
             }
+            else{
+                values = [fields.nameRecipe, 'recipes/' + files.image.name, fields.detailRecipe, fields.idSupply]
+            }
+            con.query(qry, values,
+                function (err, result) {
+                    if (err){
+                        console.log("Error" , err)
+                        res.status(500).json({err})
+                    }else{
+                        try{
+                            var arr = JSON.parse(fields.supplies)
+                            arr.forEach(function(supply){
+                                con.query("INSERT INTO recipesupply (idRecipe, idSupply, quantityRecipeSupply) VALUES (?, ?, ?)", 
+                                    [result.insertId, supply.id, supply.quantity], 
+                                    function (err, resul) {
+                                        if (err) {
+                                            console.log("Error" , err)
+                                            res.status(500).json({err})
+                                        }else
+                                            console.log("insert "+resul.affectedRows+" recipe supply")
+                                    })
+                                }
+                            )
+                        }catch(error){
+                            console.error(error)
+                        }
+                        res.status(200).json("insert "+result.affectedRows+" recipe, ID: "+ result.insertId)
+                    }
+                }
+            )
         }
-    )
+    })
+    form.on('fileBegin', (name, file, ) => {
+        file.path = __dirname + '\\..\\files\\recipes\\' + file.name
+    })
+    form.on('file', (name, file) => {
+        console.log('Uploaded file ', file.name)
+    })
 }
 
 function insertRecipeSupply(req, res){
@@ -79,11 +104,11 @@ function promise_query(query , param , v){
 }
 
 function getRecipes(req, res){
-    var qry = `SELECT r.idRecipe, r.nameRecipe, r.detailRecipe, r.idSupply, s.nameSupply, 
-    r.statusRecipe FROM recipes AS r LEFT JOIN supplies AS s ON r.idSupply=s.idSupply`
+    var qry = `SELECT r.idRecipe, r.nameRecipe, r.detailRecipe, r.imageRecipe, r.idSupply, s.nameSupply, 
+    r.statusRecipe FROM recipes AS r LEFT JOIN supplies AS s ON r.idSupply=s.idSupply WHERE r.statusRecipe<>0`
     var values = []
     if(req.body.search) {
-        qry = qry + ` WHERE nameRecipe LIKE ?`
+        qry = qry + ` AND nameRecipe LIKE ?`
         values = ["%"+req.body.search+"%"]
     }
 	con.query(qry, values, function (err, result){
@@ -111,19 +136,37 @@ function getRecipes(req, res){
 }
 
 function updateRecipe(req, res){
-    con.query(`UPDATE recipes AS r SET r.nameRecipe=?, r.detailRecipe=?, r.idSupply=?, r.statusRecipe=?
-        WHERE r.idRecipe=?`, 
-        [req.body.nameRecipe, req.body.detailRecipe, req.body.idSupply, req.body.statusRecipe, req.body.idRecipe], 
-        function (err, result) {
-            if (err) {
-                console.log("Error" , err)
-                res.status(500).json({err})
-            }else{
-                console.log("update recipe")
-                res.status(200).json("update recipe ID: "+ req.body.idRecipe)
+    var form = new formidable.IncomingForm()
+    form.keepExtensions = true
+    form.parse(req, function(err, fields, files) {
+        if(fields){
+            var qry = `UPDATE recipes AS r SET r.nameRecipe=?, r.detailRecipe=?, r.idSupply=?, r.statusRecipe=?`
+            var values = []
+            if(!files.image){
+                qry = qry + ` WHERE r.idRecipe=?`
+                values = [fields.nameRecipe, fields.detailRecipe, fields.idSupply, fields.statusRecipe, fields.idRecipe]
             }
+            else{
+                qry = qry + `, r.imageRecipe=? WHERE r.idRecipe=?`
+                values = [fields.nameRecipe, fields.detailRecipe, fields.idSupply, fields.statusRecipe, 'recipes/' + files.image.name, fields.idRecipe]
+            }
+            con.query(qry, values,
+                function (err, result) {
+                    if (err){
+                        console.log("Error" , err)
+                        res.status(500).json({err})
+                    }else
+                        res.status(200).json("update " + result.affectedRows + " recipe(s)")
+                }
+            )
         }
-    )
+    })
+    form.on('fileBegin', (name, file, ) => {
+        file.path = __dirname + '\\..\\files\\recipes\\' + file.name
+    })
+    form.on('file', (name, file) => {
+        console.log('Uploaded file ', file.name)
+    })
 }
 
 function deleteRecipe(req, res){
@@ -141,6 +184,11 @@ function deleteRecipe(req, res){
     )
 }
 
+function getRecipeImage (req, res){
+    const img=req.params.image
+    res.sendFile(path.resolve(__dirname + "/../files/recipes/" + img))
+}
+
 module.exports = {
     insertRecipe,
     getRecipes,
@@ -148,5 +196,6 @@ module.exports = {
     deleteRecipe,
     insertRecipeSupply,
     updateRecipeSupply,
-    deleteRecipeSupply
+    deleteRecipeSupply,
+    getRecipeImage
 }
