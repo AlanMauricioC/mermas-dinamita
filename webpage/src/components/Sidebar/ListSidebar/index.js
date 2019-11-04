@@ -6,6 +6,7 @@ import FoodIcon from '@material-ui/icons/Fastfood';
 import RecipiesIcon from '@material-ui/icons/MenuBook';
 import ChartIcon from '@material-ui/icons/InsertChart';
 import StoreIcon from '@material-ui/icons/Storefront';
+import AppleIcon from '@material-ui/icons/Apple';
 import ItemSidebar from './ItemSidebar';
 
 const data = [
@@ -25,8 +26,8 @@ const data = [
         link:'ordenes'
     },
     {
-        title: "Reportes",
-        icon: <ChartIcon/>,
+        title: "Mermas",
+        icon: <AppleIcon/>,
         link:'reportes'
     },
     {
