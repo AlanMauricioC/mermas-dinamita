@@ -6,6 +6,7 @@ const restock = require('../querys/restock')
 const wastes = require('../querys/wastes')
 const recipes = require('../querys/recipes')
 const orders = require('../querys/orders')
+const alerts = require('../querys/alerts')
 
 // middleware specific to this router
 router.use(function timeLog(req, res, next) {
@@ -141,7 +142,6 @@ router.post('/updateWasteOrder', orders.updateOrderWaste)
 router.post('/deleteWasteOrder', orders.deleteOrderWaste)
 
 // Obtiene alarmas de restock
-
-// Obtiene alarmas de caducidad
+router.get('/restockAlerts', alerts.restockAlerts)
 
 module.exports = router
