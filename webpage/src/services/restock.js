@@ -87,7 +87,7 @@ const sub=(date)=>{
 export const headCells2=[
     {
         title: 'Insumo', field: 'idSupply',
-        lookup: {1: "Insumo 1", 2:"Insumo 2", 3:"Insumo 3", 4: "Insumo 4"},
+        lookup: {1: "Insumo 1", 2:"Insumo 2", 3:"Insumo 3", 4: "Insumo 4", 8: "Insumo 8"},
         readonly: true
     },
     {title: 'Cantidad', field: 'quantityRestockSupply', type: "numeric"},
@@ -110,7 +110,7 @@ export const headCells2=[
 export const headCells3=[
     {
         title: 'Insumo', field: 'idSupply',
-        lookup: {1: "Insumo 1", 2:"Insumo 2", 3:"Insumo 3", 4: "Insumo 4"}
+        lookup: {1: "Insumo 1", 2:"Insumo 2", 3:"Insumo 3", 4: "Insumo 4", 8: "Insumo 8"}
     },
     {title: 'Cantidad', field: 'quantityRestockSupply', type: "numeric"},
     {title: 'Costo', field: 'costRestockSupply', type: "numeric"},
@@ -354,5 +354,21 @@ export const insertOnlyRestock = async function (data) {
     } catch (error) {
         console.log(error);
         return []
+    }
+}
+
+export const getRestockRecomendation =async function () {
+    try {
+        const response = await fetch(`http://localhost:3002/recommendationRestock`);
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        const json = await response.json();
+        console.log(json);
+
+        return json;
+    } catch (error) {
+        console.log(error);
+        return null
     }
 }
