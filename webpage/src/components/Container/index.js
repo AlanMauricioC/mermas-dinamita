@@ -12,6 +12,7 @@ import Orders from "./Orders";
 import Recipes from "./Recipes";
 import OrdersT from "./OrdersT";
 import Measurement from "../Measurement";
+import Restock from './Restock';
 
 
 const useStyles = makeStyles(theme => ({
@@ -49,6 +50,9 @@ const Container = ()=>{
             </Route>
             <Route exact path="/pedidos">
                 <Orders/>
+            </Route>
+            <Route exact path="/nuevoPedido">
+                <Restock/>
             </Route>
             <Route>
                 
