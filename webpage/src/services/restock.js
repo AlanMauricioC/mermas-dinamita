@@ -1,6 +1,5 @@
 import React from 'react';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
+import { SERVER_URL } from "../constants";
 import { forwardRef } from 'react';
 import AddBox from '@material-ui/icons/AddBox';
 import SeeIcon from '@material-ui/icons/Visibility'
@@ -128,7 +127,7 @@ export const headCells3=[
 
 export const getRestock =async function () {
     try {
-        const response = await fetch(`http://localhost:3002/restock`);
+        const response = await fetch(`${SERVER_URL}restock`);
         if (!response.ok) {
             throw Error(response.statusText);
         }
@@ -145,7 +144,7 @@ export const getRestock =async function () {
 export const insertRestockSupply = async function (data) {
     try {
         console.log(data);
-        const response = await fetch(`http://localhost:3002/insertSupplyRestock`, {
+        const response = await fetch(`${SERVER_URL}insertSupplyRestock`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -168,7 +167,7 @@ export const insertRestockSupply = async function (data) {
 export const updateRestockSupply = async function (data) {
     try {
         console.log(data);
-        const response = await fetch(`http://localhost:3002/updateSupplyRestock`, {
+        const response = await fetch(`${SERVER_URL}updateSupplyRestock`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -191,7 +190,7 @@ export const updateRestockSupply = async function (data) {
 export const deleteRestockSupply = async function (data) {
     try {
         console.log(data);
-        const response = await fetch(`http://localhost:3002/deleteSupplyRestock`, {
+        const response = await fetch(`${SERVER_URL}deleteSupplyRestock`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -214,7 +213,7 @@ export const deleteRestockSupply = async function (data) {
 export const setStatusRestock = async function (data) {
     try {
         console.log(data);
-        const response = await fetch(`http://localhost:3002/statusRestock`, {
+        const response = await fetch(`${SERVER_URL}statusRestock`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -237,7 +236,7 @@ export const setStatusRestock = async function (data) {
 export const createRestock = async function (data) {
     try {
         console.log(data);
-        const response = await fetch(`http://localhost:3002/insertRestock`, {
+        const response = await fetch(`${SERVER_URL}insertRestock`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -258,9 +257,9 @@ export const createRestock = async function (data) {
 }
 
 export const getSupplies = async function () {
-    data=[{search: ""}]
+    let data=[{search: ""}]
     try {
-        const response = await fetch(`http://localhost:3002/getSupplies`, {
+        const response = await fetch(`${SERVER_URL}getSupplies`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -337,7 +336,7 @@ export const localization={
 export const insertOnlyRestock = async function (data) {
     try {
         console.log(data);
-        const response = await fetch(`http://localhost:3002/insertOnlyRestock`, {
+        const response = await fetch(`${SERVER_URL}insertOnlyRestock`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -359,7 +358,7 @@ export const insertOnlyRestock = async function (data) {
 
 export const getRestockRecomendation =async function () {
     try {
-        const response = await fetch(`http://localhost:3002/recommendationRestock`);
+        const response = await fetch(`${SERVER_URL}recommendationRestock`);
         if (!response.ok) {
             throw Error(response.statusText);
         }

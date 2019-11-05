@@ -155,7 +155,7 @@ class Table extends Component {
                                         const index = data.indexOf(oldData);
                                         data[index] = newData;
                                         this.setState({ data }, () => resolve());
-                                        updateDetail(newData, oldData);
+                                        updateDetail(newData);
                                     }
                                     resolve()
                                 }, 1000)

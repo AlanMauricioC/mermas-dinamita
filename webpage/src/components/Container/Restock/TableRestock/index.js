@@ -62,7 +62,7 @@ class TableRestock extends Component {
                     rowData => ({
                         icon: 'delete',
                         tooltip: 'Delete User',
-                        onClick: (event, rowData) => alert("You want to delete " + rowData.name),
+                        onClick: (event, rowData) => console.log("You want to delete " + rowData.name),
                         disabled: rowData.birthYear < 2000
                     })
                     ]}

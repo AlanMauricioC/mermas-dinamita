@@ -44,7 +44,6 @@ class ActionRestock extends Component{
                 for(let i=0;i<supplies.length;i++) if(supplies[i].id===idSupply) return supplies[i].name;
                 break;
             case "index":
-                alert(action)
                 for(let i=0;i<supplies.length;i++) if(supplies[i].id===idSupply) return supplies[i].name;
                 break;
         }
@@ -83,7 +82,7 @@ class ActionRestock extends Component{
         getRestockRecomendation().then(({ restock }) => {
             this.setState({ restock })
             let suppliesRestock;
-            if(restock[0].supplies.length>=0) suppliesRestock=[];
+            if(restock[0].supplies.length) suppliesRestock=[];
             else suppliesRestock=this.state.suppliesRestock;
             for(let i=0;i<restock[0].supplies.length;i++){
                 const nameSupply=this.getSupplyByID("name", restock[0].supplies[i].idSupply);
@@ -111,7 +110,6 @@ class ActionRestock extends Component{
     handleDeleteSupply=(idSupply)=>{
         const suppliesRestock=this.state.suppliesRestock;
         const index=this.getSupplyRestockByID("index", idSupply);
-        alert(index);
         if (index > -1) {
             suppliesRestock.splice(index, 1);
         }

@@ -123,7 +123,6 @@ class DialogUpdateSupply extends PureComponent {
 				id,
 				idUser,
 				idUnit,
-				idUser,
 				max,
 				min,
 				name,
@@ -146,7 +145,6 @@ class DialogUpdateSupply extends PureComponent {
 			const data = {
 				idUser,
 				idUnit,
-				idUser,
 				max,
 				min,
 				name,
