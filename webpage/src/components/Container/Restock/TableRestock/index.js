@@ -9,9 +9,9 @@ class TableRestock extends Component {
     constructor(props){
         super(props);
         this.state={
-            edit: true,
-            isNew: false,
+            action: "add",
             data: [],
+            restockData: [],
             columns: 
                 [
                     { title: 'Número de pedido', field: 'idRestock' },
@@ -39,14 +39,14 @@ class TableRestock extends Component {
           })
     }
 
-    changeEditState=(isNew)=>{
-        if(this.state.edit) this.setState({edit: false, isNew});
-        else this.setState({edit: true});
+    changeEditState=(restockData, action)=>{
+        if(this.state.action) this.setState({action: null});
+        else this.setState({restockData, action});
     }
 
     render() {
         const {classes}=this.props;
-        if(this.state.edit) return (<ActionRestock changeEditState={this.changeEditState} isNew={this.state.isNew} classes={classes}/>);
+        if(this.state.action) return (<ActionRestock action={this.state.action} changeEditState={this.changeEditState}/>);
         else return (
             <div>
                 <MaterialTable
@@ -57,7 +57,7 @@ class TableRestock extends Component {
                     {
                         icon: 'save',
                         tooltip: 'Save User',
-                        onClick: (event, rowData) => this.changeEditState(false)
+                        onClick: (event, rowData) => this.changeEditState(rowData, "edit")
                     },
                     rowData => ({
                         icon: 'delete',
@@ -70,7 +70,7 @@ class TableRestock extends Component {
                         actionsColumnIndex: -1
                     }}
                 />
-                <Fab aria-label="Add" className={classes.fab} color="primary" onClick={()=>this.changeEditState(true)}>
+                <Fab aria-label="Add" className={classes.fab} color="primary" onClick={()=>this.changeEditState(null, "add")}>
                     <AddIcon />
                 </Fab>
             </div>
