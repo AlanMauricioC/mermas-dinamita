@@ -1,9 +1,8 @@
 var con = require('../DB/connection')
 
 function insertSupply(req, res) {
-    con.query(`INSERT INTO supplies (idUnit, idUser, maxQuantitySupply, minQuantitySupply, nameSupply,
-        quantitySupply) VALUES (?, ?, ?, ?, ?, ?)`, 
-        [req.body.idUnit, req.body.idUser, req.body.max, req.body.min, req.body.name, req.body.quantity], 
+    con.query(`INSERT INTO supplies (idUnit, idUser, maxQuantitySupply, minQuantitySupply, nameSupply) VALUES (?, ?, ?, ?, ?)`, 
+        [req.body.idUnit, req.body.idUser, req.body.max, req.body.min, req.body.name], 
         function (err, result) {
             if (err) {
                 console.log("Error" , err)
@@ -54,9 +53,9 @@ function getSupplies(req, res) {
 }
 
 function updateSupply(req, res) {
-    con.query(`UPDATE supplies SET nameSupply=?, quantitySupply=?, minQuantitySupply=?, 
+    con.query(`UPDATE supplies SET nameSupply=?, minQuantitySupply=?, 
         maxQuantitySupply=?, idUnit=? WHERE idSupply=?`, 
-        [req.body.name, req.body.quantity, req.body.min, req.body.max, req.body.idUnit, req.body.id], 
+        [req.body.name, req.body.min, req.body.max, req.body.idUnit, req.body.id], 
         function(err, result) {
             if (err) {
                 console.log("Error" , err)
