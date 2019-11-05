@@ -31,7 +31,7 @@ console.log('card',card);
 					<CardMedia
                         onClick={e=>handleOpenDialog(card)}
 						className={classes.media}
-						image={`${SERVER_URL}${card.imageRecipe}`}
+						image={`${card.imageRecipe}`}
 						title={card.nameRecipe}
 					/>
 					<CardContent>

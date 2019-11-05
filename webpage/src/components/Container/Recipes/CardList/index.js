@@ -15,7 +15,7 @@ const styles = theme => ({
         borderRadius: 3,
     },
     fab: {
-        position: 'absolute',
+        position: 'fixed',
         bottom: 10,
         right: 10,
     },

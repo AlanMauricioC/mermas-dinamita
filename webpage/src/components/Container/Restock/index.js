@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
         boxShadow: '5px 4px 18px -2px rgba(0,0,0,0.75)',
     },
     fab: {
-      position: 'absolute',
+      position: 'fixed',
       bottom: theme.spacing(2),
       right: theme.spacing(2),
     },

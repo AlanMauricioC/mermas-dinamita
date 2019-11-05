@@ -12,7 +12,10 @@ export const getRecipes = async function(search, state) {
 			throw Error(response.statusText);
 		}
 		const json = await response.json();
-		console.log(json);
+		json.recipes.map(recipe=>{
+			recipe.imageRecipe=SERVER_URL+recipe.imageRecipe
+			return recipe
+		})
 
 		return json;
 	} catch (error) {
@@ -25,7 +28,9 @@ export const updateRecipes = async function(recipe) {
 	const formData=new FormData()
 	formData.append('idRecipe',recipe.idRecipe)
 	formData.append('nameRecipe',recipe.nameRecipe)
-	formData.append('idSupply',recipe.idSupply)
+	if (recipe.idSupply) {
+		formData.append('idSupply',recipe.idSupply)
+	}
 	formData.append('detailRecipe',recipe.detailRecipe)
 	formData.append('image',recipe.file)
 	formData.append('supplies',JSON.stringify(recipe.supplies))
@@ -49,7 +54,9 @@ export const updateRecipes = async function(recipe) {
 export const insertRecipes = async function(recipe) {
 	const formData=new FormData()
 	formData.append('nameRecipe',recipe.nameRecipe)
-	formData.append('idSupply',recipe.idSupply)
+	if (recipe.idSupply) {
+		formData.append('idSupply',recipe.idSupply)
+	}
 	formData.append('detailRecipe',recipe.detailRecipe)
 	formData.append('image',recipe.file)
 	console.log(recipe);

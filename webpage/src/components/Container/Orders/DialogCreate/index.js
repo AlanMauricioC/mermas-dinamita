@@ -19,7 +19,7 @@ function DialogCreate({classes, change}){
 			color: 'white'
 		},
         fab: {
-          position: 'absolute',
+          position: 'fixed',
           bottom: theme.spacing(2),
           right: theme.spacing(2),
         },

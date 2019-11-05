@@ -5,14 +5,14 @@ import {
 	DialogContent,
 	DialogTitle,
 	FormControl,
+	FormControlLabel,
 	Grid,
 	InputLabel,
 	MenuItem,
 	Select,
-	TextField,
-	withStyles,
 	Switch,
-	FormControlLabel
+	TextField,
+	withStyles
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import alertifyjs from 'alertifyjs';
@@ -20,18 +20,18 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { setRecipes, updateRecipe } from '../../../../actions';
 import {
+	deleteRecipeSupply,
 	getRecipes,
 	insertRecipes,
-	updateRecipes as updateService,
-	deleteRecipeSupply,
 	insertRecipeSupply,
+	updateRecipes as updateService,
 	updateSupplyRecipe
 } from '../../../../services/recipes';
 import { getSupplies } from '../../../../services/supplies';
 import { getUnits } from '../../../../services/units';
 import { validateText } from '../../../../services/validations';
 import OptionSupply from './OptionSupply';
-import { SERVER_URL } from '../../../../constants';
+import imgPlaceHolder from './placeholder-image.png';
 
 const styles = (theme) => ({
 	media: {
@@ -52,8 +52,8 @@ const styles = (theme) => ({
 	select: {
 		width: '100%'
 	},
-	files:{
-		display: 'none',
+	files: {
+		display: 'none'
 	}
 });
 
@@ -79,7 +79,7 @@ class DialogUpdateRecipe extends PureComponent {
 				nameRecipe,
 				nameSupply,
 				supplies,
-				image: SERVER_URL + (imageRecipe ? imageRecipe : 'recipes/default.jpg'),
+				image: imageRecipe,
 				idSupply,
 				status
 			},
@@ -121,7 +121,7 @@ class DialogUpdateRecipe extends PureComponent {
 				idRecipe,
 				idSupply,
 				nameRecipe,
-				image: SERVER_URL + (imageRecipe ? imageRecipe : 'recipes/default.jpg'),
+				image: imageRecipe,
 				nameSupply,
 				supplies,
 				statusRecipe: status
@@ -214,10 +214,10 @@ class DialogUpdateRecipe extends PureComponent {
 		};
 
 		const handleOnChangeImage = (event) => {
-			const file = event.target.files[0]
-			const image = URL.createObjectURL(file)
-			this.setState({ recipe:{...this.state.recipe,image, file} })
-		}
+			const file = event.target.files[0];
+			const image = URL.createObjectURL(file);
+			this.setState({ recipe: { ...this.state.recipe, image, file } });
+		};
 		const handleSwitchSupply = (e) => {
 			this.setState({ isSupply: !this.state.isSupply });
 		};
@@ -230,7 +230,11 @@ class DialogUpdateRecipe extends PureComponent {
 				updateSupplyRecipe(supplyToUpdate.quantity, this.props.recipe.idRecipe, supplyToUpdate.id);
 			}
 			const { recipe } = this.state;
+			recipe.imageRecipe = recipe.image;
 			recipe.statusRecipe = this.state.isEnable ? 1 : 2;
+			if (!this.state.isSupply) {
+				recipe.idSupply = null;
+			}
 			console.log(recipe);
 			const updated = await updateService(recipe);
 			alertifyjs.set('notifier', 'position', 'bottom-center');
@@ -252,7 +256,9 @@ class DialogUpdateRecipe extends PureComponent {
 			}
 			recipe.idUser = 1; // esto no debe de ser así :0!!
 			recipe.statusRecipe = this.state.isEnable ? 1 : 2;
-
+			if (!this.state.isSupply) {
+				recipe.idSupply = null;
+			}
 			const inserted = await insertRecipes(recipe);
 			alertifyjs.set('notifier', 'position', 'bottom-center');
 			if (inserted) {
@@ -301,7 +307,7 @@ class DialogUpdateRecipe extends PureComponent {
 						<Grid item container xs={12} direction="row" justify="flex-start" alignItems="flex-start">
 							<Grid item xs={4}>
 								<img
-									src={this.state.recipe.image}
+									src={this.state.recipe.image || imgPlaceHolder}
 									alt={this.state.recipe.nameRecipe}
 									className={classes.media}
 								/>

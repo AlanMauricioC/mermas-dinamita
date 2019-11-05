@@ -21,7 +21,11 @@ const useStyles = makeStyles(theme => ({
     backgoundGradient:{
         //Y aquí iría un color para el sidebar... Si tuviera uno!
         //Bueno, un rosita para que no quede tan vacío
-        backgroundColor: "pink",
+        //:u eliminado!!!
+        backgroundColor: theme.palette.primary.main,
+    },
+    paper:{
+        background: theme.palette.primary.gradient
     }
 }));
 
@@ -38,12 +42,12 @@ export default function CenteredGrid() {
   
     const classes = useStyles();
     return (
-        <Drawer open={useSelector(state => state.menu.open)} onClose={toggleDrawer(false)}>
+        <Drawer open={useSelector(state => state.menu.open)} onClose={toggleDrawer(false)}  classes={{ paper: classes.paper }} >
             <Grid container className={classes.root}>
                 <Grid item xs={12} className={classes.backgoundGradient}>
                     <Avatar alt="Logo Vivall" src="logo192.png" className={classes.imageLogo} />
                 </Grid>
-                <Grid item xs={12} onClick={toggleDrawer(false)}>
+                <Grid item xs={12} onClick={toggleDrawer(false)} >
                     <ListSidebar />
                 </Grid>
             </Grid>
