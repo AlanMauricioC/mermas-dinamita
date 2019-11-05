@@ -5,7 +5,7 @@ CREATE DATABASE vivallWastesInventory/*!40100 DEFAULT CHARACTER SET utf8 COLLATE
 -- Usar base de datos
 USE vivallWastesInventory;
 -- Activar planificador de eventos 
--- SET GLOBAL event_scheduler = ON;
+SET GLOBAL event_scheduler = ON;
 -- Tablas
 -- Tabla de unidades
 CREATE TABLE units(
@@ -49,6 +49,11 @@ CREATE TABLE recipes(
     PRIMARY KEY (idRecipe),
     FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+-- Estados de la receta:
+-- 0: eliminada
+-- 1: activa
+-- 2: inactiva
+
 -- Tabla de detalle de receta
 CREATE TABLE recipesupply(
     idRecipe INT NOT NULL,
@@ -94,6 +99,15 @@ CREATE TABLE restock(
     PRIMARY KEY (idRestock),
     FOREIGN KEY (idUser) REFERENCES users (idUser) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+-- Estados restock:
+-- 0 = Cancelado: Ya no se requiere
+-- 1 = Pendiente: Estado inicial
+-- 2 = Aprobado: Aceptado por el gerente
+-- 3 = No aprobado: No aceptado por el gerente
+-- 4 = Pedido: Aceptado y pedido a provedor
+-- 5 = Entregado: Aceptada la entrega del pedido por el chef
+-- 6 = Rechazado: No Aceptada la entrega del pedido por el chef
+
 -- Tabla de detalle de restock con insumos
 CREATE TABLE restocksupply(
     idRestock INT NOT NULL,
@@ -116,12 +130,19 @@ CREATE TABLE wastes(
     registrationDateWaste timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     sellByDateWastetimestamp timestamp NULL,
     quantityWaste DOUBLE NOT NULL,
+    typeWaste TINYINT(1) NOT NULL,
     idUser INT NOT NULL,
     statusWaste TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (idWaste),
     FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION,
     FOREIGN KEY (idUser) REFERENCES users (idUser) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+-- Tipos de mermas:
+-- 1: devolución
+-- 2: accidente
+-- 3: comida de personal
+-- 4: caduco
+
 -- Tabla de detalle de orden con mermas
 CREATE TABLE orderwaste(
     idOrder INT NOT NULL,
@@ -131,19 +152,155 @@ CREATE TABLE orderwaste(
     FOREIGN KEY (idOrder) REFERENCES orders (idOrder) ON DELETE NO ACTION ON UPDATE NO ACTION,
     FOREIGN KEY (idWaste) REFERENCES wastes (idWaste) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+-- Tabla de notificaciones
+CREATE TABLE notifications(
+    typeNotification TINYINT(1) NOT NULL,
+    idSupply INT NOT NULL,
+    registrationDateNotification timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY (idSupply, typeNotification),
+    FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION
+) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+-- Tipos de notificaciones:
+-- 1: inventario
+-- 2: caducidad
 
+-- Triggers
+-- Trigger para actualizar cantidad de insumo cada que se recibe un pedido
+DELIMITER //
+CREATE OR REPLACE TRIGGER acceptRestockSupply AFTER UPDATE ON restocksupply FOR EACH ROW 
+    BEGIN
+        DECLARE quantity DOUBLE;
+        IF NEW.statusRestockSupply = 5 THEN
+            SELECT quantitySupply INTO quantity FROM supplies WHERE idSupply=NEW.idSupply;
+            SET quantity = NEW.quantityRestockSupply + quantity;
+            UPDATE supplies SET quantitySupply=quantity WHERE idSupply=NEW.idSupply;
+        END IF;
+    END//
+DELIMITER ;
+-- Trigger para actualizar cantidad de insumo cada que se inserta un insumo a una orden
+DELIMITER //
+CREATE OR REPLACE TRIGGER insertOrderSupply AFTER INSERT ON ordersupply FOR EACH ROW 
+    BEGIN
+        DECLARE quantity DOUBLE;
+        DECLARE minquantity DOUBLE;
+        SELECT quantitySupply, minQuantitySupply INTO quantity, minquantity FROM supplies WHERE idSupply=NEW.idSupply;
+        SET quantity = quantity - NEW.quantityOrderSupply;
+        UPDATE supplies SET quantitySupply=quantity WHERE idSupply=NEW.idSupply;
+        IF quantity <= minquantity THEN
+            INSERT INTO notifications VALUES (1, NEW.idSupply, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotification=current_timestamp();
+        END IF;
+    END//
+DELIMITER ;
+-- Trigger para actualizar cantidad de insumo cada que se actualiza un insumo de una orden
+DELIMITER //
+CREATE OR REPLACE TRIGGER updateOrderSupply AFTER UPDATE ON ordersupply FOR EACH ROW 
+    BEGIN
+        DECLARE quantity DOUBLE;
+        DECLARE minquantity DOUBLE;
+        SELECT quantitySupply, minQuantitySupply INTO quantity, minquantity FROM supplies WHERE idSupply=NEW.idSupply;
+        SET quantity = quantity + OLD.quantityOrderSupply - NEW.quantityOrderSupply;
+        UPDATE supplies SET quantitySupply=quantity WHERE idSupply=NEW.idSupply;
+        IF quantity <= minquantity THEN
+            INSERT INTO notifications VALUES (1, NEW.idSupply, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotification=current_timestamp();
+        END IF;
+    END//
+DELIMITER ;
+-- Trigger para actualizar cantidad de insumo cada que se elimina un insumo de una orden
+DELIMITER //
+CREATE OR REPLACE TRIGGER deleteOrderSupply AFTER DELETE ON ordersupply FOR EACH ROW 
+    BEGIN
+        DECLARE quantity DOUBLE;
+        SELECT quantitySupply INTO quantity FROM supplies WHERE idSupply=OLD.idSupply;
+        SET quantity = quantity + OLD.quantityOrderSupply;
+        UPDATE supplies SET quantitySupply=quantity WHERE idSupply=OLD.idSupply;
+    END//
+DELIMITER ;
+-- Trigger para actualizar cantidad de merma cada que se inserta una merma a una orden
+DELIMITER //
+CREATE OR REPLACE TRIGGER insertOrderWaste AFTER INSERT ON orderwaste FOR EACH ROW 
+    BEGIN
+        DECLARE quantity DOUBLE;
+        SELECT quantityWaste INTO quantity FROM wastes WHERE idWaste=NEW.idWaste;
+        SET quantity = quantity - NEW.quantityOrderWaste;
+        UPDATE wastes SET quantityWaste=quantity WHERE idWaste=NEW.idWaste;
+    END//
+DELIMITER ;
+-- Trigger para actualizar cantidad de merma cada que se actualiza una merma de una orden
+DELIMITER //
+CREATE OR REPLACE TRIGGER updateOrderWaste AFTER UPDATE ON orderwaste FOR EACH ROW 
+    BEGIN
+        DECLARE quantity DOUBLE;
+        SELECT quantityWaste INTO quantity FROM wastes WHERE idWaste=NEW.idWaste;
+        SET quantity = quantity + OLD.quantityOrderWaste - NEW.quantityOrderWaste;
+        UPDATE wastes SET quantityWaste=quantity WHERE idWaste=NEW.idWaste;
+    END//
+DELIMITER ;
+-- Trigger para actualizar cantidad de merma cada que se elimina una merma de una orden
+DELIMITER //
+CREATE OR REPLACE TRIGGER deleteOrderWaste AFTER DELETE ON orderwaste FOR EACH ROW 
+    BEGIN
+        DECLARE quantity DOUBLE;
+        SELECT quantityWaste INTO quantity FROM wastes WHERE idWaste=OLD.idWaste;
+        SET quantity = quantity + OLD.quantityOrderWaste;
+        UPDATE wastes SET quantityWaste=quantity WHERE idWaste=OLD.idWaste;
+    END//
+DELIMITER ;
+-- Trigger para actualizar cantidad de insumo cada que se inserta una merma
+DELIMITER //
+CREATE OR REPLACE TRIGGER insertWaste AFTER INSERT ON wastes FOR EACH ROW 
+    BEGIN
+        DECLARE quantity DOUBLE;
+        SELECT quantitySupply INTO quantity FROM supplies WHERE idSupply=NEW.idSupply;
+        SET quantity = quantity - NEW.quantityWaste;
+        UPDATE supplies SET quantitySupply=quantity WHERE idSupply=NEW.idSupply;
+    END//
+DELIMITER ;
+-- Trigger para actualizar cantidad de insumo cada que se actualiza una merma
+DELIMITER //
+CREATE OR REPLACE TRIGGER updateWaste AFTER UPDATE ON wastes FOR EACH ROW 
+    BEGIN
+        DECLARE quantity DOUBLE;
+        SELECT quantitySupply INTO quantity FROM supplies WHERE idSupply=OLD.idSupply;
+        IF NEW.statusWaste = 0 THEN
+            SET quantity = quantity + OLD.quantityWaste;
+        ELSE
+            SET quantity = quantity + OLD.quantityWaste - NEW.quantityWaste;
+        END IF;
+        UPDATE supplies SET quantitySupply=quantity WHERE idSupply=OLD.idSupply;
+    END//
+DELIMITER ;
 
--- Crear evento o trigger para actualizar la cantidad una vez que se recibió el pedido 
--- trigger para disminuir cantidad de inusmo por cada orden 
--- evento para disminuir cantidad de insumo por mermas y crear la merma de almacenamiento
+-- Procedimientos
+-- Procedimiento para alertas de caducidad
+DELIMITER //
+CREATE OR REPLACE PROCEDURE createnotifications ()
+    BEGIN
+        DECLARE id INTEGER;
+        DECLARE sellByDate date;
+        DECLARE beforeSellByDate date;
+        DECLARE dat date;
+        DECLARE fin INTEGER DEFAULT 0;
+        -- Declarar cursor
+        DECLARE st_cursor CURSOR FOR SELECT n.idSupply, DATE_FORMAT(DATE_SUB(n.sellByDateRestockSupply, INTERVAL 2 DAY), '%Y-%m-%d') as beforeSellByDateRestockSupply, DATE_FORMAT(sellByDateRestockSupply, '%Y-%m-%d') as SellByDateRestockSupply FROM (SELECT rs.idSupply, rs.sellByDateRestockSupply FROM restocksupply as rs GROUP BY rs.idSupply, rs.sellByDateRestockSupply) as n GROUP BY n.idSupply;
+        -- Condición de salida
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin=1;
+        SET dat = DATE_FORMAT(NOW(), '%Y-%m-%d');
+        OPEN st_cursor;
+        st: LOOP
+            FETCH st_cursor INTO id, beforeSellByDate, sellByDate;
+            IF fin = 1 THEN
+                LEAVE st;
+            END IF;
+            IF dat >= beforeSellByDate AND dat <= sellByDate THEN
+                INSERT INTO notifications VALUES (2, id, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotification=current_timestamp();
+            END IF;
+        END LOOP st;
+        CLOSE st_cursor;
+        SELECT 200;
+    END//
+DELIMITER ;
 
--- Trigger para actualizar cantidad de insumo cada que se inserta en restocksupply
--- DELIMITER //
--- CREATE OR REPLACE TRIGGER insertQuantitySupply AFTER INSERT ON restocksupply FOR EACH ROW 
---     BEGIN
---         DECLARE quantity INT;
---         SELECT quantitySupply INTO quantity FROM supplies WHERE idSupply=NEW.idSupply;
---         SET quantity = NEW.quantityRestockSupply + quantity;
---         UPDATE supplies SET quantitySupply=quantity WHERE idSupply=NEW.idSupply;
---     END//
--- DELIMITER ;
+-- Eventos
+-- Evento para ejecutar el procedimientos para generar alertas de caducidad, cada dia a las 3am
+CREATE EVENT createnotifications ON SCHEDULE EVERY 1 DAY STARTS '2019-11-05 03:00:00'
+DO CALL createnotifications();

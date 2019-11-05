@@ -14,10 +14,10 @@ INSERT INTO supplies (idSupply, nameSupply, minQuantitySupply, maxQuantitySupply
 INSERT INTO recipes VALUES (NULL, 'chocomilk', 'recipes/default.jpg', 'sdfghj', NULL, 1);
 
 -- insumo de la receta
-INSERT INTO recipesupply VALUES (1, 1, 2);
+INSERT INTO recipesupply VALUES (1, 1, 2), (1, 2, 2);
 
 -- restock
 INSERT INTO restock VALUES (NULL, current_timestamp(), 1, 1);
 
 -- insumo de restock
-INSERT INTO restocksupply VALUES (1, 1, 5, 21, NULL, NULL, 1, 1, NULL);
+INSERT INTO restocksupply VALUES (1, 1, 5, 21, NULL, NULL, 1, 1, 'asdfghjkl');
