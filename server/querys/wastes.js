@@ -1,9 +1,9 @@
 var con = require('../DB/connection')
 
 function insertWaste(req, res) {
-    con.query(`INSERT INTO wastes(idSupply, quantityWaste, idUser, sellByDateWastetimestamp) 
-        VALUES(?, ?, ?, ?)`, 
-        [req.body.id, req.body.quantity, req.body.idUser, req.body.sellByDate], 
+    con.query(`INSERT INTO wastes(idSupply, quantityWaste, typeWaste, idUser, sellByDateWastetimestamp) 
+        VALUES(?, ?, ?, ?, ?)`, 
+        [req.body.id, req.body.quantity, requ.body.type, req.body.idUser, req.body.sellByDate], 
         function (err, result) {
             if (err) {
                 console.log("Error" , err)
@@ -19,7 +19,7 @@ function insertWaste(req, res) {
 
 function getWastes(req, res) {
     qry = `SELECT idWaste, s.idSupply, sp.nameSupply, registrationDateWaste, sellByDateWastetimestamp,
-    quantityWaste, s.idUser FROM wastes AS s INNER JOIN supplies AS sp ON s.idSupply=sp.idSupply 
+    quantityWaste, typeWaste, s.idUser FROM wastes AS s INNER JOIN supplies AS sp ON s.idSupply=sp.idSupply 
     WHERE statusWaste=1 AND DATE(sellByDateWastetimestamp)>=?`
     values = [dateNow()]
 	con.query(qry, values, function (err, result) {
@@ -34,8 +34,8 @@ function getWastes(req, res) {
 }
 
 function updateWaste(req, res) {
-    con.query("UPDATE wastes SET quantityWaste=?, idUser=?, sellByDateWastetimestamp=? WHERE idWaste=?",
-        [req.body.quantity, req.body.idUser, req.body.sellByDate, req.body.id], 
+    con.query("UPDATE wastes SET quantityWaste=?, typeWaste=?, idUser=?, sellByDateWastetimestamp=? WHERE idWaste=?",
+        [req.body.quantity, req.body.type, req.body.idUser, req.body.sellByDate, req.body.id], 
         function(err, result) {
             if (err) {
                 console.log("Error" , err)
