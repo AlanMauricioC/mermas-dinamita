@@ -121,8 +121,8 @@ class AddWaste extends Component {
                                 <TextField
                                     id="datetime-local"
                                     label="Fecha de caducidad"
-                                    type="datetime-local"
-                                    defaultValue="2019-10-24T10:30"
+                                    type="date"
+                                    defaultValue="2019-10-24"
                                     className={classes.textField}
                                     onChange={handleOnChangeDate}
                                     InputLabelProps={{
