@@ -144,4 +144,7 @@ router.post('/deleteWasteOrder', orders.deleteOrderWaste)
 // Obtiene alarmas de restock y caducidad
 router.get('/alerts', alerts.alerts)
 
+// Eliminar alarma de restock/caducidad
+router.post('/deleteAlert', alerts.deleteAlert)
+
 module.exports = router

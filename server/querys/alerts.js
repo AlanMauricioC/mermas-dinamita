@@ -63,6 +63,29 @@ function alerts (req, res) {
     })
 }
 
+function deleteAlert (req, res) {
+    switch(req.body.type) {
+        case "waste":
+            qry = "DELETE FROM notificationswaste WHERE idWaste=?"
+            break
+        case "supply":
+            qry = "DELETE FROM notificationssupply WHERE idSupply=?"
+            break
+    }
+
+    con.query(qry, values[req.body.id], function(err, result) {
+        if(err) {
+            console.log("Error" , err)
+            res.status(500).json({err})
+        }
+        else {
+            console.log("delete "+result.affectedRows+" notifications"+req.body.type+", ID: "+ req.body.id)
+            res.status(200).json("delete "+result.affectedRows+" notifications"+req.body.type+", ID: "+ req.body.id)
+        }
+    })
+}
+
 module.exports = {
-	alerts
+	alerts,
+    deleteAlert
 }
