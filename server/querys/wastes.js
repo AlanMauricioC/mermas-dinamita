@@ -34,8 +34,8 @@ function getWastes(req, res) {
 }
 
 function updateWaste(req, res) {
-    con.query("UPDATE wastes SET quantityWaste=?, typeWaste=?, idUser=?, sellByDateWastetimestamp=? WHERE idWaste=?",
-        [req.body.quantity, req.body.type, req.body.idUser, req.body.sellByDate, req.body.id], 
+    con.query("UPDATE wastes SET quantityWaste=?, typeWaste=?, idUser=? WHERE idWaste=?",
+        [req.body.quantity, req.body.type, req.body.idUser, req.body.id], 
         function(err, result) {
             if (err) {
                 console.log("Error" , err)
