@@ -85,11 +85,8 @@ const details=[
 ]
 export const data=[
     { 
-        idRestock: 1, 
-        statusRestock: 1, 
-        registrationDateRestock: "14/05/1987", 
-        total: "$50,000", 
-        supplies: details
+        id: 0, 
+        name: "Pieza"
     },
 ]
 

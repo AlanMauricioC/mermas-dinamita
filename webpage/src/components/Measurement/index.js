@@ -16,9 +16,12 @@ class Table extends Component {
     }
   }
   async getData() {
+    const unidades = await getUnits();
+    this.setState({ data: unidades});
+/*  
     getUnits().then(({units}) => {
         this.setState({ data: units })
-      })
+      })*/
   }
   componentDidMount() {
     this.getData();
@@ -62,8 +65,9 @@ class Table extends Component {
                     setTimeout(() => {
                         {
                             const data = this.state.data;
-                            data.push(newData);
-                            var unidad = {'name':newData.name};
+                            console.log(newData);
+                            //data.push(newData);
+                            var unidad = {'name': newData.name};
 
                             insertUnit(unidad);
                             this.setState({ data }, () => resolve());

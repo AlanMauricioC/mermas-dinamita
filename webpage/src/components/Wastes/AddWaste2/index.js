@@ -2,8 +2,6 @@ import React, { Component, useState }from 'react'
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core'
 import { getSupplies } from '../../../services/supplies';
 import 'date-fns';
-import DateFnsUtils from '@date-io/date-fns';
-import {MuiPickersUtilsProvider,KeyboardTimePicker,KeyboardDatePicker,} from '@material-ui/pickers';
 import { insertWaste} from '../../../services/wastes';
 import withStyles from '@material-ui/core/styles/withStyles'
 
