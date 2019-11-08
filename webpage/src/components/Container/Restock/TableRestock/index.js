@@ -46,7 +46,7 @@ class TableRestock extends Component {
 
     render() {
         const {classes}=this.props;
-        if(this.state.action) return (<ActionRestock action={this.state.action} changeEditState={this.changeEditState}/>);
+        if(this.state.action) return (<ActionRestock action={this.state.action} changeEditState={this.changeEditState} restockData={this.state.restockData}/>);
         else return (
             <div>
                 <MaterialTable
