@@ -5,25 +5,33 @@ import {
 	DialogContent,
 	DialogTitle,
 	FormControl,
+	FormControlLabel,
 	Grid,
 	InputLabel,
 	MenuItem,
 	Select,
-	TextField,
-	withStyles,
 	Switch,
-	FormControlLabel
+	TextField,
+	withStyles
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import alertifyjs from 'alertifyjs';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { setRecipes, updateRecipe } from '../../../../actions';
-import { getRecipes, insertRecipes, updateRecipes as updateService,deleteRecipeSupply,insertRecipeSupply } from '../../../../services/recipes';
+import {
+	deleteRecipeSupply,
+	getRecipes,
+	insertRecipes,
+	insertRecipeSupply,
+	updateRecipes as updateService,
+	updateSupplyRecipe
+} from '../../../../services/recipes';
 import { getSupplies } from '../../../../services/supplies';
 import { getUnits } from '../../../../services/units';
 import { validateText } from '../../../../services/validations';
 import OptionSupply from './OptionSupply';
+import imgPlaceHolder from './placeholder-image.png';
 
 const styles = (theme) => ({
 	media: {
@@ -34,8 +42,8 @@ const styles = (theme) => ({
 		color: 'white'
 	},
 	button: {
-		margin: theme.spacing.unit,
-		width: '100%'
+		margin: 50,
+		width: '80%'
 	},
 	input: {
 		padding: 10,
@@ -43,10 +51,13 @@ const styles = (theme) => ({
 	},
 	select: {
 		width: '100%'
+	},
+	files: {
+		display: 'none'
 	}
 });
 
-class DialogUpdateRecipe extends Component {
+class DialogUpdateRecipe extends PureComponent {
 	constructor(props) {
 		super(props);
 		const {
@@ -57,17 +68,18 @@ class DialogUpdateRecipe extends Component {
 				nameSupply = '',
 				supplies = [],
 				idSupply,
-				status = 1
+				status = 1,
+				imageRecipe
 			}
 		} = props;
 		this.state = {
 			recipe: {
 				detailRecipe,
 				idRecipe,
-				idRecipe,
 				nameRecipe,
 				nameSupply,
 				supplies,
+				image: imageRecipe,
 				idSupply,
 				status
 			},
@@ -83,9 +95,9 @@ class DialogUpdateRecipe extends Component {
 	async componentDidMount() {
 		const units = await getUnits();
 		const { supplies } = await getSupplies();
-
+		if (!supplies) return;
+		supplies.map((supply) => (supply.quantity = 1));
 		this.setState({ units, supplies });
-		console.log('supplies', this.state.supplies);
 	}
 
 	componentDidUpdate(prevProps, prevState) {
@@ -98,7 +110,8 @@ class DialogUpdateRecipe extends Component {
 				nameSupply = '',
 				supplies = [],
 				idSupply,
-				status=1,
+				statusRecipe: status = 1,
+				imageRecipe
 			}
 		} = this.props;
 
@@ -108,12 +121,14 @@ class DialogUpdateRecipe extends Component {
 				idRecipe,
 				idSupply,
 				nameRecipe,
+				image: imageRecipe,
 				nameSupply,
-				supplies
+				supplies,
+				statusRecipe: status
 			},
 			isSupply: !!idSupply,
 			isUpdate: !!idRecipe,
-			isEnable: status === 1,
+			isEnable: status === 1
 		});
 		console.log(this.state.recipe);
 	}
@@ -151,7 +166,7 @@ class DialogUpdateRecipe extends Component {
 			supplies.push(supply);
 			this.setState({ recipe: { ...this.state.recipe, supplies } });
 			if (this.state.isUpdate) {
-				insertRecipeSupply(this.state.recipe.idRecipe,idSupply,1)
+				insertRecipeSupply(this.props.recipe.idRecipe, idSupply, 1);
 			}
 		};
 
@@ -163,8 +178,19 @@ class DialogUpdateRecipe extends Component {
 			const supplies = this.state.recipe.supplies.filter((supply) => idSupply !== supply.id);
 			this.setState({ recipe: { ...this.state.recipe, supplies } });
 			if (this.state.isUpdate) {
-				deleteRecipeSupply(this.state.recipe.idRecipe,idSupply)
+				deleteRecipeSupply(this.props.recipe.idRecipe, idSupply);
 			}
+		};
+
+		/**
+		 * elimina insumos de la lista de la receta
+		 * @param {Object} supplyToUpdate insumo a actualiza de la lista de la receta
+		 */
+		const handleUpdateSupply = (supplyToUpdate) => {
+			const supplies = this.state.recipe.supplies.map(
+				(supply) => (supply.id === supplyToUpdate.id ? supplyToUpdate : supply)
+			);
+			this.setState({ recipe: { ...this.state.recipe, supplies } });
 		};
 
 		/**
@@ -181,12 +207,17 @@ class DialogUpdateRecipe extends Component {
 		 */
 		const handleOnEnter = (ev) => {
 			if (ev.key === 'Enter') {
-				const enter = this.state.isUpdate? updateRecipe : createRecipe;
+				const enter = this.state.isUpdate ? updateRecipe : createRecipe;
 				enter();
 				ev.preventDefault();
 			}
 		};
 
+		const handleOnChangeImage = (event) => {
+			const file = event.target.files[0];
+			const image = URL.createObjectURL(file);
+			this.setState({ recipe: { ...this.state.recipe, image, file } });
+		};
 		const handleSwitchSupply = (e) => {
 			this.setState({ isSupply: !this.state.isSupply });
 		};
@@ -195,8 +226,16 @@ class DialogUpdateRecipe extends Component {
 		};
 		/**llama al servidor para actualizar una receta*/
 		const updateRecipe = async () => {
-			console.log('actualizar receta');
+			for (const supplyToUpdate of this.state.recipe.supplies) {
+				updateSupplyRecipe(supplyToUpdate.quantity, this.props.recipe.idRecipe, supplyToUpdate.id);
+			}
 			const { recipe } = this.state;
+			recipe.imageRecipe = recipe.image;
+			recipe.statusRecipe = this.state.isEnable ? 1 : 2;
+			if (!this.state.isSupply) {
+				recipe.idSupply = null;
+			}
+			console.log(recipe);
 			const updated = await updateService(recipe);
 			alertifyjs.set('notifier', 'position', 'bottom-center');
 			if (updated) {
@@ -216,6 +255,10 @@ class DialogUpdateRecipe extends Component {
 				return;
 			}
 			recipe.idUser = 1; // esto no debe de ser así :0!!
+			recipe.statusRecipe = this.state.isEnable ? 1 : 2;
+			if (!this.state.isSupply) {
+				recipe.idSupply = null;
+			}
 			const inserted = await insertRecipes(recipe);
 			alertifyjs.set('notifier', 'position', 'bottom-center');
 			if (inserted) {
@@ -257,12 +300,39 @@ class DialogUpdateRecipe extends Component {
 				fullScreen
 			>
 				<DialogTitle id="form-dialog-title" className={classes.top}>
-					{this.state.recipe.idRecipe ? 'Modificar' : 'Crear'} Receta
+					{this.props.recipe.idRecipe ? 'Modificar' : 'Crear'} Receta
 				</DialogTitle>
 				<DialogContent>
 					<Grid container alignItems={'center'}>
-						<Grid item container xs={12} direction="row" justify="flex-end" alignItems="center">
-							<Grid item>
+						<Grid item container xs={12} direction="row" justify="flex-start" alignItems="flex-start">
+							<Grid item xs={4}>
+								<img
+									src={this.state.recipe.image || imgPlaceHolder}
+									alt={this.state.recipe.nameRecipe}
+									className={classes.media}
+								/>
+							</Grid>
+							<Grid item xs={6}>
+								<input
+									accept="image/*"
+									className={classes.files}
+									id="raised-button-file"
+									multiple
+									type="file"
+									onChange={handleOnChangeImage}
+								/>
+								<label htmlFor="raised-button-file">
+									<Button
+										component="span"
+										variant="contained"
+										color="primary"
+										className={classes.button}
+									>
+										Subir archivo
+									</Button>
+								</label>
+							</Grid>
+							<Grid item xs={2}>
 								<FormControlLabel
 									control={
 										<Switch
@@ -341,7 +411,12 @@ class DialogUpdateRecipe extends Component {
 						</Grid>
 						<Grid item xs={12}>
 							{this.state.recipe.supplies.map((supply) => (
-								<OptionSupply supply={supply} key={supply.id} handleDeleteSupply={handleDeleteSupply} />
+								<OptionSupply
+									supply={supply}
+									key={supply.id}
+									handleDeleteSupply={handleDeleteSupply}
+									handleUpdateSupply={handleUpdateSupply}
+								/>
 							))}
 						</Grid>
 						<Grid item className={classes.input} xs={12} md={8}>
@@ -386,7 +461,7 @@ class DialogUpdateRecipe extends Component {
 						Cancelar
 					</Button>
 					<Button
-						onClick={this.state.recipe.idRecipe ? updateRecipe : createRecipe}
+						onClick={this.props.recipe.idRecipe ? updateRecipe : createRecipe}
 						variant="contained"
 						color="primary"
 					>

@@ -199,7 +199,7 @@ class TableOrderDetail extends Component{
         
         const selectRecipe=
             <div>
-                <h2>Nueva receta</h2>
+                <h2>Nueva orden</h2>
                 <Divider/>
                 <TextField
                     name="selectRecipe"

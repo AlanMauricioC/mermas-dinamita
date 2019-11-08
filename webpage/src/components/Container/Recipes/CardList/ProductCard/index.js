@@ -5,6 +5,7 @@ import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 import CardContent from '@material-ui/core/CardContent';
 import { makeStyles } from '@material-ui/styles';
 import { Grid, Grow, CardMedia, Typography, IconButton } from '@material-ui/core';
+import { SERVER_URL } from "../../../../../constants";
 
 const ProductCard = ({ card, handleOpenDialog, handleDelete }) => {
 	const useStyles = makeStyles({
@@ -20,6 +21,7 @@ const ProductCard = ({ card, handleOpenDialog, handleDelete }) => {
 			paddingTop: '70.25%' // 16:9
 		}
 	});
+console.log('card',card);
 
 	const classes = useStyles();
 	return (
@@ -29,7 +31,7 @@ const ProductCard = ({ card, handleOpenDialog, handleDelete }) => {
 					<CardMedia
                         onClick={e=>handleOpenDialog(card)}
 						className={classes.media}
-						image={`http://lorempixel.com/400/200/cats/${Math.floor(Math.random() * Math.floor(10))}`}
+						image={`${card.imageRecipe}`}
 						title={card.nameRecipe}
 					/>
 					<CardContent>

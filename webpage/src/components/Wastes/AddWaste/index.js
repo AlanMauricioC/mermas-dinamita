@@ -117,7 +117,7 @@ export default function SimpleModal() {
             margin="normal"
             />
           <br/>
-          <Button type="button" color="primary" className={classes.button} variant="contained" onClick={console.log("algo")}>
+          <Button type="button" color="primary" className={classes.button} variant="contained" >
               Agregar
           </Button>
           

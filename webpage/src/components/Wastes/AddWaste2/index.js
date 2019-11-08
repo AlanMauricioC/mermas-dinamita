@@ -2,8 +2,6 @@ import React, { Component, useState }from 'react'
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core'
 import { getSupplies } from '../../../services/supplies';
 import 'date-fns';
-import DateFnsUtils from '@date-io/date-fns';
-import {MuiPickersUtilsProvider,KeyboardTimePicker,KeyboardDatePicker,} from '@material-ui/pickers';
 import { insertWaste} from '../../../services/wastes';
 import withStyles from '@material-ui/core/styles/withStyles'
 
@@ -69,13 +67,13 @@ class AddWaste extends Component {
         }
         const sendData=e=>{
             var datos = { 
-                'idSupply':this.state.selectSupply,
-                'quantityWaste':this.state.quantity,
+                'id':this.state.selectSupply,
+                'quantity':this.state.quantity,
                 'idUser':1,
-                'sellByDateWastetimestamp' : this.state.date,
+                'sellByDate' : this.state.date,
                 
             };
-            console.log(datos);
+            
             insertWaste(datos);
             this.setState({open:false});
         }
@@ -121,8 +119,8 @@ class AddWaste extends Component {
                                 <TextField
                                     id="datetime-local"
                                     label="Fecha de caducidad"
-                                    type="datetime-local"
-                                    defaultValue="2019-10-24T10:30"
+                                    type="date"
+                                    defaultValue="2019-10-24"
                                     className={classes.textField}
                                     onChange={handleOnChangeDate}
                                     InputLabelProps={{

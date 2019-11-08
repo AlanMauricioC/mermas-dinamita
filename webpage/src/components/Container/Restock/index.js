@@ -2,17 +2,21 @@ import React, { Component } from 'react';
 import { Grid, Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from './Table';
-import DialogCreate from './DialogCreate'
-//Este no debería ser orders, debería ser restock pero ya es muy noche u.u
+import TableRestock from './TableRestock';
+
 const useStyles = makeStyles(theme => ({
     root: {
         flexGrow: 1,
+        //backgroundColor: theme.palette.background.paper,
+        //width: 500,
+        //position: 'relative',
+        //minHeight: 200,
     },
     paper: {
-        padding: theme.spacing(2),
-        textAlign: 'flex-start',
+        padding: theme.spacing(4),
+        textAlign: 'center',
         color: theme.palette.text.secondary,
+        boxShadow: '5px 4px 18px -2px rgba(0,0,0,0.75)',
     },
     fab: {
       position: 'fixed',
@@ -21,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function Orders(){
+export default function Restock(){
     const classes = useStyles();
 
     return(
@@ -31,7 +35,7 @@ export default function Orders(){
                     {/*Pedidos*/}
                 </Grid>
                 <Grid item xs={12}>
-                    <Table classes={classes}/>
+                    <TableRestock classes={classes}/>
                 </Grid>
                 <Grid item xs={12}>
                 </Grid>

@@ -3,13 +3,16 @@ import { Grid, TextField, Typography, Paper, IconButton } from '@material-ui/cor
 import { validateNumber } from '../../../../services/validations';
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
 
-export default function({ supply,handleDeleteSupply }) {
-	const [ state, setState ] = useState({ quantity: supply.quantity||1 });
+export default function({ supply, handleDeleteSupply, handleUpdateSupply }) {
 
+	if (!supply.quantity) {
+		supply.quantity=1
+	}
 	const handleOnChangeNumber = (event) => {
 		const number = event.target.value;
 		if (validateNumber(number, 0)) {
-			setState({ quantity: number });
+			supply.quantity = number;
+			handleUpdateSupply(supply);
 		}
 	};
 	return (
@@ -22,7 +25,7 @@ export default function({ supply,handleDeleteSupply }) {
 				</Grid>
 				<Grid item xs={2}>
 					<TextField
-						value={state.quantity}
+						value={supply.quantity}
 						name="detailRecipe"
 						fullWidth
 						type={'number'}
@@ -32,7 +35,9 @@ export default function({ supply,handleDeleteSupply }) {
 					/>
 				</Grid>
 				<Grid item container xs={1} alignContent={'center'} justify={'flex-start'}>
-					<Typography variant={'body1'}  style={{ padding: 10 }} >{supply.unit}</Typography>
+					<Typography variant={'body1'} style={{ padding: 10 }}>
+						{supply.unit}
+					</Typography>
 				</Grid>
 				<Grid item container xs={2} alignContent={'center'} justify={'center'}>
 					<IconButton

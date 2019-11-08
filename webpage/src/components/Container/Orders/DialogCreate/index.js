@@ -5,6 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import { Grid, Fab, useTheme, makeStyles } from '@material-ui/core';
+import { Link } from "react-router-dom";
 import AddIcon from '@material-ui/icons/Add';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TableSupplies from './TableSupplies'
@@ -18,7 +19,7 @@ function DialogCreate({classes, change}){
 			color: 'white'
 		},
         fab: {
-          position: 'absolute',
+          position: 'fixed',
           bottom: theme.spacing(2),
           right: theme.spacing(2),
         },
@@ -52,9 +53,11 @@ function DialogCreate({classes, change}){
                     <TableSupplies change={change} handleClose={handleClose}/>
                 </DialogContent>
             </Dialog>
-            <Fab aria-label='Add' className={classes2.fab} color='primary' onClick={handleClickOpen}>
-                <AddIcon />
-            </Fab>
+            <Link to={"/nuevoPedido"}>
+                <Fab aria-label='Add' className={classes2.fab} color='primary'>
+                    <AddIcon />
+                </Fab>
+            </Link>
         </div>
     );
 }

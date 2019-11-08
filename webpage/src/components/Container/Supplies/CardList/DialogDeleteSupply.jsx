@@ -16,7 +16,7 @@ const styles = theme => (
 			color: 'white'
 		},
 		button: {
-			margin: theme.spacing.unit,
+			margin: theme.spacing(1),
 		},
 		input: {
 			padding: 10,

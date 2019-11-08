@@ -8,3 +8,4 @@ webPage/node_modules/
 .scannerwork/
 
 sonar-project.properties
+server/files/recipes/
