@@ -128,7 +128,7 @@ CREATE TABLE wastes(
     idWaste INT NOT NULL AUTO_INCREMENT,
     idSupply INT NOT NULL,
     registrationDateWaste timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    sellByDateWastetimestamp timestamp NULL,
+    sellByDateWaste timestamp NULL,
     quantityWaste DOUBLE NOT NULL,
     typeWaste TINYINT(1) NOT NULL,
     idUser INT NOT NULL,
@@ -138,10 +138,11 @@ CREATE TABLE wastes(
     FOREIGN KEY (idUser) REFERENCES users (idUser) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
 -- Tipos de mermas:
--- 1: devolución
--- 2: accidente
--- 3: comida de personal
--- 4: caduco
+-- 1: reutilizable
+-- 2: devolución
+-- 3: accidente
+-- 4: comida de personal
+-- 5: caduco
 
 -- Tabla de detalle de orden con mermas
 CREATE TABLE orderwaste(
@@ -152,13 +153,21 @@ CREATE TABLE orderwaste(
     FOREIGN KEY (idOrder) REFERENCES orders (idOrder) ON DELETE NO ACTION ON UPDATE NO ACTION,
     FOREIGN KEY (idWaste) REFERENCES wastes (idWaste) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
--- Tabla de notificaciones
-CREATE TABLE notifications(
+-- Tabla de notificaciones de insumos
+CREATE OR REPLACE TABLE notificationsSupply(
     typeNotification TINYINT(1) NOT NULL,
     idSupply INT NOT NULL,
-    registrationDateNotification timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    registrationDateNotifSupply timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (idSupply, typeNotification),
     FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION
+) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+-- Tabla de notificaciones de mermas
+CREATE TABLE notificationsWaste(
+    typeNotification TINYINT(1) NOT NULL,
+    idWaste INT NOT NULL,
+    registrationDateNotifWaste timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY (idWaste, typeNotification),
+    FOREIGN KEY (idWaste) REFERENCES wastes (idWaste) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
 -- Tipos de notificaciones:
 -- 1: inventario
@@ -187,7 +196,7 @@ CREATE OR REPLACE TRIGGER insertOrderSupply AFTER INSERT ON ordersupply FOR EACH
         SET quantity = quantity - NEW.quantityOrderSupply;
         UPDATE supplies SET quantitySupply=quantity WHERE idSupply=NEW.idSupply;
         IF quantity <= minquantity THEN
-            INSERT INTO notifications VALUES (1, NEW.idSupply, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotification=current_timestamp();
+            INSERT INTO notificationsSupply VALUES (1, NEW.idSupply, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotifSupply=current_timestamp();
         END IF;
     END//
 DELIMITER ;
@@ -201,7 +210,7 @@ CREATE OR REPLACE TRIGGER updateOrderSupply AFTER UPDATE ON ordersupply FOR EACH
         SET quantity = quantity + OLD.quantityOrderSupply - NEW.quantityOrderSupply;
         UPDATE supplies SET quantitySupply=quantity WHERE idSupply=NEW.idSupply;
         IF quantity <= minquantity THEN
-            INSERT INTO notifications VALUES (1, NEW.idSupply, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotification=current_timestamp();
+            INSERT INTO notificationsSupply VALUES (1, NEW.idSupply, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotifSupply=current_timestamp();
         END IF;
     END//
 DELIMITER ;
@@ -271,9 +280,9 @@ CREATE OR REPLACE TRIGGER updateWaste AFTER UPDATE ON wastes FOR EACH ROW
 DELIMITER ;
 
 -- Procedimientos
--- Procedimiento para alertas de caducidad
+-- Procedimiento para alertas de caducidad insumos
 DELIMITER //
-CREATE OR REPLACE PROCEDURE createnotifications ()
+CREATE OR REPLACE PROCEDURE createnotificationsupply ()
     BEGIN
         DECLARE id INTEGER;
         DECLARE sellByDate date;
@@ -281,7 +290,7 @@ CREATE OR REPLACE PROCEDURE createnotifications ()
         DECLARE dat date;
         DECLARE fin INTEGER DEFAULT 0;
         -- Declarar cursor
-        DECLARE st_cursor CURSOR FOR SELECT n.idSupply, DATE_FORMAT(DATE_SUB(n.sellByDateRestockSupply, INTERVAL 2 DAY), '%Y-%m-%d') as beforeSellByDateRestockSupply, DATE_FORMAT(sellByDateRestockSupply, '%Y-%m-%d') as SellByDateRestockSupply FROM (SELECT rs.idSupply, rs.sellByDateRestockSupply FROM restocksupply as rs GROUP BY rs.idSupply, rs.sellByDateRestockSupply) as n GROUP BY n.idSupply;
+        DECLARE st_cursor CURSOR FOR SELECT n.idSupply, DATE_FORMAT(DATE_SUB(n.sellByDateRestockSupply, INTERVAL 2 DAY), '%Y-%m-%d') as beforeSellByDateRestockSupply, DATE_FORMAT(sellByDateRestockSupply, '%Y-%m-%d') as SellByDateRestockSupply FROM (SELECT rs.idSupply, rs.sellByDateRestockSupply FROM restocksupply as rs WHERE rs.statusRestockSupply=1 AND rs.quantityRestockSupply>0 GROUP BY rs.idSupply, rs.sellByDateRestockSupply) as n GROUP BY n.idSupply;
         -- Condición de salida
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin=1;
         SET dat = DATE_FORMAT(NOW(), '%Y-%m-%d');
@@ -292,7 +301,35 @@ CREATE OR REPLACE PROCEDURE createnotifications ()
                 LEAVE st;
             END IF;
             IF dat >= beforeSellByDate AND dat <= sellByDate THEN
-                INSERT INTO notifications VALUES (2, id, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotification=current_timestamp();
+                INSERT INTO notificationsSupply VALUES (2, id, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotifSupply=current_timestamp();
+            END IF;
+        END LOOP st;
+        CLOSE st_cursor;
+        SELECT 200;
+    END//
+DELIMITER ;
+-- Procedimiento para alertas de caducidad mermas
+DELIMITER //
+CREATE OR REPLACE PROCEDURE createnotificationwaste ()
+    BEGIN
+        DECLARE id INTEGER;
+        DECLARE sellByDate date;
+        DECLARE beforeSellByDate date;
+        DECLARE dat date;
+        DECLARE fin INTEGER DEFAULT 0;
+        -- Declarar cursor
+        DECLARE st_cursor CURSOR FOR SELECT n.idWaste, DATE_FORMAT(DATE_SUB(n.sellByDateWaste, INTERVAL 2 DAY), '%Y-%m-%d') as beforeSellByDateWaste, DATE_FORMAT(sellByDateWaste, '%Y-%m-%d') as sellByDateWaste FROM (SELECT w.idWaste, w.idSupply, w.sellByDateWaste FROM wastes as w WHERE w.quantityWaste>0 AND W.typeWaste=1 AND w.statusWaste=1 GROUP BY w.idSupply, w.sellByDateWaste) as n GROUP BY n.idSupply;
+        -- Condición de salida
+        DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin=1;
+        SET dat = DATE_FORMAT(NOW(), '%Y-%m-%d');
+        OPEN st_cursor;
+        st: LOOP
+            FETCH st_cursor INTO id, beforeSellByDate, sellByDate;
+            IF fin = 1 THEN
+                LEAVE st;
+            END IF;
+            IF dat >= beforeSellByDate AND dat <= sellByDate THEN
+                INSERT INTO notificationsWaste VALUES (2, id, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotifWaste=current_timestamp();
             END IF;
         END LOOP st;
         CLOSE st_cursor;
@@ -301,6 +338,10 @@ CREATE OR REPLACE PROCEDURE createnotifications ()
 DELIMITER ;
 
 -- Eventos
--- Evento para ejecutar el procedimientos para generar alertas de caducidad, cada dia a las 3am
-CREATE EVENT createnotifications ON SCHEDULE EVERY 1 DAY STARTS '2019-11-05 03:00:00'
-DO CALL createnotifications();
+-- Evento para ejecutar el procedimiento para generar alertas de caducidad de insumos, cada dia a las 3am
+CREATE EVENT createnotificationsupply ON SCHEDULE EVERY 1 DAY STARTS '2019-11-05 03:00:00'
+DO CALL createnotificationsupply();
+
+-- Evento para ejecutar el procedimiento para generar alertas de caducidad de mermas, cada dia a las 3:30am
+CREATE EVENT createnotificationswaste ON SCHEDULE EVERY 1 DAY STARTS '2019-11-05 03:30:00'
+DO CALL createnotificationwaste();
