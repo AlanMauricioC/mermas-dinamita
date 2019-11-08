@@ -16,7 +16,7 @@ export const getStockNotifications = async () => {
 export const deleteExpirationNotification = async (id) => {
 	//datos default para eliminar notificacion de expiración
 	const type = 'supply';
-	const typeNotification = 1;
+	const typeNotification = 2;
 	try {
 		const response = await fetch(SERVER_URL + `deleteAlert`, {
 			method: 'POST',
@@ -41,7 +41,7 @@ export const deleteExpirationNotification = async (id) => {
 export const deleteStockNotification = async (id) => {
 	//datos default para eliminar notificacion de expiración
 	const type = 'supply';
-	const typeNotification = 2;
+	const typeNotification = 1;
 	try {
 		const response = await fetch(SERVER_URL + `deleteAlert`, {
 			method: 'POST',
