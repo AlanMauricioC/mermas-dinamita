@@ -62,7 +62,7 @@ class Table extends Component {
                         {
                             const data = this.state.data;
                             console.log(newData);
-                            //data.push(newData);
+                            data.push(newData);
                             var unidad = {'name': newData.name};
 
                             insertUnit(unidad);
