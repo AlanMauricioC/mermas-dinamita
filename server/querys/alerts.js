@@ -68,8 +68,8 @@ function deleteAlert (req, res) {
             res.status(500).json({err})
         }
         else {
-            console.log("delete "+result.affectedRows+" notifications"+req.body.type+", ID: "+ req.body.id)
-            res.status(200).json("delete "+result.affectedRows+" notifications"+req.body.type+", ID: "+ req.body.id)
+            console.log("delete "+result.affectedRows+" notifications"+req.body.type+", ID: "+ req.body.id+","+req.body.type)
+            res.status(200).json("delete "+result.affectedRows+" notifications"+req.body.type+", ID: "+ req.body.id+","+req.body.type)
         }
     })
 }
