@@ -19,7 +19,7 @@ class Table extends Component {
   async getData() {
     
     const wastes = await getWastes();
-    this.setState({ data: wastes});
+    this.setState({ data: wastes.wastes});
   }
   componentDidMount() {
     this.getData();

@@ -44,6 +44,7 @@ class AddWaste extends Component {
         this.state = {
             supplies: [],
             quantity:0,
+            type:'',
             date:'2019-10-24T10:30',
             open:false,
         }
@@ -63,6 +64,8 @@ class AddWaste extends Component {
 
 
         const handleOnChangeSupply = (event) => this.setState({ selectSupply: event.target.value });
+
+        const handleOnChangeType = (event) => this.setState({ type: event.target.value });
 
         const handleOnChangeQuantity = (event) => this.setState({quantity:event.target.value});
         const handleOnChangeDate = (event) => this.setState({date:event.target.value});
@@ -98,7 +101,7 @@ class AddWaste extends Component {
                     fullWidth={true}
                     maxWidth={'md'}
                 >
-                    <DialogTitle id="form-dialog-title" className={classes.top}>Eliminar Insumo</DialogTitle>
+                    <DialogTitle id="form-dialog-title" className={classes.top}>Agregar merma</DialogTitle>
                     <DialogContent>
                         <div className={classes.paper}>
                             <h3 id="simple-modal-title">Añadir una nueva merma</h3>
@@ -122,6 +125,35 @@ class AddWaste extends Component {
                                             {name}
                                         </MenuItem>
                                     ))}
+                                </Select>
+                                <InputLabel shrink htmlFor="idSelectType">
+                                    Selecciona el tipo de merma
+								</InputLabel>
+                                <Select 
+                                    displayEmpty
+                                    className={classes.textField}
+                                    name="selectType"
+                                    onChange={handleOnChangeType}
+                                    value={this.state.selectType}
+                                    displayEmpty>
+                                    <MenuItem value={-1}>
+                                        <em>Ninguno</em>
+                                    </MenuItem>
+                                    <MenuItem value={1}>
+                                        <em>Reutilizable</em>
+                                    </MenuItem>
+                                    <MenuItem value={2}>
+                                        <em>Devolución</em>
+                                    </MenuItem>
+                                    <MenuItem value={3}>
+                                        <em>Accidental</em>
+                                    </MenuItem>
+                                    <MenuItem value={4}>
+                                        <em>Comida del personal</em>
+                                    </MenuItem>
+                                    <MenuItem value={5}>
+                                        <em>Caduco</em>
+                                    </MenuItem>
                                 </Select>
                                 <br/>
                                 <TextField
