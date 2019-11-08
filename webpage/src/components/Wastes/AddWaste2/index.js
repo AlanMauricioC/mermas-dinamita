@@ -22,7 +22,7 @@ const styles = theme => ({
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: 300,
+        width: 400,
     },
     button: {
 		margin: theme.spacing.unit,
@@ -81,6 +81,7 @@ class AddWaste extends Component {
             var datos = { 
                 'id':this.state.selectSupply,
                 'quantity':this.state.quantity,
+                'type':this.state.type,
                 'idUser':1,
                 'sellByDate' : this.state.date,
                 
@@ -107,77 +108,94 @@ class AddWaste extends Component {
                     <DialogContent>
                         <div className={classes.paper}>
                             
-                            <FormControl className={classes.select} required>
-                               
-                                <Select
-                                    displayEmpty
-                                    className={classes.textField}
-                                    name="selectSupply"
-                                    onChange={handleOnChangeSupply}
-                                    value={this.state.selectSupply}
-                                    displayEmpty
-                                    
-                                >
-                                    <MenuItem value={-1}>
-                                        <em>Ninguno</em>
-                                    </MenuItem>
-                                    {this.state.supplies.map(({ id, name }) => (
-                                        <MenuItem key={id} value={id}>
-                                            {name}
+                            
+                            <Grid container spacing={1}>
+                                <Grid container item xs={12}>
+                                <FormControl className={classes.select} required>
+                                    <InputLabel shrink htmlFor="idSelectWaste">
+                                        Selecciona un insumo
+                                    </InputLabel>
+                                    <Select
+                                        displayEmpty
+                                        className={classes.textField}
+                                        name="selectSupply"
+                                        id="idSelectWaste"
+                                        onChange={handleOnChangeSupply}
+                                        value={this.state.selectSupply}
+                                        displayEmpty
+                                        
+                                    >
+                                        <MenuItem value={-1}>
+                                            <em>Ninguno</em>
                                         </MenuItem>
-                                    ))}
-                                </Select>
-                                <FormHelperText>Selecciona un insumo</FormHelperText>
+                                        {this.state.supplies.map(({ id, name }) => (
+                                            <MenuItem key={id} value={id}>
+                                                {name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid container item xs={12}>
+                                    <FormControl className={classes.select} required>
+                                        <InputLabel shrink htmlFor="idSelectType">
+                                            Selecciona un tipo de merma
+                                        </InputLabel>
+                                        <Select 
+                                            displayEmpty
+                                            className={classes.textField}
+                                            name="selectType"
+                                            id="idSelectType"
+                                            onChange={handleOnChangeType}
+                                            value={this.state.type}
+                                            displayEmpty>
+                                            <MenuItem value={-1}>
+                                                <em>Ninguno</em>
+                                            </MenuItem>
+                                            <MenuItem id={1} value={1}>
+                                                Reutilizable
+                                            </MenuItem>
+                                            <MenuItem id={2} value={2}>
+                                                Devolución
+                                            </MenuItem>
+                                            <MenuItem id={3} value={3}>
+                                                Accidental
+                                            </MenuItem>
+                                            <MenuItem id={4} value={4}>
+                                                Comida del personal
+                                            </MenuItem>
+                                            <MenuItem id={5} value={5}>
+                                                Caduco
+                                            </MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                    
+                                </Grid>
+                                <Grid container item xs={12}>
+                                    <TextField
+                                        id="datetime-local"
+                                        label="Fecha de caducidad"
+                                        type="date"
+                                        defaultValue="2019-10-24"
+                                        className={classes.textField}
+                                        onChange={handleOnChangeDate}
+                                        InputLabelProps={{
+                                        shrink: true,
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid container item xs={12}>
+                                    <TextField
+                                        id="standard-name"
+                                        label="Cantidad"
+                                        className={classes.textField}
+                                        onChange={handleOnChangeQuantity}
+                                        margin="normal"
+                                    />
+                                </Grid>
+                            </Grid>
                                 
-                                
-                                <Select 
-                                    displayEmpty
-                                    className={classes.textField}
-                                    name="selectType"
-                                    onChange={handleOnChangeType}
-                                    value={this.state.selectType}
-                                    displayEmpty>
-                                    <MenuItem value={-1}>
-                                        <em>Ninguno</em>
-                                    </MenuItem>
-                                    <MenuItem value={1}>
-                                        <em>Reutilizable</em>
-                                    </MenuItem>
-                                    <MenuItem value={2}>
-                                        <em>Devolución</em>
-                                    </MenuItem>
-                                    <MenuItem value={3}>
-                                        <em>Accidental</em>
-                                    </MenuItem>
-                                    <MenuItem value={4}>
-                                        <em>Comida del personal</em>
-                                    </MenuItem>
-                                    <MenuItem value={5}>
-                                        <em>Caduco</em>
-                                    </MenuItem>
-                                </Select>
-                                <FormHelperText>Selecciona el tipo de merma</FormHelperText>
-                                <br/>
-                                <TextField
-                                    id="datetime-local"
-                                    label="Fecha de caducidad"
-                                    type="date"
-                                    defaultValue="2019-10-24"
-                                    className={classes.textField}
-                                    onChange={handleOnChangeDate}
-                                    InputLabelProps={{
-                                    shrink: true,
-                                    }}
-                                />
-                                <TextField
-                                    id="standard-name"
-                                    label="Cantidad"
-                                    className={classes.textField}
-                                    onChange={handleOnChangeQuantity}
-                                    margin="normal"
-                                />
-                            </FormControl>
-                            <br />
+                               
                         </div>
                     </DialogContent>
                     <DialogActions>
