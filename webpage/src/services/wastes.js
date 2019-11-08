@@ -43,6 +43,7 @@ export const headCells =
     { title: 'Fecha', field: 'registrationDateWaste', type: 'datetime',editable: 'never'},
     { title: 'Fecha de caducidad', field: 'sellByDateWaste', type: 'datetime',editable: 'never' },
     { title: 'Cantidad', field: 'quantityWaste', type:'double'},
+    { title: 'Tipo de merma', field: 'typeWaste', type:'double',lookup:{1:'reutilizable',2:'devolución',3:'accidente',4:'comida del personal',5:'caduco'}, editable:'never'},
     { title: 'Nombre del empleado', field: 'idUser',editable: 'never'},    
 ]
 
