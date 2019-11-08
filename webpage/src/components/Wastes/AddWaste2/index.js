@@ -1,6 +1,8 @@
 import React, { Component, useState }from 'react'
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import Grid from '@material-ui/core/Grid';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core'
 import { getSupplies } from '../../../services/supplies';
 import 'date-fns';
@@ -104,11 +106,9 @@ class AddWaste extends Component {
                     <DialogTitle id="form-dialog-title" className={classes.top}>Agregar merma</DialogTitle>
                     <DialogContent>
                         <div className={classes.paper}>
-                            <h3 id="simple-modal-title">Añadir una nueva merma</h3>
+                            
                             <FormControl className={classes.select} required>
-                                <InputLabel shrink htmlFor="idSelectUnit">
-                                    Agregar un insumo
-								</InputLabel>
+                               
                                 <Select
                                     displayEmpty
                                     className={classes.textField}
@@ -116,6 +116,7 @@ class AddWaste extends Component {
                                     onChange={handleOnChangeSupply}
                                     value={this.state.selectSupply}
                                     displayEmpty
+                                    
                                 >
                                     <MenuItem value={-1}>
                                         <em>Ninguno</em>
@@ -126,9 +127,9 @@ class AddWaste extends Component {
                                         </MenuItem>
                                     ))}
                                 </Select>
-                                <InputLabel shrink htmlFor="idSelectType">
-                                    Selecciona el tipo de merma
-								</InputLabel>
+                                <FormHelperText>Selecciona un insumo</FormHelperText>
+                                
+                                
                                 <Select 
                                     displayEmpty
                                     className={classes.textField}
@@ -155,6 +156,7 @@ class AddWaste extends Component {
                                         <em>Caduco</em>
                                     </MenuItem>
                                 </Select>
+                                <FormHelperText>Selecciona el tipo de merma</FormHelperText>
                                 <br/>
                                 <TextField
                                     id="datetime-local"
