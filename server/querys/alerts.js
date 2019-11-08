@@ -10,7 +10,6 @@ function alerts (req, res) {
             res.status(500).json({err})
         }
         else {
-            console.log(result)
             result.forEach(element => {
                 var alert = {}
                 switch (element.typeNotification) {
@@ -31,7 +30,7 @@ function alerts (req, res) {
                 }
             })
 
-            con.query("SELECT nw.idWaste AS id, typeNotification, DATE_FORMAT(registrationDateNotifWaste, '%Y-%m-%d') AS `date`, nameSupply AS name, quantityWaste AS quantity FROM notificationswaste AS nw INNER JOIN wastes AS w ON nw.idWaste=w.idWaste INNER JOIN supplies AS s ON w.idSupply=s.idSupply", function(err, result) {
+            con.query("SELECT nw.idWaste AS id, DATE_FORMAT(registrationDateNotifWaste, '%Y-%m-%d') AS `date`, nameSupply AS name, quantityWaste AS quantity FROM notificationswaste AS nw INNER JOIN wastes AS w ON nw.idWaste=w.idWaste INNER JOIN supplies AS s ON w.idSupply=s.idSupply", function(err, result) {
                 if(err) {
                     console.log("Error" , err)
                     res.status(500).json({err})
@@ -45,9 +44,7 @@ function alerts (req, res) {
                         alert.date = element.date
                         expirationAlerts.push(alert)
                     })
-                    
-            
-            console.log(restockAlerts, expirationAlerts)
+
                     res.status(200).json({ restockAlerts: restockAlerts, expirationAlerts: expirationAlerts})
                 }
             })
