@@ -3,7 +3,7 @@ var con = require('../DB/connection')
 function insertWaste(req, res) {
     con.query(`INSERT INTO wastes(idSupply, quantityWaste, typeWaste, idUser, sellByDateWaste) 
         VALUES(?, ?, ?, ?, ?)`, 
-        [req.body.id, req.body.quantity, requ.body.type, req.body.idUser, req.body.sellByDate], 
+        [req.body.id, req.body.quantity, req.body.type, req.body.idUser, req.body.sellByDate], 
         function (err, result) {
             if (err) {
                 console.log("Error" , err)
