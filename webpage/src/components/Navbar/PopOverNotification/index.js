@@ -1,7 +1,13 @@
 import React, { PureComponent } from 'react';
 import { Popover, Grid, Divider, Typography, Button } from '@material-ui/core';
 import StockNotification from './StockNotification';
-import { getStockNotifications } from '../../../services/notifications';
+import ExpirationNotification from './ExpirationNotification';
+import {
+	getStockNotifications,
+	deleteExpirationNotification,
+	deleteStockNotification
+} from '../../../services/notifications';
+import alertifyjs from 'alertifyjs';
 
 class PopOverNotification extends PureComponent {
 	constructor(props) {
@@ -14,10 +20,11 @@ class PopOverNotification extends PureComponent {
 
 	async setStockNotifications() {
 		try {
-			const stockNotifications = await getStockNotifications();
+			const { restockAlerts, expirationAlerts } = await getStockNotifications();
 			//aquí va el otro ws
-			const stock = Array.isArray(stockNotifications) ? stockNotifications : [];
-			this.setState({ stock });
+			const stock = Array.isArray(restockAlerts) ? restockAlerts : [];
+			const expiration = Array.isArray(expirationAlerts) ? expirationAlerts : [];
+			this.setState({ stock, expiration });
 		} catch (error) {
 			console.error('Error al consumir ws');
 		}
@@ -46,26 +53,54 @@ class PopOverNotification extends PureComponent {
 				width: '90%'
 			}
 		};
-		const expirationNotification = <div>{this.state.expiration.map((item) => 'Notificación')}</div>;
-        
-        const handleOnDeleteStock=(id)=>e=>{
-            console.log('eliminado:'+id);
-            
-            const stock=this.state.stock.filter(item=>item.id!=id)
-            this.setState({stock})
-        }
+
+		const handleOnDeleteStock = (id) => async (e) => {
+			e.preventDefault();
+			const deleted = await deleteExpirationNotification(id);
+			if (deleted) {
+				const stock = this.state.stock.filter((item) => item.id != id);
+				this.setState({ stock });
+			} else {
+				alertifyjs.error('error al eliminar notificación');
+			}
+		};
+		const handleOnDeleteExpiration = (id) => async (e) => {
+			e.preventDefault();
+			const deleted = await deleteExpirationNotification(id);
+			if (deleted) {
+				const expiration = this.state.expiration.filter((item) => item.id != id);
+				this.setState({ expiration });
+			} else {
+				alertifyjs.error('error al eliminar notificación');
+			}
+		};
+
+		const expirationNotification = (
+			<div>
+				{this.state.expiration.map(({ id, name, date }) => (
+					<ExpirationNotification
+						key={id}
+						id={id}
+						name={name}
+						expirationDate={date}
+						handleOnDelete={handleOnDeleteExpiration}
+						onClose={this.props.close}
+					/>
+				))}
+			</div>
+		);
 
 		const stockNotification = (
 			<div>
 				{this.state.stock.map(({ id, name, quantity, expectedQuantity }) => (
 					<StockNotification
-                        key={id}
-                        id={id}
+						key={id}
+						id={id}
 						name={name}
 						actualQuantity={quantity}
-                        expectedQuantity={expectedQuantity}
-                        handleOnDelete={handleOnDeleteStock}
-                        onClose={this.props.close}
+						expectedQuantity={expectedQuantity}
+						handleOnDelete={handleOnDeleteStock}
+						onClose={this.props.close}
 					/>
 				))}
 			</div>
