@@ -1,4 +1,6 @@
 import React, { Component, useState }from 'react'
+import AddIcon from '@material-ui/icons/Add';
+import Fab from '@material-ui/core/Fab';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core'
 import { getSupplies } from '../../../services/supplies';
 import 'date-fns';
@@ -27,7 +29,12 @@ const styles = theme => ({
     top: {
 		backgroundColor: theme.palette.primary.main,
 		color: 'white'
-	},
+    },
+    fab: {
+        position: 'fixed',
+        bottom: theme.spacing(2),
+        right: theme.spacing(2),
+    },
 });
 
 class AddWaste extends Component {
@@ -80,9 +87,10 @@ class AddWaste extends Component {
         
         return (
             <div>
-                <Button type="button" color="primary" variant="contained" onClick={handleToggle}>
-                    Agregar merma
-                </Button>
+                
+                <Fab aria-label="Add" className={classes.fab} color="primary" onClick={handleToggle}>
+                    <AddIcon />
+                </Fab>
                 <Dialog
                     open={this.state.open}
                     onClose={handleClose}

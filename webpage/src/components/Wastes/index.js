@@ -17,11 +17,9 @@ class Table extends Component {
     }
   }
   async getData() {
-    getWastes().then(({ wastes }) => {
-        console.log('CategoryListSidebar',wastes);
-        this.setState({ data: wastes })
-        console.log('CategoryListSidebar',wastes);
-      })
+    
+    const wastes = await getWastes();
+    this.setState({ data: wastes});
   }
   componentDidMount() {
     this.getData();
