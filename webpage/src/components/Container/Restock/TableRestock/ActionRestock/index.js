@@ -1,5 +1,6 @@
 import React from 'react';
 import NewRestock from './NewRestock';
+import EditRestock from './EditRestock';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -30,6 +31,6 @@ export default function ActionRestock(props){
         case "add":
             return <NewRestock classes={classes} changeEditState={props.changeEditState}/>
         case "edit":
-            return <div>Holo</div>
+            return <EditRestock classes={classes} restockData={props.restockData} changeEditState={props.changeEditState}/>
     }
 }

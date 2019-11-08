@@ -83,29 +83,6 @@ const sub=(date)=>{
     
 }
 
-export const headCells2=[
-    {
-        title: 'Insumo', field: 'idSupply',
-        lookup: {1: "Insumo 1", 2:"Insumo 2", 3:"Insumo 3", 4: "Insumo 4", 8: "Insumo 8"},
-        readonly: true
-    },
-    {title: 'Cantidad', field: 'quantityRestockSupply', type: "numeric"},
-    {title: 'Costo', field: 'costRestockSupply', type: "numeric"},
-    {
-        title: 'Fecha de llegada', field: 'arrivalDateRestockSupply', type:"date"
-    },
-    {
-        title: 'Fecha de caducidad', field: 'sellByDateRestockSupply', type:"date"
-    },
-    {title: 'Proveedor', field: 'idProvider', lookup:{1: "Proveedor 1", 2: "Proveedor 2", 3: "Proveedor 3"}},
-    {
-        title: 'Estado',
-        field: 'statusRestockSupply',
-        lookup: { 0: "Cancelado", 1: 'Pendiente', 2: 'Aprobado', 3: "No aprobado", 4: "Pedido",5: "Entregado", 6: "Rechazado"},
-    },
-    {title: 'Comentarios', field: 'commentaryRestockSupply'},
-];
-
 export const headCells3=[
     {
         title: 'Insumo', field: 'idSupply',

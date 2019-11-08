@@ -1,5 +1,4 @@
 import React from 'react';
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Paper, Grid, Typography, IconButton } from '@material-ui/core';
 import HighlightOffRoundedIcon from '@material-ui/icons/HighlightOffRounded';
