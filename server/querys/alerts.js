@@ -55,14 +55,14 @@ function alerts (req, res) {
 function deleteAlert (req, res) {
     switch(req.body.type) {
         case "waste":
-            qry = "DELETE FROM notificationswaste WHERE idWaste=?"
+            qry = "DELETE FROM notificationswaste WHERE idWaste=? AND typeNotification=?"
             break
         case "supply":
-            qry = "DELETE FROM notificationssupply WHERE idSupply=?"
+            qry = "DELETE FROM notificationssupply WHERE idSupply=? AND typeNotification=?"
             break
     }
 
-    con.query(qry, values[req.body.id], function(err, result) {
+    con.query(qry, values[req.body.id, req.body.type], function(err, result) {
         if(err) {
             console.log("Error" , err)
             res.status(500).json({err})
