@@ -1,7 +1,7 @@
 var con = require('../DB/connection')
 
 function insertWaste(req, res) {
-    con.query(`INSERT INTO wastes(idSupply, quantityWaste, typeWaste, idUser, sellByDateWastetimestamp) 
+    con.query(`INSERT INTO wastes(idSupply, quantityWaste, typeWaste, idUser, sellByDateWaste) 
         VALUES(?, ?, ?, ?, ?)`, 
         [req.body.id, req.body.quantity, requ.body.type, req.body.idUser, req.body.sellByDate], 
         function (err, result) {
@@ -18,9 +18,9 @@ function insertWaste(req, res) {
 }
 
 function getWastes(req, res) {
-    qry = `SELECT idWaste, s.idSupply, sp.nameSupply, registrationDateWaste, sellByDateWastetimestamp,
+    qry = `SELECT idWaste, s.idSupply, sp.nameSupply, registrationDateWaste, sellByDateWaste,
     quantityWaste, typeWaste, s.idUser FROM wastes AS s INNER JOIN supplies AS sp ON s.idSupply=sp.idSupply 
-    WHERE statusWaste=1 AND DATE(sellByDateWastetimestamp)>=?`
+    WHERE statusWaste=1 AND DATE(sellByDateWaste)>=?`
     values = [dateNow()]
 	con.query(qry, values, function (err, result) {
 		if (err) {
