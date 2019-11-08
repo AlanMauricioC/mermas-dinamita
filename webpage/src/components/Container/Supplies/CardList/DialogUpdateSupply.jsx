@@ -45,6 +45,7 @@ class DialogUpdateSupply extends PureComponent {
 	constructor(props) {
 		super(props);
 		const { supply: { name, quantity, min, max, unit } } = props;
+		alertifyjs.set('notifier', 'position', 'bottom-center');
 		this.state = {
 			supply: {
 				name,
@@ -83,7 +84,10 @@ class DialogUpdateSupply extends PureComponent {
 				},
 				avg,
 				id
-			}
+			},
+			invalidName: false,
+			invalidMin: false,
+			invalidMax: false
 		});
 	}
 
@@ -117,7 +121,7 @@ class DialogUpdateSupply extends PureComponent {
 
 		const updateSupply = async () => {
 			console.log('actualizar insumo');
-			const { min, max, name, quantity,id, unit: { id: idUnit,name:unit } } = this.state.supply;
+			const { min, max, name, quantity, id, unit: { id: idUnit, name: unit } } = this.state.supply;
 			const idUser = 1; // esto no debe de ser así :0!!
 			const data = {
 				id,
@@ -129,10 +133,13 @@ class DialogUpdateSupply extends PureComponent {
 				quantity,
 				unit
 			};
+			if (!validateSupply(data)) {
+				alertifyjs.warning('Favor de verificar los datos');
+				return null;
+			}
 			const updated = await updateService(data);
-			alertifyjs.set('notifier', 'position', 'bottom-center');
 			if (updated) {
-				this.props.updateSupply({supply:data});
+				this.props.updateSupply({ supply: data });
 				alertifyjs.success('Insumo actualizado correctamente');
 				handleClose();
 			} else {
@@ -150,8 +157,11 @@ class DialogUpdateSupply extends PureComponent {
 				name,
 				quantity
 			};
+			if (!validateSupply(data)) {
+				alertifyjs.warning('Favor de verificar los datos');
+				return null;
+			}
 			const inserted = await insertSupplies(data);
-			alertifyjs.set('notifier', 'position', 'bottom-center');
 			if (inserted) {
 				handleClose();
 				alertifyjs.success('Insumo creado correctamente');
@@ -164,6 +174,13 @@ class DialogUpdateSupply extends PureComponent {
 			}
 		};
 
+		const validateSupply = (supply) => {
+			let invalidName = !validateText(supply.name, 1, 45);
+			let invalidMin = !validateNumber(supply.min,0, supply.max);
+			let invalidMax = !validateNumber(supply.max,supply.min);
+			this.setState({invalidMax,invalidMin,invalidName})
+			return !(invalidName||invalidMin||invalidMax)
+		};
 		const unitItems = () => {
 			if (this.state.units) {
 				return this.state.units.map(({ id, name }) => (
@@ -192,6 +209,7 @@ class DialogUpdateSupply extends PureComponent {
 							<TextField
 								name="name"
 								onKeyPress={handleOnEnter}
+								error={this.state.invalidName}
 								autoFocus
 								required
 								fullWidth
@@ -203,21 +221,23 @@ class DialogUpdateSupply extends PureComponent {
 							/>
 						</Grid>
 						<Grid item className={classes.input} xs={12} md={4}>
-							<TextField
-								name="quantity"
-								onKeyPress={handleOnEnter}
-								required
-								fullWidth
-								type="number"
-								margin="dense"
-								label={'Cantidad actual'}
-								value={this.state.supply.quantity}
-								onChange={handleOnChangeNumber}
-							/>
+							{this.state.supply.id ? (
+								<TextField
+									name="quantity"
+									onKeyPress={handleOnEnter}
+									disabled={true}
+									fullWidth
+									type="number"
+									margin="dense"
+									label={'Cantidad actual'}
+									value={this.state.supply.quantity}
+								/>
+							) : null}
 						</Grid>
 						<Grid item className={classes.input} xs={12} md={4}>
 							<TextField
 								name="min"
+								error={this.state.invalidMin}
 								onKeyPress={handleOnEnter}
 								required
 								fullWidth
@@ -231,6 +251,7 @@ class DialogUpdateSupply extends PureComponent {
 						<Grid item className={classes.input} xs={12} md={4}>
 							<TextField
 								name="max"
+								error={this.state.invalidMax}
 								onKeyPress={handleOnEnter}
 								required
 								fullWidth

@@ -62,14 +62,14 @@ function deleteAlert (req, res) {
             break
     }
 
-    con.query(qry, values[req.body.id, req.body.type], function(err, result) {
+    con.query(qry, [req.body.id, req.body.typeNotification], function(err, result) {
         if(err) {
             console.log("Error" , err)
             res.status(500).json({err})
         }
         else {
-            console.log("delete "+result.affectedRows+" notifications"+req.body.type+", ID: "+ req.body.id+","+req.body.type)
-            res.status(200).json("delete "+result.affectedRows+" notifications"+req.body.type+", ID: "+ req.body.id+","+req.body.type)
+            console.log("delete "+result.affectedRows+" notifications"+req.body.type+", ID: "+ req.body.id+","+req.body.typeNotification)
+            res.status(200).json("delete "+result.affectedRows+" notifications"+req.body.type+", ID: "+ req.body.id+","+req.body.typeNotification)
         }
     })
 }

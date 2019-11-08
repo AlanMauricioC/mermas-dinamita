@@ -18,10 +18,6 @@ class Table extends Component {
   async getData() {
     const unidades = await getUnits();
     this.setState({ data: unidades});
-/*  
-    getUnits().then(({units}) => {
-        this.setState({ data: units })
-      })*/
   }
   componentDidMount() {
     this.getData();
