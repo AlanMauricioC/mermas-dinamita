@@ -9,7 +9,7 @@ class TableRestock extends Component {
     constructor(props){
         super(props);
         this.state={
-            action: "add",
+            action: null,
             data: [],
             restockData: [],
             columns: 

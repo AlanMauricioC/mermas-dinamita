@@ -20,8 +20,7 @@ function AlertDialog({open, handleClose, row, change}){
     return (
         <div>
             <Dialog
-                fullWidth={true}
-                maxWidth="xl"
+                fullScreen
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="customized-dialog-title"
@@ -30,7 +29,7 @@ function AlertDialog({open, handleClose, row, change}){
                     Modificar pedido
                 </DialogTitle>
                 <DialogContent>
-                    <TableSupplies row={row} change={change}/>
+                    <TableSupplies row={row} change={change} handleClose={handleClose}/>
                 </DialogContent>
                 <DialogActions>
                 </DialogActions>

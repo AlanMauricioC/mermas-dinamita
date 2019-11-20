@@ -107,8 +107,8 @@ class EditRestock extends Component{
         }
     }
 
-    handleEditSupplyDate=(nameField, value, idSupply)=>{
-        alert(nameField+value+idSupply)
+    handleEditSupplyDate=(event)=>{
+        console.log(event)
     }
 
     handleEditSupply = event => {
@@ -149,7 +149,7 @@ class EditRestock extends Component{
     };
 
     tableHeaders=<Grid container justify="flex-start">
-                    <Grid item xs={2}>
+                    <Grid item xs={1}>
                         Insumo
                     </Grid>
                     <Grid item xs={1}>
@@ -161,13 +161,13 @@ class EditRestock extends Component{
                     <Grid item xs={1}>
                         Proveedor
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item xs={2}>
                         Fecha de llegada
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item xs={2}>
                         Fecha de caducidad
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={2}>
                         Comentarios
                     </Grid>
                     <Grid item xs={1}>
@@ -269,7 +269,7 @@ class EditRestock extends Component{
                                                 name={"arrivalDateRestockSupply"}
                                                 format="dd/MM/yyyy"
                                                 value={supply.arrivalDateRestockSupply}
-                                                onChange={()=>this.handleEditSupplyDate("arrivalDateRestockSupply", supply.arrivalDateRestockSupply, supply.idSupply)}
+                                                onChange={this.handleEditSupplyDate}
                                                 KeyboardButtonProps={{
                                                     'aria-label': 'change date',
                                                 }}
