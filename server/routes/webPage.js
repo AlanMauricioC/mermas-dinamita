@@ -7,7 +7,8 @@ const wastes = require('../querys/wastes')
 const recipes = require('../querys/recipes')
 const orders = require('../querys/orders')
 const alerts = require('../querys/alerts')
-
+const users = require('../querys/users')
+ 
 // middleware specific to this router
 router.use(function timeLog(req, res, next) {
     console.log('Time: ', Date.now())
@@ -146,5 +147,17 @@ router.get('/alerts', alerts.alerts)
 
 // Eliminar alarma de restock/caducidad
 router.post('/deleteAlert', alerts.deleteAlert)
+
+// Obtiene usuarios registrados
+router.get('/users', users.getUsers)
+
+// Inserta un nuevo usuario
+router.post('/insertUser', users.insertUser)
+
+// Actualiza datos de usuario
+router.post('/updateUser', users.updateUser)
+
+// Elimina usuario
+router.post('/deleteUser', users.deleteUser)
 
 module.exports = router
