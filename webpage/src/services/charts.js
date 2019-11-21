@@ -1,4 +1,4 @@
-export const getConfig = (title='Título', titles=[], series=[]) => {
+export const getConfig = (title='Título', dates=[], series=[]) => {
 	const defSerie = {
 		type: 'line',
 		smooth: true,
@@ -44,7 +44,7 @@ export const getConfig = (title='Título', titles=[], series=[]) => {
 			//   data: data.map(function(item) {
 			//     return item[0];
 			//   }),
-			data: [ 'fecha1', 'fecha2', 'fecha3', 'fecha4', 'fecha5' ],
+			data: dates,
 			axisLine: {
 				show: true
 			},

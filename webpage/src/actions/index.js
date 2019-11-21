@@ -54,6 +54,13 @@ export const setSuppliesSearch = (search) => {
     }
 }
 
+export const setSupplySelector = (selector) => {
+    return {
+        type: 'SET_SUPPLY_SELECTOR',
+        payload: selector
+    }
+}
+
 export const deleteRecipe=(recipe)=>{
     return {
         type: 'DELETE_RECIPE',
