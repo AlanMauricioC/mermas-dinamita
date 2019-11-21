@@ -9,6 +9,7 @@ const orders = require('../querys/orders')
 const alerts = require('../querys/alerts')
 const users = require('../querys/users')
 const log = require('../querys/log')
+const stadistic = require('../querys/stadistic')
  
 // middleware specific to this router
 router.use(function timeLog(req, res, next) {
@@ -169,5 +170,8 @@ router.get('/getSession', log.getSession)
 
 // Cierra sesion
 router.get('/logOut', log.logOut)
+
+// Obtiene estadisticas de mermas
+router.post('/stadisticWastes', stadistic.stadisticWastes)
 
 module.exports = router
