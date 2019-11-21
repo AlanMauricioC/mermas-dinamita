@@ -1,44 +1,57 @@
 const con = require('../DB/connection')
 
 function insertOrder(req, res){
-    con.query("INSERT INTO orders (idRecipe, idUser) VALUES (?, ?)", 
-        [req.body.idRecipe, req.body.idUser], 
+    con.query("INSERT INTO orders (idRecipe, supply, idUser) VALUES (?, ?, ?)", 
+        [req.body.idRecipe, req.body.supply, req.body.idUser], 
         function (err, result) {
-        if (err) {
-            console.log("Error" , err)
-            res.status(500).json({err})
-        }else{
-            var as = req.body.supplies
-            as.forEach(function(v){
-                con.query("INSERT INTO ordersupply (idOrder, idSupply, quantityOrderSupply) VALUES (?, ?, ?)", 
-                    [result.insertId, v.idSupply, v.quantityRecipeSupply], 
-                    function (err, resul) {
-                        if (err) {
-                            console.log("Error" , err)
-                            res.status(500).json({err})
-                        }else
-                            console.log("insert " + resul.affectedRows + " order supply")
+            if (err) {
+                console.log("Error" , err)
+                res.status(500).json({err})
+            }else{
+                try {
+                    var as = req.body.supplies
+                    as.forEach(function(supply){
+                        con.query("INSERT INTO ordersupply (idOrder, idSupply, quantityOrderSupply) VALUES (?, ?, ?)", 
+                            [result.insertId, supply.idSupply, supply.quantity], 
+                            function (err, resul) {
+                                if (err) {
+                                    console.log("Error" , err)
+                                    res.status(500).json({err})
+                                }else
+                                    console.log("insert " + resul.affectedRows + " order supply")
+                            }
+                        )
+                    })
+                    if(req.body.wastes){
+                        var aw = req.body.wastes
+                        aw.forEach(function(waste){
+                            con.query("INSERT INTO orderwaste (idOrder, idWaste, quantityOrderWaste) VALUES (?, ?, ?)", 
+                                [result.insertId, waste.idWaste, waste.quantityOrderWaste],  
+                                function (err, resul) {
+                                    if (err) {
+                                        console.log("Error" , err)
+                                        res.status(500).json({err})
+                                    }else
+                                        console.log("insert " + resul.affectedRows + " order waste")
+                                }
+                            )
+                        })
                     }
-                )
-            })
-            if(req.body.wastes){
-                var aw = req.body.wastes
-                aw.forEach(function(v){
-                    con.query("INSERT INTO orderwaste (idOrder, idWaste, quantityOrderWaste) VALUES (?, ?, ?)", 
-                        [result.insertId, v.idWaste, v.quantityOrderWaste],  
-                        function (err, resul) {
+                    res.status(200).json("insert " + result.affectedRows + " order, ID: "+ result.insertId)
+                } catch (error) {
+                    con.query("DELETE FROM orders WHERE idOrder=?", result.insertId, 
+                        function (err, result) {
                             if (err) {
                                 console.log("Error" , err)
-                                res.status(500).json({err})
+                                res.status(500).json({del:err})
                             }else
-                                console.log("insert " + resul.affectedRows + " order waste")
+                                res.status(500).json({try : error})
                         }
                     )
-                })
+                }
             }
-            res.status(200).json("insert " + result.affectedRows + " order, ID: "+ result.insertId)
         }
-    })
+    )
 }
 
 function promise_query_w(query , param , v){ 
@@ -76,7 +89,7 @@ function promise_query_s(query , param , v){
 }
 
 function getOrders(req, res){
-    con.query(`SELECT o.idOrder, o.dateOrder, o.idRecipe, r.nameRecipe, o.idUser, u.nameUser, 
+    con.query(`SELECT o.idOrder, o.dateOrder, o.idRecipe, r.nameRecipe, o.idUser, u.emailUser, 
         o.statusOrder FROM orders AS o INNER JOIN users AS u ON o.idUser=u.idUser 
         INNER JOIN recipes AS r ON r.idRecipe=o.idRecipe ORDER BY o.dateOrder`, 
         function (err, result) {

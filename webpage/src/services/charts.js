@@ -1,3 +1,5 @@
+import { SERVER_URL } from "../constants";
+
 export const getConfig = (title='Título', dates=[], series=[]) => {
 	const defSerie = {
 		type: 'line',
@@ -71,3 +73,26 @@ export const getConfig = (title='Título', dates=[], series=[]) => {
 		series
 	};
 };
+
+
+export const getWasteChart=async (dateStart,dateEnd)=>{
+	try {
+		const response = await fetch(SERVER_URL + `stadisticWastes`, {
+			method: 'POST',
+			body: JSON.stringify({ dateStart,dateEnd }),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		if (!response.ok) {
+			throw Error(response.statusText);
+		}
+		const json = await response.json();
+		console.log(json);
+
+		return json;
+	} catch (error) {
+		console.log(error);
+		return [];
+	}
+}

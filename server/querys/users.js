@@ -1,7 +1,7 @@
 const con = require('../DB/connection')
 
 function getUsers (req, res){
-    con.query('SELECT idUser AS id, nameUser AS name, rolUser AS rol, pinUser AS pin FROM users WHERE statusUser=1', function (err, result) {
+    con.query('SELECT idUser AS id, emailUser AS email, rolUser AS rol, pinUser AS pin FROM users WHERE statusUser=1', function (err, result) {
         if (err) {
             console.log('Error' , err)
             res.status(500).json({err})
@@ -11,7 +11,7 @@ function getUsers (req, res){
 }
 
 function insertUser(req, res) {
-    con.query('INSERT INTO users(nameUser, passwordUser, rolUser, pinUser) VALUES(?, ?, ?, ?)', [req.body.name, req.body.password, req.body.rol, req.body.pin],  function (err, result) {
+    con.query('INSERT INTO users(emailUser, passwordUser, rolUser, pinUser) VALUES(?, ?, ?, ?)', [req.body.email, req.body.password, req.body.rol, req.body.pin],  function (err, result) {
             if (err) {
                 console.log('Error' , err)
                 res.status(500).json({err})
@@ -25,16 +25,16 @@ function insertUser(req, res) {
 }
 
 function updateUser(req, res) {
-	var qry = 'UPDATE users SET nameUser=?, rolUser=?, pinUser=?'
+	var qry = 'UPDATE users SET emailUser=?, rolUser=?, pinUser=?'
 	var values = []
 
 	if(req.body.password) {
 		qry += ', passwordUser=? WHERE idUser=?'
-		values = [req.body.name, req.body.rol, req.body.pin, req.body.password, req.body.id]
+		values = [req.body.email, req.body.rol, req.body.pin, req.body.password, req.body.id]
 	}
 	else {
 		qry += 'WHERE idUser=?'
-		values = [req.body.name, req.body.rol, req.body.pin, req.body.id]
+		values = [req.body.email, req.body.rol, req.body.pin, req.body.id]
 	}
 
     con.query(qry, values,  function (err, result) {

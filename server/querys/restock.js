@@ -103,7 +103,7 @@ function promise_query(query , param , v){
 }
 
 function getRestock(req, res){
-    con.query(`SELECT r.idRestock, r.registrationDateRestock, r.idUser, u.nameUser, r.statusRestock 
+    con.query(`SELECT r.idRestock, r.registrationDateRestock, r.idUser, u.emailUser, r.statusRestock 
         FROM restock AS r INNER JOIN users AS u ON r.idUser=u.idUser`,
         function (err, result, fields) {
             if (err) {
@@ -130,7 +130,7 @@ function getRestock(req, res){
 }
 
 function getRestockRecommendation(req, res){
-    con.query(`SELECT null as idRestock, null as registrationDateRestock, null as idUser, null as nameUser,
+    con.query(`SELECT null as idRestock, null as registrationDateRestock, null as idUser, null as emailUser,
         null as statusRestock`,
         function (err, result, fields) {
             if (err) {

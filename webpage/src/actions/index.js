@@ -87,3 +87,10 @@ export const setRecipes = (recipes) => {
         payload: recipes
     }
 }
+
+
+export const signIn = (recipes) => {
+    return {
+        type: 'SIGN_IN',
+    }
+}

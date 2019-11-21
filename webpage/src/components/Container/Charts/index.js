@@ -5,7 +5,7 @@ import { Grid, TextField, MenuItem } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import Echarts from 'echarts-for-react';
 import moment from 'moment';
-import { getConfig } from '../../../services/charts';
+import { getConfig,getWasteChart } from '../../../services/charts';
 
 class Charts extends Component {
 	constructor(props) {
@@ -22,8 +22,11 @@ class Charts extends Component {
 
 	async setMermas() {
 		try {
-			//un await
-			const config = getConfig();
+            //un await
+            const strStartDate=moment(this.state.startDate).format('YYYY-MM-DD')
+            const strEndDate=moment(this.state.endDate).format('YYYY-MM-DD')
+            const data=await getWasteChart(strStartDate,strEndDate)
+			const config = getConfig("Mermas",data.dates);
 			this.setState({ chartConfig: config });
 		} catch (error) {}
 	}
@@ -45,9 +48,7 @@ class Charts extends Component {
 			}
 			this.setState({ endDate: value });
 		};
-		const handleDateChangeCapture = (e) => {
-			console.log(e);
-		};
+
 		const handleChangeChart = (e) => {
 			const val = e.target.value;
 
