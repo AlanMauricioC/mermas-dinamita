@@ -7,6 +7,7 @@ import RecipiesIcon from '@material-ui/icons/MenuBook';
 import ChartIcon from '@material-ui/icons/InsertChart';
 import StoreIcon from '@material-ui/icons/Storefront';
 import AppleIcon from '@material-ui/icons/Apple';
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import ItemSidebar from './ItemSidebar';
 
 const data = [
@@ -28,7 +29,7 @@ const data = [
     {
         title: "Mermas",
         icon: <AppleIcon/>,
-        link:'reportes'
+        link:'mermas'
     },
     {
         title: "Pedidos",
@@ -39,6 +40,11 @@ const data = [
         title: "Unidades de medida",
         icon: <ChartIcon/>,
         link:'unidades'
+    },
+    {
+        title: "Usuarios",
+        icon: <PeopleAltIcon/>,
+        link:'usuarios'
     }
 ];
 

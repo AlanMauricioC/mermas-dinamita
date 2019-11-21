@@ -11,6 +11,7 @@ import Wastes from "../Wastes";
 import Orders from "./Orders";
 import Recipes from "./Recipes";
 import OrdersT from "./OrdersT";
+import Users from "../Users";
 import Measurement from "../Measurement";
 import Restock from './Restock';
 
@@ -42,7 +43,7 @@ const Container = ()=>{
             <Route exact path="/ordenes">
                 <OrdersT />
             </Route>
-            <Route exact path="/reportes">
+            <Route exact path="/mermas">
                 <Wastes/>
             </Route>
             <Route exact path="/unidades">
@@ -54,8 +55,9 @@ const Container = ()=>{
             <Route exact path="/nuevoPedido">
                 <Restock/>
             </Route>
-            <Route>
-                
+            
+            <Route exact path="/usuarios">
+                <Users/>
             </Route>
 
         </Switch>
