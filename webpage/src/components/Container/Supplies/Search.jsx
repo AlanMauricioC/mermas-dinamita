@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { setSupplies } from '../../../actions';
+import { setSupplies,setSuppliesSearch } from '../../../actions';
 import { getSupplies } from '../../../services/supplies';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +26,7 @@ export default function CustomizedInputBase() {
 	const dispatch = useDispatch();
 	const handleOnChangeSearch = (e) => {
 		const inputValue = e.target.value;
-		getSupplies(inputValue, null).then(({ supplies }) => dispatch(setSupplies(supplies)));
+		dispatch(setSuppliesSearch(inputValue))
 	};
 	return (
 		<Paper className={classes.root}>
