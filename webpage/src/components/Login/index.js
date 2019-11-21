@@ -70,7 +70,7 @@ export default function SignInSide() {
   const handleOnLogin=()=>{
     //entrar en la app
     var usuario = {'email': user,'password':pass};
-    var resp = login(usuario);
+    const resp = await login(usuario);
     
     dispatch(signIn())
     
