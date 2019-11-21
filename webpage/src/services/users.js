@@ -39,8 +39,8 @@ export const tableIcons = {
 
 export const headCells = 
 [
-    { title: 'Nombre del empleado', field: 'name' },
-    { title: 'Rol del empleado', field: 'rol' },
+    { title: 'Nombre del empleado', field: 'email' },
+    { title: 'Rol del empleado', field: 'rol', lookup:{0:'Administrador',1:'Chef'}},
     { title: 'Pin de seguridad', field: 'pin', type:'numeric'}
       
 ]

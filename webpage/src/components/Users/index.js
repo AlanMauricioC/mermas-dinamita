@@ -63,7 +63,7 @@ class Table extends Component {
                             const data = this.state.data;
                             console.log(newData);
                             data.push(newData);
-                            var unidad = {'name': newData.name};
+                            var unidad = {'email': newData.name};
 
                             insertUser(unidad);
                             this.setState({ data }, () => resolve());
@@ -79,7 +79,9 @@ class Table extends Component {
                         const index = data.indexOf(oldData);
                         data[index] = newData;
                         var datos = { 'id' : oldData.id,
-                          'name':newData.name
+                          'email':newData.email,
+                          'rol':newData.rol,
+                          'pin':newData.pin
                         };
                         updateUser(datos);
                         this.setState({ data }, () => resolve());

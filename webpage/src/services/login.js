@@ -14,7 +14,7 @@ export const login = async function (user) {
             throw Error(response.statusText);
         }
         const json = await response.json();
-        console.log("response "+json);
+        console.log("response "+json.user);
 
         return json;
     } catch (error) {

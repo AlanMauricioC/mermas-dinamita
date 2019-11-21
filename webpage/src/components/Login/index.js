@@ -71,8 +71,11 @@ export default function SignInSide() {
     //entrar en la app
     var usuario = {'email': user,'password':pass};
     var resp = login(usuario);
-
+    
+    
     dispatch(signIn())
+    
+    
   }
   return (
     <Grid container component="main" className={classes.root}>
