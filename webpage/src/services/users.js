@@ -39,12 +39,10 @@ export const tableIcons = {
 
 export const headCells = 
 [
-    { title: 'Nombre del insumo', field: 'nameSupply' },
-    { title: 'Fecha', field: 'registrationDateWaste', type: 'datetime',editable: 'never'},
-    { title: 'Fecha de caducidad', field: 'sellByDateWaste', type: 'datetime',editable: 'never' },
-    { title: 'Cantidad', field: 'quantityWaste', type:'double'},
-    { title: 'Tipo de merma', field: 'typeWaste', type:'double',lookup:{1:'reutilizable',2:'devolución',3:'accidente',4:'comida del personal',5:'caduco'}, editable:'never'},
-    { title: 'Nombre del empleado', field: 'idUser',editable: 'never'},    
+    { title: 'Nombre del empleado', field: 'name' },
+    { title: 'Rol del empleado', field: 'rol' },
+    { title: 'Pin de seguridad', field: 'pin', type:'int'}
+      
 ]
 
 
@@ -88,16 +86,20 @@ const details=[
     }
 ]
 export const data=[
-    
+    {
+        name: 'Miguel', 
+        rol: "Chef", 
+        pin: 1234, 
+    }
 ]
 
 
-export const insertWaste = async function (waste) {
+export const insertUser = async function (user) {
     try {
-        console.log(waste);
-        const response = await fetch(SERVER_URL +`insertWaste`,{
+        console.log(user);
+        const response = await fetch(SERVER_URL +`insertUser`,{
             method: 'POST',
-            body: JSON.stringify(waste),
+            body: JSON.stringify(user),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -115,9 +117,10 @@ export const insertWaste = async function (waste) {
     }
 }
 
-export const getWastes =async function () {
+export const getUsers =async function () {
+    console.log(":v");
     try {
-        const response = await fetch(SERVER_URL +`getWastes`,{
+        const response = await fetch(SERVER_URL +`users`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -137,11 +140,11 @@ export const getWastes =async function () {
     }
 }
 
-export const deleteWaste = async function(waste){
+export const deleteUser = async function(user){
     try {
-        const response = await fetch(SERVER_URL +`deleteWaste`,{
+        const response = await fetch(SERVER_URL +`deleteUser`,{
             method: 'POST',
-            body: JSON.stringify(waste),
+            body: JSON.stringify(user),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -159,9 +162,9 @@ export const deleteWaste = async function(waste){
     }
 }
 
-export const updateWaste = async function(data){
+export const updateUser = async function(data){
     try {
-        const response = await fetch(SERVER_URL +`updateWaste`,{
+        const response = await fetch(SERVER_URL +`updateUser`,{
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
