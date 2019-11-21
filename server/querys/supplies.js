@@ -1,8 +1,8 @@
 var con = require('../DB/connection')
 
 function insertSupply(req, res) {
-    con.query(`INSERT INTO supplies (idUnit, idUser, maxQuantitySupply, minQuantitySupply, nameSupply) VALUES (?, ?, ?, ?, ?)`, 
-        [req.body.idUnit, req.body.idUser, req.body.max, req.body.min, req.body.name], 
+    con.query(`INSERT INTO supplies (idUnit, idUser, quantitySupply, maxQuantitySupply, minQuantitySupply, nameSupply) VALUES (?, ?, ?, ?, ?, ?)`, 
+        [req.body.idUnit, req.body.idUser, req.body.quantity, req.body.max, req.body.min, req.body.name], 
         function (err, result) {
             if (err) {
                 console.log("Error" , err)
