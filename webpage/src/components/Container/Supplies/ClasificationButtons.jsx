@@ -1,9 +1,8 @@
 import React from 'react';
-import { ButtonGroup, Button, Grid, Chip, Avatar } from '@material-ui/core';
+import { Grid, Chip, Avatar } from '@material-ui/core';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { setSupplies } from "../../../actions";
+import { setSupplySelector } from "../../../actions";
 import { useDispatch } from "react-redux";
-import { getSupplies } from "../../../services/supplies";
 import { SUPPLY_SELECTOR } from "../../../constants";
 
 
@@ -30,25 +29,17 @@ export default function ClasificationButtons(props) {
     const classes = styles()
     const dispatch = useDispatch()
     const searchOk = () => {
-        getSupplies(null, SUPPLY_SELECTOR.OK).then(({ supplies }) => {
-            dispatch(setSupplies(supplies))
-        })
+        dispatch(setSupplySelector(SUPPLY_SELECTOR.OK))
 
     }
     const searchWarning = () => {
-        getSupplies(null, SUPPLY_SELECTOR.WARNING).then(({ supplies }) => {
-            dispatch(setSupplies(supplies))
-        })
+        dispatch(setSupplySelector(SUPPLY_SELECTOR.WARNING))
     }
     const searchError = () => {
-        getSupplies(null, SUPPLY_SELECTOR.ERROR).then(({ supplies }) => {
-            dispatch(setSupplies(supplies))
-        })
+        dispatch(setSupplySelector(SUPPLY_SELECTOR.ERROR))
     }
     const clearSearch = () => {
-        getSupplies(null, null).then(({ supplies }) => {
-            dispatch(setSupplies(supplies))
-        })
+        dispatch(setSupplySelector(SUPPLY_SELECTOR.NONE))
     }
     return (
         <div>

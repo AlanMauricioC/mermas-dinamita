@@ -72,11 +72,14 @@ export const getRecipes = async function (search) {
 export const insertOrder = async function (data) {
     const idRecipe=data.idRecipe;
     const idUser=data.idUser;
+    
     const supplies=data.supplies;
+    console.log(supplies)
+    const supply=data.supply;
     try {
         const response = await fetch(SERVER_URL + `insertOrder`, {
             method: 'POST',
-            body: JSON.stringify({idRecipe, idUser, supplies}),
+            body: JSON.stringify({idRecipe, idUser, supplies, supply}),
             headers: {
                 'Content-Type': 'application/json'
             }

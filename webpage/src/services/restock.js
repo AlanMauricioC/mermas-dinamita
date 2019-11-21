@@ -19,35 +19,7 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 
 
-export const headCells=[
-    { 
-        title: 'Pedido', 
-        field: 'idRestock',
-        render: rowData => "#"+rowData.idRestock
-    },
-    {
-        title: 'Estado',
-        field: 'statusRestock',
-        lookup: { 0: "Cancelado", 1: 'Pendiente', 2: 'Aprobado', 3: "No aprobado", 4: "Pedido",5: "Entregado", 6: "Rechazado"},
-    },
-    { 
-        title: 'Fecha de registro', 
-        field: 'registrationDateRestock', 
-        type:"date",
-        render: rowData => rowData.registrationDateRestock.substring(0, 10)
-    },
-    { 
-        title: 'Total', 
-        field: 'total', 
-        render: rowData=>  "$"+parseFloat(getTotal(rowData.supplies))
-    },
-]
 
-const getTotal=(row)=>{
-    var a=0;
-    row.map(ro => a += ro.costRestockSupply)
-    return a;
-}
 
 const details=[
     {

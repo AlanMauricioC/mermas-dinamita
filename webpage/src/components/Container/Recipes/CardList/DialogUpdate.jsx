@@ -32,6 +32,7 @@ import { getUnits } from '../../../../services/units';
 import { validateText } from '../../../../services/validations';
 import OptionSupply from './OptionSupply';
 import imgPlaceHolder from './placeholder-image.png';
+import SelectSupply from '../../../Miscellaneous/SelectSupply';
 
 const styles = (theme) => ({
 	media: {
@@ -387,26 +388,10 @@ class DialogUpdateRecipe extends PureComponent {
 						</Grid>
 						<Grid item className={classes.input} xs={12} md={4}>
 							{!this.state.isSupply ? null : (
-								<FormControl className={classes.select} required>
-									<InputLabel shrink htmlFor="idSelectUnit">
-										Insumo
-									</InputLabel>
-									<Select
-										value={this.state.recipe.idSupply || -1}
-										onChange={handleOnChangeSelect}
-										displayEmpty
-										name="idSupply"
-									>
-										<MenuItem value={-1}>
-											<em>Ninguno</em>
-										</MenuItem>
-										{this.state.supplies.map(({ id, name }) => (
-											<MenuItem key={id} value={id}>
-												{name}
-											</MenuItem>
-										))}
-									</Select>
-								</FormControl>
+								<SelectSupply
+									value={this.state.recipe.idSupply || -1}
+									onChange={handleOnChangeSelect}
+								/>
 							)}
 						</Grid>
 						<Grid item xs={12}>

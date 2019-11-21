@@ -38,6 +38,7 @@ class OrdersElements extends React.Component {
     async getOrders() {
         getOrders().then(({ orders }) => {
             this.setState({ data: orders })
+            console.log(orders)
         })
     }
 
@@ -77,7 +78,8 @@ class OrdersElements extends React.Component {
                                 tooltip: 'Modificar orden',
                                 onClick: (event, rowData) => {
                                     console.log(rowData);
-                                    this.setState({view: "orderDetail", idOrder: rowData.idOrder, orderDetail: rowData});
+                                    if(rowData.supply) alertifyjs.warning("Las órdenes de insumos no se pueden modificar");
+                                    else this.setState({view: "orderDetail", idOrder: rowData.idOrder, orderDetail: rowData});
                                 }
                             },
                         ]}

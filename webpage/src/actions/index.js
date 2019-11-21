@@ -47,6 +47,20 @@ export const setSupplies = (supplies) => {
     }
 }
 
+export const setSuppliesSearch = (search) => {
+    return {
+        type: 'SET_SEARCH',
+        payload: search
+    }
+}
+
+export const setSupplySelector = (selector) => {
+    return {
+        type: 'SET_SUPPLY_SELECTOR',
+        payload: selector
+    }
+}
+
 export const deleteRecipe=(recipe)=>{
     return {
         type: 'DELETE_RECIPE',
@@ -71,5 +85,12 @@ export const setRecipes = (recipes) => {
     return {
         type: 'SET_RECIPES',
         payload: recipes
+    }
+}
+
+
+export const signIn = (recipes) => {
+    return {
+        type: 'SIGN_IN',
     }
 }
