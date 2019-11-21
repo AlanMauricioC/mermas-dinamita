@@ -72,7 +72,6 @@ export default function SignInSide() {
     var usuario = {'email': user,'password':pass};
     var resp = login(usuario);
     
-    
     dispatch(signIn())
     
     

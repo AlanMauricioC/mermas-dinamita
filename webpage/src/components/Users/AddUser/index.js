@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core'
 import { getSupplies } from '../../../services/supplies';
 import 'date-fns';
-import { insertWaste} from '../../../services/wastes';
+import { insertUser} from '../../../services/users';
 import withStyles from '@material-ui/core/styles/withStyles'
 
 
@@ -45,9 +45,11 @@ class AddWaste extends Component {
         super(props)
         this.state = {
             supplies: [],
-            quantity:0,
+            pin:0,
             type:'',
-            date:'2019-10-24T10:30',
+            pass:'',
+            cpass:'',
+            rol:'',
             open:false,
         }
 
@@ -65,12 +67,12 @@ class AddWaste extends Component {
         const { handleClose, classes, open} = this.props;
 
 
-        const handleOnChangeSupply = (event) => this.setState({ selectSupply: event.target.value });
+        const handleOnChangeEmail = (event) => this.setState({ email: event.target.value });
+        const handleOnChangeType = (event) => this.setState({ rol: event.target.value });
+        const handleOnChangeConfirmPass = (event) => this.setState({cpass:event.target.value});
 
-        const handleOnChangeType = (event) => this.setState({ type: event.target.value });
-
-        const handleOnChangeQuantity = (event) => this.setState({quantity:event.target.value});
-        const handleOnChangeDate = (event) => this.setState({date:event.target.value});
+        const handleOnChangePin = (event) => this.setState({pin:event.target.value});
+        const handleOnChangePass = (event) => this.setState({pass:event.target.value});
 
         const handleToggle=e=>{
             this.setState({open:!this.state.open})
@@ -78,16 +80,17 @@ class AddWaste extends Component {
             
         }
         const sendData=e=>{
+          if(this.state.pass == this.state.cpass && this.state.pin.length==4){
             var datos = { 
-                'id':this.state.selectSupply,
-                'quantity':this.state.quantity,
-                'type':this.state.type,
-                'idUser':1,
-                'sellByDate' : this.state.date,
-                
+              'email':this.state.email,
+              'pin':this.state.pin,
+              'password':this.state.pass,
+              'rol' :this.state.rol
             };
             
-            insertWaste(datos);
+            insertUser(datos);
+          }
+            
             this.setState({open:false});
         }
         
@@ -112,84 +115,85 @@ class AddWaste extends Component {
                             <Grid container spacing={1}>
                                 <Grid container item xs={12}>
                                 <FormControl className={classes.select} required>
-                                    <InputLabel shrink htmlFor="idSelectWaste">
-                                        Selecciona un insumo
+                                    <InputLabel shrink htmlFor="idEmail">
+                                        ingresa un correo
                                     </InputLabel>
-                                    <Select
-                                        displayEmpty
-                                        className={classes.textField}
-                                        name="selectSupply"
-                                        id="idSelectWaste"
-                                        onChange={handleOnChangeSupply}
-                                        value={this.state.selectSupply}
-                                        displayEmpty
-                                        
-                                    >
-                                        <MenuItem value={-1}>
-                                            <em>Ninguno</em>
-                                        </MenuItem>
-                                        {this.state.supplies.map(({ id, name }) => (
-                                            <MenuItem key={id} value={id}>
-                                                {name}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                    </FormControl>
-                                </Grid>
-                                <Grid container item xs={12}>
-                                    <FormControl className={classes.select} required>
-                                        <InputLabel shrink htmlFor="idSelectType">
-                                            Selecciona un tipo de merma
-                                        </InputLabel>
-                                        <Select 
-                                            displayEmpty
-                                            className={classes.textField}
-                                            name="selectType"
-                                            id="idSelectType"
-                                            onChange={handleOnChangeType}
-                                            value={this.state.type}
-                                            displayEmpty>
-                                            <MenuItem value={-1}>
-                                                <em>Ninguno</em>
-                                            </MenuItem>
-                                            <MenuItem id={1} value={1}>
-                                                Reutilizable
-                                            </MenuItem>
-                                            <MenuItem id={2} value={2}>
-                                                Devolución
-                                            </MenuItem>
-                                            <MenuItem id={3} value={3}>
-                                                Accidental
-                                            </MenuItem>
-                                            <MenuItem id={4} value={4}>
-                                                Comida del personal
-                                            </MenuItem>
-                                            <MenuItem id={5} value={5}>
-                                                Caduco
-                                            </MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                    
-                                </Grid>
-                                <Grid container item xs={12}>
                                     <TextField
-                                        id="datetime-local"
-                                        label="Fecha de caducidad"
-                                        type="date"
-                                        defaultValue="2019-10-24"
+                                        id="idEmail"
                                         className={classes.textField}
-                                        onChange={handleOnChangeDate}
+                                        onChange={handleOnChangeEmail}
                                         InputLabelProps={{
                                         shrink: true,
                                         }}
                                     />
+                                    </FormControl>
+                                </Grid>
+                                <Grid container item xs={12}>
+                                <FormControl className={classes.select} required>
+                                  <InputLabel shrink htmlFor="idSelectType">
+                                    Selecciona el tipo de usuario
+                                  </InputLabel>
+                                  <Select 
+                                      displayEmpty
+                                      className={classes.textField}
+                                      name="selectType"
+                                      id="idSelectType"
+                                      onChange={handleOnChangeType}
+                                      value={this.state.rol}
+                                      displayEmpty>
+                                      <MenuItem value={0}>
+                                          Administrador
+                                      </MenuItem>
+                                      <MenuItem id={1} value={1}>
+                                          Chef
+                                      </MenuItem>
+                                      
+                                  </Select>
+                                  </FormControl>
+                                </Grid>
+                                <Grid container item xs={12}>
+                                    <FormControl className={classes.textField} required>
+                                        <InputLabel shrink htmlFor="idpass">
+                                            Ingresa una contraseña
+                                        </InputLabel>
+                                        
+                                        <TextField
+                                          variant="outlined"
+                                          margin="normal"
+                                          required
+                                          name="password"
+                                          type="password"
+                                          id="idpass"
+                                          autoComplete="current-password"
+                                          onChange={handleOnChangePass}
+                                        />
+                                        
+                                    </FormControl>
+                                    
+                                </Grid>
+                                <Grid container item xs={12}>
+                                <FormControl className={classes.textField} required>
+                                  <InputLabel shrink htmlFor="idpass1">
+                                    Ingresa nuevamente la contraseña
+                                  </InputLabel>
+                                  <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    name="password"
+                                    type="password"
+                                    id="idpass1"
+                                    autoComplete="current-password"
+                                    onChange={handleOnChangeConfirmPass}
+                                  />
+                                  </FormControl>
                                 </Grid>
                                 <Grid container item xs={12}>
                                     <TextField
                                         id="standard-name"
-                                        label="Cantidad"
+                                        label="Ingresa un pin"
                                         className={classes.textField}
-                                        onChange={handleOnChangeQuantity}
+                                        onChange={handleOnChangePin}
                                         margin="normal"
                                     />
                                 </Grid>

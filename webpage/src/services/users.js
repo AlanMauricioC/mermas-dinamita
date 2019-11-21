@@ -88,7 +88,7 @@ const details=[
 export const data=[
     {
         id: 0,
-        name: 'Aldo', 
+        email: 'Aldo', 
         rol: "Admin", 
         pin: 1233, 
     }

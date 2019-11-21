@@ -56,21 +56,7 @@ class Table extends Component {
               data={this.state.data}
               icons={tableIcons}
               editable={{
-                onRowAdd: newData =>
-                new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        {
-                            const data = this.state.data;
-                            console.log(newData);
-                            data.push(newData);
-                            var unidad = {'email': newData.name};
-
-                            insertUser(unidad);
-                            this.setState({ data }, () => resolve());
-                        }
-                        resolve();
-                    }, 1000);
-                }),
+                
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
