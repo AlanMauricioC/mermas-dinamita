@@ -30,7 +30,7 @@ class TableOrderDetail extends Component{
             quantity: [],
             isSupply:false,
             index: 0,
-            recipesBU:null,
+            recipesBU:recipes,
             orderRecipeBU:{
                 idRecipe: null, 
                 nameRecipe: "No se ha seleccionado una receta", 
@@ -146,7 +146,7 @@ class TableOrderDetail extends Component{
                 const data={
                     idRecipe: orderRecipe.idRecipe,
                     idUser: 1,
-                    supply: 1,
+                    supply: isSupply,
                     supplies:orderRecipe.supplies,
                     wastes: orderWastes,
                 }
@@ -444,7 +444,7 @@ class TableOrderDetail extends Component{
                                 id={supply.idSupply}
                                 className={classes.textField}
                                 fullWidth
-                                value={orderRecipeBU.supplies[getIDSupply(supply.idSupply)].quantity}
+                                value={orderRecipeBU.supplies[getIDSupply(supply.idSupply) || 0].quantity}
                                 InputProps={{
                                   readOnly: true,
                                 }}
@@ -464,7 +464,7 @@ class TableOrderDetail extends Component{
                                 margin="normal"
                             />
                         </Grid>
-                            <Button id={supply.idSupply}  onClick={()=>handleClickDeleteSupply({supply})}><DeleteIcon id={supply.idSupply}/></Button>
+                            
                     </Grid>
                 </div>
             ))
