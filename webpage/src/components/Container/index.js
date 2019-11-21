@@ -7,6 +7,7 @@ import Supplies from "./Supplies";
 import 'alertifyjs/build/css/alertify.min.css'
 import 'alertifyjs/build/css/themes/default.css'
 import Table from "../Table";
+import Charts from "./Charts";
 import Wastes from "../Wastes";
 import Orders from "./Orders";
 import Recipes from "./Recipes";
@@ -55,9 +56,11 @@ const Container = ()=>{
             <Route exact path="/nuevoPedido">
                 <Restock/>
             </Route>
-            
-            <Route exact path="/usuarios">
-                <Users/>
+            <Route exact path="/graficas">
+                <Charts/>
+            </Route>
+            <Route>
+                
             </Route>
 
         </Switch>

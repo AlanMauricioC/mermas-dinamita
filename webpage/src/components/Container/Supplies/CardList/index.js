@@ -99,7 +99,7 @@ class CardList extends PureComponent {
 }
 
 function mapStateToProps(state) {
-    return {supplies:state.supplies}
+    return {supplies:state.supplies.supplies.filter(supply=>supply.name.includes(state.supplies.qry))}
 }
 
 export default connect(mapStateToProps, { setSupplies})(withStyles(styles)(CardList));
