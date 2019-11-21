@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
 import { getUsers, deleteUser,updateUser,insertUser, tableIcons, headCells,data} from '../../services/users';
-
+import AddUser from "./AddUser";
 
 
 class Table extends Component {
@@ -49,7 +49,7 @@ class Table extends Component {
   render(){
     return (
       <div style={{ minWidth: "100%" }}>
-          
+          <AddUser></AddUser>
           <MaterialTable
               title="Usuarios"
               columns={this.state.columns}
