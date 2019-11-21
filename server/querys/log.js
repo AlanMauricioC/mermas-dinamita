@@ -1,7 +1,7 @@
 const con = require('../DB/connection')
 
 function logIn (req, res){
-    con.query('SELECT idUser AS id, emailUser AS email, rolUser AS rol FROM users WHERE nameUser=? AND passwordUser=?', [req.body.name, req.body.password], function (err, result) {
+    con.query('SELECT idUser AS id, emailUser AS email, rolUser AS rol FROM users WHERE nameUser=? AND passwordUser=?', [req.body.email, req.body.password], function (err, result) {
         if (err) {
             console.log('Error' , err)
             res.status(500).json({err})
