@@ -72,6 +72,76 @@ function stadisticWastes (req, res){
     })
 }
 
+function stadisticRestocks (req, res){
+    con.query('SELECT rs.idSupply AS id FROM restocksupply as rs INNER JOIN restock as r ON rs.idRestock=r.idRestock INNER JOIN supplies as s ON rs.idSupply=s.idSupply WHERE rs.statusRestockSupply=5 AND DATE(r.registrationDateRestock) BETWEEN ? AND ? GROUP BY rs.idSupply ORDER BY rs.idSupply;', [req.body.dateStart, req.body.dateEnd], function(err, resultId) {
+        if(err) {
+            console.log('Error' , err)
+            res.status(500).json({err})
+        }
+        else {
+            con.query('SELECT rs.idSupply AS id, s.nameSupply AS name, rs.quantityRestockSupply AS quantity, DATE_FORMAT(r.registrationDateRestock, "%Y-%m-%d") AS `date` FROM restocksupply as rs INNER JOIN restock as r ON rs.idRestock=r.idRestock INNER JOIN supplies as s ON rs.idSupply=s.idSupply WHERE rs.statusRestockSupply=5 AND DATE(r.registrationDateRestock) BETWEEN ? AND ? ORDER BY rs.idSupply, DATE(r.registrationDateRestock);', [req.body.dateStart, req.body.dateEnd], function(err, result) {
+                if(err) {
+                    console.log('Error' , err)
+                    res.status(500).json({err})
+                }
+                else {
+                    con.query('SELECT DATE_FORMAT(r.registrationDateRestock, "%Y-%m-%d") AS `date` FROM restocksupply as rs INNER JOIN restock as r ON rs.idRestock=r.idRestock INNER JOIN supplies as s ON rs.idSupply=s.idSupply WHERE rs.statusRestockSupply=5 AND DATE(r.registrationDateRestock) BETWEEN ? AND ? GROUP BY DATE(r.registrationDateRestock) ORDER BY DATE(r.registrationDateRestock);', [req.body.dateStart, req.body.dateEnd], function(err, resultDate) {
+                        if(err) {
+                            console.log('Error' , err)
+                            res.status(500).json({err})
+                        }
+                        else {
+                            var cont = 0
+                            var dates = []
+                            
+                            var series = []
+
+                            resultId.forEach(elementId => {
+                                var name = ''
+                                var stadistic = {}
+
+                                var tmpIndex = 0
+                                var data = new Array(resultDate.length)
+                                for(let index = 0; index < data.length; index++) {
+                                    data[index] = 0
+                                }
+
+                                resultDate.forEach(elementDate => {
+                                    result.forEach(element => {
+                                        if(elementId.id == element.id) {
+                                            name = element.name
+
+                                            if(elementDate.date == element.date) {
+                                                data[tmpIndex] = element.quantity
+                                            }
+                                        }
+                                    })
+                                    
+                                    if(cont==0) {
+                                        dates.push(elementDate.date)
+                                    }
+
+                                    tmpIndex++
+                                })
+
+                                cont = 1
+
+                                stadistic.name = name
+                                stadistic.data = data
+
+                                series.push(stadistic)
+                            })
+
+                            res.status(200).json({ series : series, dates: dates })
+                        }
+                    })
+                }
+            })
+        }
+    })
+}
+
 module.exports = {
-    stadisticWastes
+    stadisticWastes,
+    stadisticRestocks
 }

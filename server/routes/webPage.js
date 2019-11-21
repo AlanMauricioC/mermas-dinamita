@@ -174,4 +174,7 @@ router.get('/logOut', log.logOut)
 // Obtiene estadisticas de mermas
 router.post('/stadisticWastes', stadistic.stadisticWastes)
 
+// Obtiene estadisticas de pedidos
+router.post('/stadisticRestocks', stadistic.stadisticRestocks)
+
 module.exports = router
