@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch } from "react-redux";
 import { signIn } from "../../actions";
+import alertifyjs from "alertifyjs";
 
 function Copyright() {
   return (
@@ -67,13 +68,16 @@ export default function SignInSide() {
   const handleOnChangeEmail = (event) => setUser(event.target.value);
   const handleOnChangePass = (event) => setPass(event.target.value);
   //lógica de quien entra y quien no, llama al ws
-  const handleOnLogin=()=>{
+  const handleOnLogin=async ()=>{
     //entrar en la app
-    var usuario = {'email': user,'password':pass};
-    var resp = login(usuario);
+    let usuario = {'email': user,'password':pass};
+    let resp = await login(usuario);
     
-    dispatch(signIn())
-    
+    if (resp.rol==0||resp.rol==1) {
+      dispatch(signIn())
+    }else{
+      alertifyjs.warning('Favor de validar los campos')
+    }
     
   }
   return (
@@ -88,7 +92,7 @@ export default function SignInSide() {
           <Typography component="h1" variant="h5">
             Entra en vivall
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -96,6 +100,7 @@ export default function SignInSide() {
               fullWidth
               id="email"
               label="Direccion de correo"
+              type="email"
               name="email"
               autoComplete="email"
               onChange={handleOnChangeEmail}

@@ -119,7 +119,7 @@ class Table extends Component {
 
         const handleSelectSupply=(event)=>{
             const val=event.target.value;
-            if(val!=-1){
+            if(val!=-1 && this.state.rowStatus!=5){
                 if(validateUnique(val)){
                     const data=this.state.data;
                     const arrivalDateRestockSupply=null;
