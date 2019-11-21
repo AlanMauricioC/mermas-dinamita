@@ -1,11 +1,12 @@
 const con = require('../DB/connection')
 
 function logIn (req, res){
-    con.query('SELECT idUser AS id, emailUser AS email, rolUser AS rol FROM users WHERE nameUser=? AND passwordUser=?', [req.body.email, req.body.password], function (err, result) {
+    con.query('SELECT idUser AS id, emailUser AS email, rolUser AS rol FROM users WHERE emailUser=? AND passwordUser=?', [req.body.email, req.body.password], function (err, result) {
         if (err) {
             console.log('Error' , err)
             res.status(500).json({err})
-        }else
+        }
+        else{
             result.forEach(element => {
                 req.session.idUser = element.id
                 req.session.email = element.email
@@ -13,7 +14,8 @@ function logIn (req, res){
 
                 console.log(req.session)
             })
-            res.status(200).json({ user : result })
+            res.status(200).json({ id: req.session.idUser, email: req.session.email, rol: req.session.rol })
+        }
     })
 }
 
