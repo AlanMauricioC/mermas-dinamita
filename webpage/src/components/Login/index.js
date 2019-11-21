@@ -72,8 +72,8 @@ export default function SignInSide() {
     //entrar en la app
     let usuario = {'email': user,'password':pass};
     let resp = await login(usuario);
-
-    if (resp.rol) {
+    
+    if (resp.rol==0||resp.rol==1) {
       dispatch(signIn())
     }else{
       alertifyjs.warning('Favor de validar los campos')
@@ -92,7 +92,7 @@ export default function SignInSide() {
           <Typography component="h1" variant="h5">
             Entra en vivall
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -100,6 +100,7 @@ export default function SignInSide() {
               fullWidth
               id="email"
               label="Direccion de correo"
+              type="email"
               name="email"
               autoComplete="email"
               onChange={handleOnChangeEmail}
