@@ -72,7 +72,8 @@ export default function SignInSide() {
     //entrar en la app
     let usuario = {'email': user,'password':pass};
     let resp = await login(usuario);
-
+    console.log(resp);
+    
     if (resp.rol) {
       dispatch(signIn())
     }else{

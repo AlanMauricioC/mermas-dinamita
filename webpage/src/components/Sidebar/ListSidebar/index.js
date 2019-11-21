@@ -9,6 +9,10 @@ import StoreIcon from '@material-ui/icons/Storefront';
 import AppleIcon from '@material-ui/icons/Apple';
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import ItemSidebar from './ItemSidebar';
+import ColorizeIcon from '@material-ui/icons/Colorize';
+import ReceiptIcon from '@material-ui/icons/Receipt';
+
+
 
 const data = [
     {
@@ -22,8 +26,8 @@ const data = [
         link:'recetas'
     },
     {
-        title: "Órdenes",
-        icon: <RecipiesIcon/>,
+        title: "Comandas",
+        icon: <ReceiptIcon/>,
         link:'ordenes'
     },
     {
@@ -38,8 +42,13 @@ const data = [
     },
     {
         title: "Unidades de medida",
-        icon: <ChartIcon/>,
+        icon: <ColorizeIcon/>,
         link:'unidades'
+    },
+     {
+        title: "Gráficas",
+        icon: <ChartIcon/>,
+        link:'graficas'
     },
     {
         title: "Usuarios",
