@@ -19,7 +19,9 @@ const menuReducer = (state = defaultState, action) => {
 		case 'SET_SUPPLIES':
 			return { ...state, supplies: action.payload };
 		case 'SET_SEARCH':
-			return { ...state, qry: action.payload,type:SUPPLY_SELECTOR.NONE };
+            return { ...state, qry: action.payload,type:SUPPLY_SELECTOR.NONE };
+        case 'SET_SUPPLY_SELECTOR':
+            return { ...state, type:action.payload };
 		default:
 			return state;
 	}

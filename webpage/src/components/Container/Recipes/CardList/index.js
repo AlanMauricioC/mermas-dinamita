@@ -8,7 +8,6 @@ import { getRecipes as recipes } from "../../../../services/recipes";
 import DialogDelete from './DialogDelete';
 import DialogUpdate from './DialogUpdate';
 import Card from "./ProductCard";
-
 const styles = theme => ({
     root: {
         paddingTop: 24,
