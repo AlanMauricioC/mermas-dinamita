@@ -8,9 +8,8 @@ export const getConfig = (title='Título', dates=[], series=[]) => {
 		// name: 'nombre1',
 		// data: [ 1, 2, 3, 4 ]
     };
-    
-    series.map(({name='Nombre',data=[]})=>({...defSerie,data,name}))
-
+	
+    series=series.map(({name='Nombre',data=[]})=>({...defSerie,data,name}))
 
 	return {
 		tooltip: {
@@ -78,6 +77,50 @@ export const getConfig = (title='Título', dates=[], series=[]) => {
 export const getWasteChart=async (dateStart,dateEnd)=>{
 	try {
 		const response = await fetch(SERVER_URL + `stadisticWastes`, {
+			method: 'POST',
+			body: JSON.stringify({ dateStart,dateEnd }),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		if (!response.ok) {
+			throw Error(response.statusText);
+		}
+		const json = await response.json();
+		console.log(json);
+
+		return json;
+	} catch (error) {
+		console.log(error);
+		return [];
+	}
+}
+
+export const getRestockChart=async (dateStart,dateEnd)=>{
+	try {
+		const response = await fetch(SERVER_URL + `stadisticRestocks`, {
+			method: 'POST',
+			body: JSON.stringify({ dateStart,dateEnd }),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		if (!response.ok) {
+			throw Error(response.statusText);
+		}
+		const json = await response.json();
+		console.log(json);
+
+		return json;
+	} catch (error) {
+		console.log(error);
+		return [];
+	}
+}
+
+export const getRecipesChart=async (dateStart,dateEnd)=>{
+	try {
+		const response = await fetch(SERVER_URL + `stadisticRecipes`, {
 			method: 'POST',
 			body: JSON.stringify({ dateStart,dateEnd }),
 			headers: {

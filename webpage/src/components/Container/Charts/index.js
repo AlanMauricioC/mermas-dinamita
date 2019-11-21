@@ -5,7 +5,7 @@ import { Grid, TextField, MenuItem } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import Echarts from 'echarts-for-react';
 import moment from 'moment';
-import { getConfig,getWasteChart } from '../../../services/charts';
+import { getConfig, getWasteChart, getRecipesChart, getRestockChart } from '../../../services/charts';
 
 class Charts extends Component {
 	constructor(props) {
@@ -22,11 +22,33 @@ class Charts extends Component {
 
 	async setMermas() {
 		try {
-            //un await
-            const strStartDate=moment(this.state.startDate).format('YYYY-MM-DD')
-            const strEndDate=moment(this.state.endDate).format('YYYY-MM-DD')
-            const data=await getWasteChart(strStartDate,strEndDate)
-			const config = getConfig("Mermas",data.dates);
+			//un await
+			const strStartDate = moment(this.state.startDate).format('YYYY-MM-DD');
+			const strEndDate = moment(this.state.endDate).format('YYYY-MM-DD');
+			const data = await getWasteChart(strStartDate, strEndDate);
+			const config = getConfig('Mermas', data.dates, data.series);
+			this.setState({ chartConfig: config });
+		} catch (error) {}
+	}
+
+	async setRestock() {
+		try {
+			//un await
+			const strStartDate = moment(this.state.startDate).format('YYYY-MM-DD');
+			const strEndDate = moment(this.state.endDate).format('YYYY-MM-DD');
+			const data = await getRestockChart(strStartDate, strEndDate);
+			const config = getConfig('Pedidos realizados', data.dates, data.series);
+			this.setState({ chartConfig: config });
+		} catch (error) {}
+	}
+
+	async setRecipes() {
+		try {
+			//un await
+			const strStartDate = moment(this.state.startDate).format('YYYY-MM-DD');
+			const strEndDate = moment(this.state.endDate).format('YYYY-MM-DD');
+			const data = await getRecipesChart(strStartDate, strEndDate);
+			const config = getConfig('10 recetas más vendidas', data.dates, data.series);
 			this.setState({ chartConfig: config });
 		} catch (error) {}
 	}
@@ -38,6 +60,7 @@ class Charts extends Component {
 			if (!moment(date).isBefore(this.state.endDate)) {
 				return;
 			}
+			handleChangeChart()
 			this.setState({ startDate: value });
 		};
 		const handleDateChangeEnd = (date) => {
@@ -46,18 +69,29 @@ class Charts extends Component {
 			if (!moment(date).isBetween(this.state.startDate, undefined)) {
 				return;
 			}
+			handleChangeChart()
 			this.setState({ endDate: value });
 		};
 
 		const handleChangeChart = (e) => {
-			const val = e.target.value;
+			let val
+			if (e) {
+				val = e.target.value;
+				this.setState({ chartType: val });
+			}else{
+				val=this.state.chartType
+			}
 
-			this.setState({ chartType: val });
 			switch (val) {
 				case 0:
 					this.setMermas();
 					break;
-
+				case 1:
+					this.setRecipes();
+					break;
+				case 2:
+					this.setRestock();
+					break;
 				default:
 					this.setState({ chartConfig: {} });
 					break;
