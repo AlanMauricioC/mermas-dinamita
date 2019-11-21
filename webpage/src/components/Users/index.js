@@ -17,7 +17,7 @@ class Table extends Component {
   }
   async getData() {
     const usuarios = await getUsers();
-    this.setState({ data: usuarios});
+    this.setState({ data: usuarios.users});
   }
   componentDidMount() {
     this.getData();

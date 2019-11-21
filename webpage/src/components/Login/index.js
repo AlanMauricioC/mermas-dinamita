@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { login } from '../../services/login';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -61,10 +61,17 @@ export default function SignInSide() {
   const dispatch=useDispatch()
   const classes = useStyles();
   //falta el uso de states para el usuario y contraseña
+  const [user, setUser] = useState(null);
+  const [pass, setPass] = useState(null);
 
+  const handleOnChangeEmail = (event) => setUser(event.target.value);
+  const handleOnChangePass = (event) => setPass(event.target.value);
   //lógica de quien entra y quien no, llama al ws
   const handleOnLogin=()=>{
-    //entrar en la app 
+    //entrar en la app
+    var usuario = {'email': user,'password':pass};
+    var resp = login(usuario);
+
     dispatch(signIn())
   }
   return (
@@ -89,6 +96,7 @@ export default function SignInSide() {
               label="Direccion de correo"
               name="email"
               autoComplete="email"
+              onChange={handleOnChangeEmail}
               autoFocus
             />
             <TextField
@@ -101,6 +109,7 @@ export default function SignInSide() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={handleOnChangePass}
             />
             
             <Button

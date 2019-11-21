@@ -41,7 +41,7 @@ export const headCells =
 [
     { title: 'Nombre del empleado', field: 'name' },
     { title: 'Rol del empleado', field: 'rol' },
-    { title: 'Pin de seguridad', field: 'pin', type:'int'}
+    { title: 'Pin de seguridad', field: 'pin', type:'numeric'}
       
 ]
 
@@ -87,9 +87,10 @@ const details=[
 ]
 export const data=[
     {
-        name: 'Miguel', 
-        rol: "Chef", 
-        pin: 1234, 
+        id: 0,
+        name: 'Aldo', 
+        rol: "Admin", 
+        pin: 1233, 
     }
 ]
 
@@ -118,10 +119,9 @@ export const insertUser = async function (user) {
 }
 
 export const getUsers =async function () {
-    console.log(":v");
     try {
         const response = await fetch(SERVER_URL +`users`,{
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
