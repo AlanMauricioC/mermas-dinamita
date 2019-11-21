@@ -122,14 +122,14 @@ class Table extends Component {
             if(val!=-1){
                 if(validateUnique(val)){
                     const data=this.state.data;
-                    const arrivalDateRestockSupply="";
+                    const arrivalDateRestockSupply=null;
                     const commentaryRestockSupply="";
-                    const costRestockSupply="";
+                    const costRestockSupply=0;
                     const idProvider=1;
                     const idSupply=val;
                     const nameProvider=null;
                     const quantityRestockSupply=0;
-                    const sellByDateRestockSupply="";
+                    const sellByDateRestockSupply=null;
                     const statusRestockSupply=1;
                     const newData={
                         arrivalDateRestockSupply, 
@@ -155,9 +155,13 @@ class Table extends Component {
         const {row, change}=this.props;
 
         const handleChange = event => {
-			const val = event.target.value
-            this.setState({ rowStatus: val });
-            setStatus(val);
+            const val = event.target.value
+            if(this.state.rowStatus==5){
+            }else{
+                this.setState({ rowStatus: val });
+                setStatus(val);
+
+            }
         }
 
         const setStatus=(status)=>{
@@ -239,10 +243,14 @@ class Table extends Component {
                         <h2>Insumos</h2>
                     </Grid>
                     <Grid item xs={6}>
+                        {this.state.rowStatus===5 ? 
                         <TextField
                             id="statusRestock"
                             select
                             value={this.state.rowStatus}
+                            InputProps={{
+                              readOnly: true,
+                            }}
                             label="Status de pedido"
                             onChange={handleChange}
                             fullWidth
@@ -269,7 +277,38 @@ class Table extends Component {
                             <MenuItem value="6">
                                 Rechazado
                             </MenuItem>
-                        </TextField>
+                        </TextField> :
+                        <TextField
+                        id="statusRestock"
+                        select
+                        value={this.state.rowStatus}
+                        label="Status de pedido"
+                        onChange={handleChange}
+                        fullWidth
+                        margin="normal"
+                    >
+                        <MenuItem value="0">
+                            Cancelado
+                        </MenuItem>
+                        <MenuItem value="1">
+                            Pendiente
+                        </MenuItem>
+                        <MenuItem value="2">
+                            Aprobado
+                        </MenuItem>
+                        <MenuItem value="3">
+                            No aprobado
+                        </MenuItem>
+                        <MenuItem value="4">
+                            Pedido
+                        </MenuItem>
+                        <MenuItem value="5">
+                            Entregado
+                        </MenuItem>
+                        <MenuItem value="6">
+                            Rechazado
+                        </MenuItem>
+                    </TextField> }
                     </Grid>
                     <Grid item xs={12}>
                         <TextField

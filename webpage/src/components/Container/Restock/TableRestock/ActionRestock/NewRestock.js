@@ -34,6 +34,7 @@ class ActionRestock extends Component{
         createRestock(data).then(()=>{
             alertifyjs.success('Pedido creado correctamente');
             this.props.changeEditState();
+            window.location.replace("http://localhost:3000/pedidos");
         }, (e) => console.error(e))
     }
 
@@ -61,16 +62,29 @@ class ActionRestock extends Component{
         }
     }
 
+    validateData=()=>{
+        const suppliesRestock=this.state.suppliesRestock
+        for(let i=0;i<suppliesRestock.length;i++){
+            if(suppliesRestock[i].quantityRestockSupply<1 || suppliesRestock[i].costRestockSupply<1) return false
+        }
+        return true;
+    }
+
     handleSubmit=(action)=>{
         switch (action) {
             case "cancel":
                 this.props.changeEditState();
                 break;
             case "save":
-                const data={idUser: 1, idSupplies: this.state.suppliesRestock}
-                console.log(this.state.suppliesRestock);
-                this.insertRestock(data)
-                break;
+                if(this.validateData()){
+                    const data={idUser: 1, idSupplies: this.state.suppliesRestock}
+                    console.log(this.state.suppliesRestock);
+                    this.insertRestock(data)
+
+                    break;
+                }else{
+                    alertifyjs.warning("Ingrese cantidades válidas")
+                }
         }
     }
 
@@ -272,9 +286,9 @@ class ActionRestock extends Component{
                         </Link>
                     </Grid>
                     <Grid item xs={2}>
-                        <Link to={"/pedidos"}>
+                        {this.state.suppliesRestock.length>0 ?
                             <Button onClick={()=>this.handleSubmit("save")} color="primary" variant="contained">Registrar pedido</Button>
-                        </Link>
+                        : null}
                     </Grid>
                 </Grid>
             </div>
