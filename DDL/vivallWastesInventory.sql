@@ -17,10 +17,10 @@ CREATE TABLE units(
 -- Tabla de usuarios
 CREATE TABLE users(
     idUser INT NOT NULL AUTO_INCREMENT,
-    nameUser VARCHAR(45) NOT NULL,
+    emailUser VARCHAR(254) NOT NULL,
     passwordUser VARCHAR(45) NOT NULL,
-    rolUser VARCHAR(15) NOT NULL,
-    pinUser INT(4) NOT NULL,
+    rolUser TINYINT(1) NOT NULL,
+    pinUser VARCHAR(4) NOT NULL,
     statusUser TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (idUser)
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
@@ -45,6 +45,7 @@ CREATE TABLE recipes(
     imageRecipe VARCHAR(100) NOT NULL DEFAULT "recipes/default.jpg",
     detailRecipe VARCHAR(200) NULL,
     idSupply INT NULL,
+    quantitySupplyRecipe DOUBLE NULL, 
     statusRecipe TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (idRecipe),
     FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -68,6 +69,7 @@ CREATE TABLE orders(
     idOrder INT NOT NULL AUTO_INCREMENT,
     dateOrder timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     idRecipe INT NOT NULL,
+    supply TINYINT(1) NULL,
     idUser INT NOT NULL,
     statusOrder TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY (idOrder),
@@ -183,6 +185,25 @@ CREATE OR REPLACE TRIGGER acceptRestockSupply AFTER UPDATE ON restocksupply FOR 
             SELECT quantitySupply INTO quantity FROM supplies WHERE idSupply=NEW.idSupply;
             SET quantity = NEW.quantityRestockSupply + quantity;
             UPDATE supplies SET quantitySupply=quantity WHERE idSupply=NEW.idSupply;
+        END IF;
+    END//
+DELIMITER ;
+-- Trigger para actualizar cantidad de insumo cada que se inserta una orden para preparar insumo de insumos
+DELIMITER //
+CREATE OR REPLACE TRIGGER insertOrder AFTER INSERT ON orders FOR EACH ROW 
+    BEGIN
+        DECLARE idS DOUBLE;
+        DECLARE quantity DOUBLE;
+        DECLARE maxquantity DOUBLE;
+        DECLARE recipeQuantity DOUBLE;
+        IF NEW.supply=1 THEN
+            SELECT idSupply, quantitySupplyRecipe INTO idS, recipeQuantity FROM recipes WHERE idRecipe=NEW.idRecipe;
+            SELECT quantitySupply, maxQuantitySupply INTO quantity, maxquantity FROM supplies WHERE idSupply=idS;
+            SET quantity = quantity + recipeQuantity;
+            UPDATE supplies SET quantitySupply=quantity WHERE idSupply=idS;
+            IF quantity <= maxquantity THEN
+                INSERT INTO notificationsSupply VALUES (1, idS, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotifSupply=current_timestamp();
+            END IF;
         END IF;
     END//
 DELIMITER ;
