@@ -5,7 +5,8 @@ function logIn (req, res){
         if (err) {
             console.log('Error' , err)
             res.status(500).json({err})
-        }else
+        }
+        else{
             result.forEach(element => {
                 req.session.idUser = element.id
                 req.session.email = element.email
@@ -13,7 +14,8 @@ function logIn (req, res){
 
                 console.log(req.session)
             })
-            res.status(200).json({ user : result })
+            res.status(200).json({ id: req.session.idUser, email: req.session.email, rol: req.session.rol })
+        }
     })
 }
 
