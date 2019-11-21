@@ -10,6 +10,8 @@ import Wastes from "../Wastes";
 import Orders from "./Orders";
 import Recipes from "./Recipes";
 import OrdersT from "./OrdersT";
+import Users from "../Users";
+import Login from "../Login";
 import Measurement from "../Measurement";
 import Restock from './Restock';
 import { getSupplies } from "../../services/supplies";
@@ -62,8 +64,11 @@ const Container = ()=>{
             <Route exact path="/graficas">
                 <Charts/>
             </Route>
-            <Route>
-                
+            <Route exact path="/usuarios">
+                <Users/>
+            </Route>
+            <Route exact path="/login">
+                <Login/>
             </Route>
 
         </Switch>

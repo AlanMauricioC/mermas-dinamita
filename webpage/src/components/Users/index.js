@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
-import { getUnits, deleteUnit,updateUnit,insertUnit, tableIcons, headCells,data} from '../../services/units';
+import { getUsers, deleteUser,updateUser,insertUser, tableIcons, headCells,data} from '../../services/users';
 
 
 
@@ -16,8 +16,8 @@ class Table extends Component {
     }
   }
   async getData() {
-    const unidades = await getUnits();
-    this.setState({ data: unidades});
+    const usuarios = await getUsers();
+    this.setState({ data: usuarios});
   }
   componentDidMount() {
     this.getData();
@@ -65,7 +65,7 @@ class Table extends Component {
                             data.push(newData);
                             var unidad = {'name': newData.name};
 
-                            insertUnit(unidad);
+                            insertUser(unidad);
                             this.setState({ data }, () => resolve());
                         }
                         resolve();
@@ -81,7 +81,7 @@ class Table extends Component {
                         var datos = { 'id' : oldData.id,
                           'name':newData.name
                         };
-                        updateUnit(datos);
+                        updateUser(datos);
                         this.setState({ data }, () => resolve());
                       }
                       resolve()
@@ -95,7 +95,7 @@ class Table extends Component {
                         const index = data.indexOf(oldData);
                         console.log("id"+oldData.id);
                         var dato = { 'id' : oldData.id};
-                        deleteUnit(dato);
+                        deleteUser(dato);
                         data.splice(index, 1);
                         this.setState({ data }, () => resolve());
                       }
