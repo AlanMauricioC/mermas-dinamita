@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Button, Grid, TextField, MenuItem, Paper, Divider } from '@material-ui/core';
+import { Button, Grid, TextField, MenuItem, Paper, Divider, Switch, FormControlLabel } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete'
 import { recipes, getRecipes, supplies, wastes, insertOrder, updateSupplyOrder, insertSupplyOrder, deleteSupplyOrder } from "./../../../../../services/orders";
 import { getSupplies } from "./../../../../../services/supplies";
@@ -30,6 +30,7 @@ class TableOrderDetail extends Component{
             selectRecipe: null,
             selectSupply: null,
             quantityRecipeSupply: [],
+            isSupply:false,
         }
         console.log("constructor!")
     }
@@ -93,36 +94,40 @@ class TableOrderDetail extends Component{
     }
 
     handleClickInsertOrder=()=>{
-        const {orderRecipe, orderWastes}=this.state;
-        const {idOrder}=this.props;
-        const data={
-            idRecipe: orderRecipe.idRecipe,
-            idUser: 1,
-            supplies:orderRecipe.supplies,
-            wastes: orderWastes,
-        }
-        if(!idOrder){
-            insertOrder(data).then(()=>{
-                alertifyjs.success('Orden creada correctamente');
-                this.props.handleReturnOrdersView();
-            }, (e) => console.error(e))
-        }else{
-            for(let i=0; i<data.supplies.length; i++){
-                //Hace falta arreglar esto
-                const updataData={idOrder: this.props.idOrder, idSupply: data.supplies[i].idSupply, quantityOrderSupply: data.supplies[i].quantityRecipeSupply}
-                updateSupplyOrder(updataData).then(()=>{
-                    insertSupplyOrder(updataData).then(()=>{
-                        this.props.handleReturnOrdersView();
-                    }, (e) => console.error(e))
-                }, (e) => console.error(e))
+        if(!this.state.isSupply){
+            const {orderRecipe, orderWastes}=this.state;
+            const {idOrder}=this.props;
+            const data={
+                idRecipe: orderRecipe.idRecipe,
+                idUser: 1,
+                supplies:orderRecipe.supplies,
+                wastes: orderWastes,
             }
-            for(let i=0; i<this.state.deleteSupplies.length; i++){
-                const deleteData={idOrder: this.props.idOrder, idSupply: this.state.deleteSupplies[i].idSupply};
-                deleteSupplyOrder(deleteData).then(()=>{
+            if(!idOrder){
+                insertOrder(data).then(()=>{
+                    alertifyjs.success('Orden creada correctamente');
                     this.props.handleReturnOrdersView();
                 }, (e) => console.error(e))
+            }else{
+                for(let i=0; i<data.supplies.length; i++){
+                    //Hace falta arreglar esto
+                    const updataData={idOrder: this.props.idOrder, idSupply: data.supplies[i].idSupply, quantityOrderSupply: data.supplies[i].quantityRecipeSupply}
+                    updateSupplyOrder(updataData).then(()=>{
+                        insertSupplyOrder(updataData).then(()=>{
+                            this.props.handleReturnOrdersView();
+                        }, (e) => console.error(e))
+                    }, (e) => console.error(e))
+                }
+                for(let i=0; i<this.state.deleteSupplies.length; i++){
+                    const deleteData={idOrder: this.props.idOrder, idSupply: this.state.deleteSupplies[i].idSupply};
+                    deleteSupplyOrder(deleteData).then(()=>{
+                        this.props.handleReturnOrdersView();
+                    }, (e) => console.error(e))
+                }
+                alertifyjs.success('Orden actualizada correctamente');
             }
-            alertifyjs.success('Orden actualizada correctamente');
+        }else{
+            alert("Aquí va el método de cuando es insumo o:")
         }
     }
 
@@ -196,10 +201,32 @@ class TableOrderDetail extends Component{
                     this.setState({[event.target.name]: val});
             }
         }
+
+        const handleChange = name => event => {
+            this.setState({isSupply: event.target.checked})
+        }
         
         const selectRecipe=
             <div>
-                <h2>Nueva orden</h2>
+                <Grid container>
+                    <Grid item xs={10}>
+                        <h2>Nueva orden</h2>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <br/>
+                        <FormControlLabel
+                            label="Es insumo"
+                            control={
+                            <Switch
+                                checked={this.state.isSupply}
+                                onChange={handleChange('isSupply')}
+                                value="isSupply"
+                                color="primary"
+                            />
+                            }
+                        />
+                    </Grid>
+                </Grid>
                 <Divider/>
                 <TextField
                     name="selectRecipe"
