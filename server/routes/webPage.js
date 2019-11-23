@@ -10,6 +10,7 @@ const alerts = require('../querys/alerts')
 const users = require('../querys/users')
 const log = require('../querys/log')
 const stadistic = require('../querys/stadistic')
+const providers = require('../querys/providers')
  
 // middleware specific to this router
 router.use(function timeLog(req, res, next) {
@@ -179,5 +180,8 @@ router.post('/stadisticRecipes', stadistic.stadisticRecipes)
 
 // Obtiene estadisticas de pedidos
 router.post('/stadisticRestocks', stadistic.stadisticRestocks)
+
+// Obtiene los proveedores registrados
+router.get('/providers', providers.getProviders)
 
 module.exports = router
