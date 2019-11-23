@@ -7,14 +7,17 @@ function logIn (req, res){
             res.status(500).json({err})
         }
         else{
-            result.forEach(element => {
-                req.session.idUser = element.id
-                req.session.email = element.email
-                req.session.rol = element.rol
-
-                console.log(req.session)
-            })
-            res.status(200).json({ id: req.session.idUser, email: req.session.email, rol: req.session.rol })
+        	if(result.length == 1) {
+	            result.forEach(element => {
+	                req.session.idUser = element.id
+	                req.session.email = element.email
+	                req.session.rol = element.rol
+	            })
+	            res.status(200).json({ id: req.session.idUser, email: req.session.email, rol: req.session.rol, status: 200 })
+	        }
+	        else {
+	        	res.status(200).json({ id: null, email: null, rol: null, status: 406 })
+	        }
         }
     })
 }
@@ -27,10 +30,9 @@ function getSession(req, res) {
         session.id = req.session.idUser
         session.email = req.session.email
         session.rol = req.session.rol
-        user.push(session)
 
-        console.log(user)
-        res.status(200).json({ user : user})
+
+        res.status(200).json({ id: req.session.idUser, email: req.session.email, rol: req.session.rol, status: 200})
     }
     else {
         res.status(500).json('No existe sesion')
