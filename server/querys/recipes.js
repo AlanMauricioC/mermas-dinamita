@@ -7,13 +7,13 @@ function insertRecipe(req, res){
     form.keepExtensions = true
     form.parse(req, function(err, fields, files) {
         if(fields){
-            var qry = `INSERT INTO recipes VALUES (NULL, ?, ?, ?, ?, 1)`
+            var qry = `INSERT INTO recipes VALUES (NULL, ?, ?, ?, ?, ?, 1, ?)`
             var values = []
             if(!files.image){
-                values = [fields.nameRecipe, 'recipes/default.jpg', fields.detailRecipe, fields.idSupply]
+                values = [fields.nameRecipe, 'recipes/default.jpg', fields.detailRecipe, fields.idSupply, fields.quantity, req.session.idUser]
             }
             else{
-                values = [fields.nameRecipe, 'recipes/' + files.image.name, fields.detailRecipe, fields.idSupply]
+                values = [fields.nameRecipe, 'recipes/' + files.image.name, fields.detailRecipe, fields.idSupply, fields.quantity, req.session.idUser]
             }
             con.query(qry, values,
                 function (err, result) {
@@ -104,8 +104,11 @@ function promise_query(query , param , v){
 }
 
 function getRecipes(req, res){
-    var qry = `SELECT r.idRecipe, r.nameRecipe, r.detailRecipe, r.imageRecipe, r.idSupply, s.nameSupply, 
-    r.statusRecipe FROM recipes AS r LEFT JOIN supplies AS s ON r.idSupply=s.idSupply WHERE r.statusRecipe<>0`
+    var qry = `SELECT r.idRecipe, r.nameRecipe, r.detailRecipe, r.imageRecipe, r.idSupply, 
+    r.quantitySupplyRecipe as quantity, s.nameSupply, r.statusRecipe 
+    FROM recipes AS r 
+    LEFT JOIN supplies AS s ON r.idSupply=s.idSupply 
+    WHERE r.statusRecipe<>0`
     var values = []
     if(req.body.search) {
         qry = qry + ` AND nameRecipe LIKE ?`
@@ -140,15 +143,15 @@ function updateRecipe(req, res){
     form.keepExtensions = true
     form.parse(req, function(err, fields, files) {
         if(fields){
-            var qry = `UPDATE recipes AS r SET r.nameRecipe=?, r.detailRecipe=?, r.idSupply=?, r.statusRecipe=?`
+            var qry = `UPDATE recipes AS r SET r.nameRecipe=?, r.detailRecipe=?, r.idSupply=?, r.quantitySupplyRecipe=?, r.statusRecipe=?`
             var values = []
             if(!files.image){
                 qry = qry + ` WHERE r.idRecipe=?`
-                values = [fields.nameRecipe, fields.detailRecipe, fields.idSupply, fields.statusRecipe, fields.idRecipe]
+                values = [fields.nameRecipe, fields.detailRecipe, fields.idSupply, fields.statusRecipe, fields.quantity, fields.idRecipe]
             }
             else{
                 qry = qry + `, r.imageRecipe=? WHERE r.idRecipe=?`
-                values = [fields.nameRecipe, fields.detailRecipe, fields.idSupply, fields.statusRecipe, 'recipes/' + files.image.name, fields.idRecipe]
+                values = [fields.nameRecipe, fields.detailRecipe, fields.idSupply, fields.statusRecipe, 'recipes/' + files.image.name, fields.quantity, fields.idRecipe]
             }
             con.query(qry, values,
                 function (err, result) {
@@ -162,7 +165,11 @@ function updateRecipe(req, res){
         }
     })
     form.on('fileBegin', (name, file, ) => {
-        file.path = __dirname + '\\..\\files\\recipes\\' + file.name
+        try {
+            file.path = __dirname + '\\..\\files\\recipes\\' + file.name
+        } catch (error) {
+            console.log(error)
+        }
     })
     form.on('file', (name, file) => {
         console.log('Uploaded file ', file.name)

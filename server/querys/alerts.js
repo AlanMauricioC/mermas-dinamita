@@ -3,8 +3,11 @@ const con = require('../DB/connection')
 function alerts (req, res) {
     var restockAlerts = []
     var expirationAlerts = []
-
-    con.query("SELECT ns.idSupply AS id, typeNotification, DATE_FORMAT(registrationDateNotifSupply, '%Y-%m-%d') AS `date`, nameSupply AS name, quantitySupply AS quantity, ((minQuantitySupply+(maxQuantitySupply-minQuantitySupply)/2)-quantitySupply) AS expectedQuantity FROM notificationssupply AS ns INNER JOIN supplies AS s ON ns.idSupply=s.idSupply", function (err, result) {
+    // notificaciones de insumos
+    con.query(`SELECT ns.idSupply AS id, typeNotification, DATE_FORMAT(registrationDateNotifSupply, '%Y-%m-%d') AS 'date', 
+    nameSupply AS name, quantitySupply AS quantity, ((minQuantitySupply+(maxQuantitySupply-minQuantitySupply)/2)-quantitySupply) AS expectedQuantity 
+    FROM notificationssupply AS ns 
+    INNER JOIN supplies AS s ON ns.idSupply=s.idSupply`, function (err, result) {
         if (err) {
             console.log("Error" , err)
             res.status(500).json({err})
@@ -13,14 +16,14 @@ function alerts (req, res) {
             result.forEach(element => {
                 var alert = {}
                 switch (element.typeNotification) {
-                    case 1:
+                    case 1: // alarma de restock
                         alert.id = element.id
                         alert.name = element.name
                         alert.quantity = element.quantity
                         alert.expectedQuantity = element.expectedQuantity
                         restockAlerts.push(alert)
                         break
-                    case 2:
+                    case 2: // alarma de caducidad
                         alert.id = element.id
                         alert.name = element.name
                         alert.quantity = element.quantity
@@ -29,15 +32,18 @@ function alerts (req, res) {
                         break
                 }
             })
-
-            con.query("SELECT nw.idWaste AS id, DATE_FORMAT(registrationDateNotifWaste, '%Y-%m-%d') AS `date`, nameSupply AS name, quantityWaste AS quantity FROM notificationswaste AS nw INNER JOIN wastes AS w ON nw.idWaste=w.idWaste INNER JOIN supplies AS s ON w.idSupply=s.idSupply", function(err, result) {
+            // Notificaciones de mermas
+            con.query(`SELECT nw.idWaste AS id, DATE_FORMAT(registrationDateNotifWaste, '%Y-%m-%d') AS 'date', nameSupply AS name, quantityWaste AS quantity 
+            FROM notificationswaste AS nw 
+            INNER JOIN wastes AS w ON nw.idWaste=w.idWaste 
+            INNER JOIN supplies AS s ON w.idSupply=s.idSupply`, function(err, result) {
                 if(err) {
                     console.log("Error" , err)
                     res.status(500).json({err})
                 }
                 else {
                     result.forEach(element => {
-                        let alert = {}
+                        let alert = {} // mermas solo tiene notificaciones de caducidad
                         alert.id = element.id
                         alert.name = element.name
                         alert.quantity = element.quantity

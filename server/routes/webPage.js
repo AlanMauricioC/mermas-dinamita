@@ -12,7 +12,7 @@ const log = require('../querys/log')
 const stadistic = require('../querys/stadistic')
 const providers = require('../querys/providers')
 const middleware = require('../querys/middleware')
- 
+
 // middleware specific to this router
 router.use(function timeLog(req, res, next) {
     console.log('Time: ', Date.now())
