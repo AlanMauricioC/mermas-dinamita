@@ -1,25 +1,32 @@
+import DateFnsUtils from '@date-io/date-fns';
 import {
-	DialogContent,
-	TextField,
-	DialogActions,
 	Button,
 	Dialog,
+	DialogActions,
+	DialogContent,
 	DialogTitle,
+	FormControl,
 	Grid,
-	withStyles,
-	Select,
-	MenuItem,
 	InputLabel,
-	FormControl
+	MenuItem,
+	Select,
+	TextField,
+	withStyles,
+	Typography,
+	Box
 } from '@material-ui/core';
-import React, { PureComponent } from 'react';
-import { validateNumber, validateText } from '../../../../services/validations';
-import { connect } from 'react-redux';
-import { updateSupply, setSupplies } from '../../../../actions';
-import { updateSupplies as updateService, getSupplies, insertSupplies } from '../../../../services/supplies';
-import { getUnits } from '../../../../services/units';
-
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import alertifyjs from 'alertifyjs';
+import 'date-fns';
+import React, { PureComponent, Fragment } from 'react';
+import { connect } from 'react-redux';
+import { setSupplies, updateSupply } from '../../../../actions';
+import { getSupplies, insertSupplies, updateSupplies as updateService } from '../../../../services/supplies';
+import { getUnits } from '../../../../services/units';
+import { validateNumber, validateText } from '../../../../services/validations';
+import moment from 'moment';
+import Info from '../../../Miscellaneous/Info';
+import UpdateInfoSupply from "./UpdateInfoSupply";
 
 const styles = (theme) => ({
 	media: {
@@ -44,7 +51,7 @@ const styles = (theme) => ({
 class DialogUpdateSupply extends PureComponent {
 	constructor(props) {
 		super(props);
-		const { supply: { name, quantity, min, max, unit } } = props;
+		const { supply: { name, quantity, min, max } } = props;
 		alertifyjs.set('notifier', 'position', 'bottom-center');
 		this.state = {
 			supply: {
@@ -57,6 +64,7 @@ class DialogUpdateSupply extends PureComponent {
 					name: ''
 				}
 			},
+			date: moment().add(1, 'day'),
 			units: []
 		};
 	}
@@ -85,6 +93,7 @@ class DialogUpdateSupply extends PureComponent {
 				avg,
 				id
 			},
+			isUpdate: !!id,
 			invalidName: false,
 			invalidMin: false,
 			invalidMax: false
@@ -92,8 +101,6 @@ class DialogUpdateSupply extends PureComponent {
 	}
 
 	render() {
-		console.log(this.state.units);
-
 		const { handleClose, classes, open } = this.props;
 		const handleOnChangeNumber = (event) => {
 			const number = event.target.value;
@@ -119,6 +126,12 @@ class DialogUpdateSupply extends PureComponent {
 			}
 		};
 
+		const handleOnChangeDate = (date) => {
+			const value = moment(date).valueOf();
+			//está dentro del rango?
+			this.setState({ date: value });
+		};
+
 		const updateSupply = async () => {
 			console.log('actualizar insumo');
 			const { min, max, name, quantity, id, unit: { id: idUnit, name: unit } } = this.state.supply;
@@ -130,6 +143,7 @@ class DialogUpdateSupply extends PureComponent {
 				max,
 				min,
 				name,
+				date: this.state.date,
 				quantity,
 				unit
 			};
@@ -155,6 +169,7 @@ class DialogUpdateSupply extends PureComponent {
 				max,
 				min,
 				name,
+				date: this.state.date,
 				quantity
 			};
 			if (!validateSupply(data)) {
@@ -176,10 +191,14 @@ class DialogUpdateSupply extends PureComponent {
 
 		const validateSupply = (supply) => {
 			let invalidName = !validateText(supply.name, 1, 45);
-			let invalidMin = !validateNumber(supply.min,0, supply.max);
-			let invalidMax = !validateNumber(supply.max,supply.min);
-			this.setState({invalidMax,invalidMin,invalidName})
-			return !(invalidName||invalidMin||invalidMax)
+			let invalidMin = !validateNumber(supply.min, 0, supply.max);
+			let invalidMax = !validateNumber(supply.max, supply.min);
+			let invalidDate = false;
+			if (!supply.id) {
+				invalidDate = !moment(supply.date).isAfter(moment());
+			}
+			this.setState({ invalidMax, invalidMin, invalidName });
+			return !(invalidName || invalidMin || invalidMax || invalidDate);
 		};
 		const unitItems = () => {
 			if (this.state.units) {
@@ -201,7 +220,10 @@ class DialogUpdateSupply extends PureComponent {
 				maxWidth={'md'}
 			>
 				<DialogTitle id="form-dialog-title" className={classes.top}>
-					{this.state.supply.id ? 'Modificar' : 'Crear'} Insumo
+					{this.state.isUpdate ? 'Modificar' : 'Crear'} Insumo
+					<Info>
+						<UpdateInfoSupply isUpdate={this.state.isUpdate} />
+					</Info>
 				</DialogTitle>
 				<DialogContent>
 					<Grid container alignItems={'center'}>
@@ -220,19 +242,39 @@ class DialogUpdateSupply extends PureComponent {
 								onChange={handleOnChangeName}
 							/>
 						</Grid>
-						<Grid item className={classes.input} xs={12} md={4}>
-							{this.state.supply.id ? (
-								<TextField
-									name="quantity"
-									onKeyPress={handleOnEnter}
-									disabled={true}
-									fullWidth
-									type="number"
-									margin="dense"
-									label={'Cantidad actual'}
-									value={this.state.supply.quantity}
+						<Grid item className={classes.input} xs={12} md={this.state.isUpdate ? 4 : 2}>
+							<TextField
+								name={'quantity'}
+								onKeyPress={handleOnEnter}
+								disabled={this.state.isUpdate}
+								fullWidth
+								type="number"
+								onChange={handleOnChangeNumber}
+								margin="dense"
+								label={this.state.isUpdate ? 'Cantidad actual' : 'Cantidad inicial'}
+								value={this.state.supply.quantity}
+							/>
+						</Grid>
+						<Grid
+							item
+							className={classes.input}
+							xs={12}
+							md={2}
+							style={{ display: this.state.isUpdate ? 'none' : 'block' }}
+						>
+							<MuiPickersUtilsProvider utils={DateFnsUtils}>
+								<KeyboardDatePicker
+									margin="normal"
+									label="Caducidad"
+									format="dd/MM/yyyy"
+									autoOk={true}
+									onChange={handleOnChangeDate}
+									value={this.state.date}
+									KeyboardButtonProps={{
+										'aria-label': 'Caducidad'
+									}}
 								/>
-							) : null}
+							</MuiPickersUtilsProvider>
 						</Grid>
 						<Grid item className={classes.input} xs={12} md={4}>
 							<TextField
@@ -287,7 +329,7 @@ class DialogUpdateSupply extends PureComponent {
 						Cancelar
 					</Button>
 					<Button
-						onClick={this.state.supply.id ? updateSupply : createSupply}
+						onClick={this.state.isUpdate ? updateSupply : createSupply}
 						variant="contained"
 						color="primary"
 					>
