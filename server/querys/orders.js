@@ -90,7 +90,7 @@ function promise_query_s(query , param , v){
 
 function getOrders(req, res){
     con.query(`SELECT o.idOrder, o.dateOrder, o.idRecipe, r.nameRecipe, o.idUser, u.emailUser, 
-        o.statusOrder FROM orders AS o INNER JOIN users AS u ON o.idUser=u.idUser 
+        o.statusOrder, CASE WHEN o.supply=1 THEN true ELSE false END AS supply FROM orders AS o INNER JOIN users AS u ON o.idUser=u.idUser 
         INNER JOIN recipes AS r ON r.idRecipe=o.idRecipe ORDER BY o.dateOrder`, 
         function (err, result) {
             if (err) {
