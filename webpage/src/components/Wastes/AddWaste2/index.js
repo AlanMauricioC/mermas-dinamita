@@ -51,7 +51,7 @@ class AddWaste extends Component {
        
         this.state = {
             supplies: [],
-            quantity:0,
+            quantityWaste:0,
             type:'',
             date,
             open:false,
@@ -75,7 +75,7 @@ class AddWaste extends Component {
 
         const handleOnChangeType = (event) => this.setState({ type: event.target.value });
 
-        const handleOnChangeQuantity = (event) => this.setState({quantity:event.target.value});
+        const handleOnChangeQuantity = (event) => this.setState({quantityWaste:event.target.value});
         
         const handleOnChangeDate = date => {
             let value = moment(date).format('YYYY-MM-DD');
@@ -91,14 +91,28 @@ class AddWaste extends Component {
         const sendData=e=>{
             var datos = { 
                 'id':this.state.selectSupply,
-                'quantity':this.state.quantity,
+                'quantity':this.state.quantityWaste,
                 'type':this.state.type,
                 'idUser':1,
                 'sellByDate' : this.state.date,
-                
             };
+            let index = this.state.selectSupply;
+            let nombre = '';  
+            for(var i=0;i<this.state.supplies.length;i++){
+                if(this.state.supplies[i].id == index){
+                    nombre = this.state.supplies[i].name;
+                }
+            }    
+            var nuevosDatos = {
+                'nameSupply':nombre,
+                'quantityWaste':this.state.quantityWaste,
+                'typeWaste':this.state.type,
+                'idUser':1,
+                'sellByDateWaste' : this.state.date,
+                'registrationDateWaste': moment(moment.now()).format('YYYY-MM-DD')
+            }
             
-            insertWaste(datos).then(()=>this.props.updateWaste(datos));
+            insertWaste(datos).then(()=>this.props.updateWaste(nuevosDatos));
 
             this.setState({open:false});
             
@@ -194,7 +208,6 @@ class AddWaste extends Component {
                                             autoOk={true}
                                             onChange={handleOnChangeDate}
                                             value={this.state.date}
-                                            
                                             KeyboardButtonProps={{
                                                 'aria-label': 'Fecha de caducidad'
                                             }}

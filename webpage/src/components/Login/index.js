@@ -73,6 +73,7 @@ export default function SignInSide() {
     let usuario = {'email': user,'password':pass};
     let resp = await login(usuario);
     
+    
     if (resp.rol==0||resp.rol==1) {
       dispatch(signIn())
     }else{
