@@ -1,38 +1,19 @@
-import {
-	Button,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	FormControl,
-	FormControlLabel,
-	Grid,
-	InputLabel,
-	MenuItem,
-	Select,
-	Switch,
-	TextField,
-	withStyles
-} from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, Switch, TextField, withStyles } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import alertifyjs from 'alertifyjs';
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { setRecipes, updateRecipe } from '../../../../actions';
-import {
-	deleteRecipeSupply,
-	getRecipes,
-	insertRecipes,
-	insertRecipeSupply,
-	updateRecipes as updateService,
-	updateSupplyRecipe
-} from '../../../../services/recipes';
+import { deleteRecipeSupply, getRecipes, insertRecipes, insertRecipeSupply, updateRecipes as updateService, updateSupplyRecipe } from '../../../../services/recipes';
 import { getSupplies } from '../../../../services/supplies';
 import { getUnits } from '../../../../services/units';
 import { validateText } from '../../../../services/validations';
+import SelectSupply from '../../../Miscellaneous/SelectSupply';
 import OptionSupply from './OptionSupply';
 import imgPlaceHolder from './placeholder-image.png';
-import SelectSupply from '../../../Miscellaneous/SelectSupply';
+import { validateNumber } from "../../../../services/validations";
+import InfoUpdateRecipe from "./InfoUpdateRecipe";
+import Info from '../../../Miscellaneous/Info';
 
 const styles = (theme) => ({
 	media: {
@@ -82,7 +63,8 @@ class DialogUpdateRecipe extends PureComponent {
 				supplies,
 				image: imageRecipe,
 				idSupply,
-				status
+				status,
+				quantitySupply:0,
 			},
 			units: [],
 			supplies: [],
@@ -112,7 +94,8 @@ class DialogUpdateRecipe extends PureComponent {
 				supplies = [],
 				idSupply,
 				statusRecipe: status = 1,
-				imageRecipe
+				imageRecipe,
+				quantitySupply
 			}
 		} = this.props;
 
@@ -125,7 +108,8 @@ class DialogUpdateRecipe extends PureComponent {
 				image: imageRecipe,
 				nameSupply,
 				supplies,
-				statusRecipe: status
+				statusRecipe: status,
+				quantitySupply:quantitySupply?quantitySupply:0,
 			},
 			isSupply: !!idSupply,
 			isUpdate: !!idRecipe,
@@ -193,10 +177,16 @@ class DialogUpdateRecipe extends PureComponent {
 			);
 			this.setState({ recipe: { ...this.state.recipe, supplies } });
 		};
+		/**Funcion para actualizar la contidad de insumo */
+		const handleOnChangeQuantitySupply = (event) => {
+		const number = event.target.value;
+		if (validateNumber(number, 0)) {
+			this.setState({recipe:{...this.state.recipe,quantitySupply:number}})
+		}
+	};
 
 		/**
 		 * maneja la entrada de datos de un campo de texto
-		 * @param {*} event 
 		 */
 		const handleOnChangeName = (event) => {
 			this.setState({ recipe: { ...this.state.recipe, [event.target.name]: event.target.value } });
@@ -204,7 +194,6 @@ class DialogUpdateRecipe extends PureComponent {
 
 		/**
 		 * al dar enter crear o actualizar
-		 * @param {*} ev 
 		 */
 		const handleOnEnter = (ev) => {
 			if (ev.key === 'Enter') {
@@ -236,7 +225,6 @@ class DialogUpdateRecipe extends PureComponent {
 			if (!this.state.isSupply) {
 				recipe.idSupply = null;
 			}
-			console.log(recipe);
 			const updated = await updateService(recipe);
 			alertifyjs.set('notifier', 'position', 'bottom-center');
 			if (updated) {
@@ -302,6 +290,7 @@ class DialogUpdateRecipe extends PureComponent {
 			>
 				<DialogTitle id="form-dialog-title" className={classes.top}>
 					{this.props.recipe.idRecipe ? 'Modificar' : 'Crear'} Receta
+					<Info><InfoUpdateRecipe isUpdate={this.state.isUpdate}/></Info>
 				</DialogTitle>
 				<DialogContent>
 					<Grid container alignItems={'center'}>
@@ -394,6 +383,19 @@ class DialogUpdateRecipe extends PureComponent {
 								/>
 							)}
 						</Grid>
+						<Grid item className={classes.input} xs={12} md={4}>
+							{!this.state.isSupply ? null : (
+								<TextField
+									value={this.state.recipe.quantitySupply}
+									name="detailRecipe"
+									fullWidth
+									type={'number'}
+									margin="dense"
+									label={'Cantidad de insumo'}
+									onChange={handleOnChangeQuantitySupply}
+								/>
+							)}
+						</Grid>
 						<Grid item xs={12}>
 							{this.state.recipe.supplies.map((supply) => (
 								<OptionSupply
@@ -405,27 +407,7 @@ class DialogUpdateRecipe extends PureComponent {
 							))}
 						</Grid>
 						<Grid item className={classes.input} xs={12} md={8}>
-							<FormControl className={classes.select} required>
-								<InputLabel shrink htmlFor="idSelectUnit">
-									Agregar un insumo
-								</InputLabel>
-								<Select
-									displayEmpty
-									name="selectSupply"
-									onChange={handleOnChangeSupply}
-									value={this.state.selectSupply}
-									displayEmpty
-								>
-									<MenuItem value={-1}>
-										<em>Ninguno</em>
-									</MenuItem>
-									{this.state.supplies.map(({ id, name }) => (
-										<MenuItem key={id} value={id}>
-											{name}
-										</MenuItem>
-									))}
-								</Select>
-							</FormControl>
+							<SelectSupply onChange={handleOnChangeSupply} value={this.state.selectSupply} />
 						</Grid>
 						<Grid item xs={4}>
 							<Button
