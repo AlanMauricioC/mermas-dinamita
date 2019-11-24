@@ -6,13 +6,18 @@ import { Button, Popper, Paper, ClickAwayListener, IconButton } from '@material-
 const useStyles = makeStyles((theme) => ({
 	button: {
         // backgroundColor:'rgba(255,255,255, .9)'
+        display:'inline'
 	},
 	paper: {
         border: '1px solid',
         padding: theme.spacing(1),
         marginTop:theme.spacing(1),
-		backgroundColor: theme.palette.background.paper
-	}
+        backgroundColor: theme.palette.background.paper,
+        maxWidth:400,
+    },
+    root:{
+        zIndex:10000,
+    }
 }));
 
 const Info = ({children}) => {
@@ -27,21 +32,24 @@ const Info = ({children}) => {
 		setAnchorEl(null);
 	};
 	return (
-		<div>
-			<Popper open={open} anchorEl={anchorEl} placement="bottom-start">
+		<>
+			<Popper open={open} anchorEl={anchorEl} placement="bottom-start" className={classes.root}>
 				<Paper className={classes.paper}>{children}</Paper>
 			</Popper>
 			<ClickAwayListener onClickAway={handleOnClickAway}>
 				<IconButton
 					variant="contained"
 					size="small"
-					onClick={handleOnClick}
-					className={classes.button}
+                    onClick={handleOnClick}
+                    onMouseEnter={handleOnClick}
+                    onMouseLeave={handleOnClickAway}
+                    className={classes.button}
+                    color="inherit"
 				>
                     <InfoIcon />
 				</IconButton>
 			</ClickAwayListener>
-		</div>
+		</>
 	);
 };
 

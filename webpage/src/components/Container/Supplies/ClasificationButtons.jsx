@@ -4,6 +4,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { setSupplySelector } from '../../../actions';
 import { useDispatch } from 'react-redux';
 import { SUPPLY_SELECTOR } from '../../../constants';
+import Info from '../../Miscellaneous/Info';
 
 export default function ClasificationButtons(props) {
 	const theme = useTheme();
@@ -67,6 +68,9 @@ export default function ClasificationButtons(props) {
 				<Grid item>
 					<Chip onClick={clearSearch} className={classes.chip} avatar={<Avatar>L</Avatar>} label="limpiar" />
 				</Grid>
+                <Grid item>
+                    <Info>Selecciona el estado de los insumos que deseas filtrar o limpia la busqueda con el botón "Limpiar"</Info>
+                </Grid>
 			</Grid>
 		</div>
 	);

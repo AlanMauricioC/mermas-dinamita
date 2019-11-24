@@ -1,15 +1,32 @@
 import DateFnsUtils from '@date-io/date-fns';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select, TextField, withStyles } from '@material-ui/core';
+import {
+	Button,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	FormControl,
+	Grid,
+	InputLabel,
+	MenuItem,
+	Select,
+	TextField,
+	withStyles,
+	Typography,
+	Box
+} from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import alertifyjs from 'alertifyjs';
 import 'date-fns';
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { setSupplies, updateSupply } from '../../../../actions';
 import { getSupplies, insertSupplies, updateSupplies as updateService } from '../../../../services/supplies';
 import { getUnits } from '../../../../services/units';
 import { validateNumber, validateText } from '../../../../services/validations';
-import moment from "moment";
+import moment from 'moment';
+import Info from '../../../Miscellaneous/Info';
+import UpdateInfoSupply from "./UpdateInfoSupply";
 
 const styles = (theme) => ({
 	media: {
@@ -47,7 +64,7 @@ class DialogUpdateSupply extends PureComponent {
 					name: ''
 				}
 			},
-			date:moment().add(1,'day'),
+			date: moment().add(1, 'day'),
 			units: []
 		};
 	}
@@ -126,7 +143,7 @@ class DialogUpdateSupply extends PureComponent {
 				max,
 				min,
 				name,
-				date:this.state.date,
+				date: this.state.date,
 				quantity,
 				unit
 			};
@@ -152,7 +169,7 @@ class DialogUpdateSupply extends PureComponent {
 				max,
 				min,
 				name,
-				date:this.state.date,
+				date: this.state.date,
 				quantity
 			};
 			if (!validateSupply(data)) {
@@ -176,12 +193,12 @@ class DialogUpdateSupply extends PureComponent {
 			let invalidName = !validateText(supply.name, 1, 45);
 			let invalidMin = !validateNumber(supply.min, 0, supply.max);
 			let invalidMax = !validateNumber(supply.max, supply.min);
-			let invalidDate=false
-			if(!supply.id){
-				invalidDate=!moment(supply.date).isAfter(moment())
+			let invalidDate = false;
+			if (!supply.id) {
+				invalidDate = !moment(supply.date).isAfter(moment());
 			}
 			this.setState({ invalidMax, invalidMin, invalidName });
-			return !(invalidName || invalidMin || invalidMax||invalidDate);
+			return !(invalidName || invalidMin || invalidMax || invalidDate);
 		};
 		const unitItems = () => {
 			if (this.state.units) {
@@ -203,7 +220,10 @@ class DialogUpdateSupply extends PureComponent {
 				maxWidth={'md'}
 			>
 				<DialogTitle id="form-dialog-title" className={classes.top}>
-					{this.state.supply.id ? 'Modificar' : 'Crear'} Insumo
+					{this.state.isUpdate ? 'Modificar' : 'Crear'} Insumo
+					<Info>
+						<UpdateInfoSupply isUpdate={this.state.isUpdate} />
+					</Info>
 				</DialogTitle>
 				<DialogContent>
 					<Grid container alignItems={'center'}>

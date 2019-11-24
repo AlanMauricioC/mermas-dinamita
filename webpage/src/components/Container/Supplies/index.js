@@ -3,7 +3,6 @@ import React from 'react';
 import CardList from './CardList';
 import ClasificationButtons from './ClasificationButtons';
 import Search from './Search';
-import Info from '../../Miscellaneous/Info';
 
 const Supplies = () => {
 	return (
@@ -15,9 +14,6 @@ const Supplies = () => {
 
 				<Grid item xs={12} md={4}>
 					<ClasificationButtons />
-				</Grid>
-				<Grid item xs={1}>
-					<Info>Busca los insumos que desees</Info>
 				</Grid>
 			</Grid>
 			<Grid item container>
