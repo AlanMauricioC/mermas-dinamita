@@ -6,6 +6,7 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import Echarts from 'echarts-for-react';
 import moment from 'moment';
 import { getConfig, getWasteChart, getRecipesChart, getRestockChart } from '../../../services/charts';
+import Info from '../../Miscellaneous/Info';
 
 class Charts extends Component {
 	constructor(props) {
@@ -132,8 +133,11 @@ class Charts extends Component {
 							}}
 						/>
 					</MuiPickersUtilsProvider>
+					<Info>
+						Selecciona un rango de fechas para buscar
+					</Info>
 				</Grid>
-				<Grid item xs={12}>
+				<Grid item xs={11}>
 					<TextField
 						id="statusRestock"
 						select
@@ -150,6 +154,12 @@ class Charts extends Component {
 						<MenuItem value={1}>Top 10 venta de recetas</MenuItem>
 						<MenuItem value={2}>Pedidos</MenuItem>
 					</TextField>
+					
+				</Grid>
+				<Grid item xs={1}>
+					<Info>
+						Selecciona la gráfica que deseas mostrar
+					</Info>
 				</Grid>
 				<Grid item xs={12}>
 					<Echarts option={this.state.chartConfig} notMerge={true} />
