@@ -11,6 +11,7 @@ const users = require('../querys/users')
 const log = require('../querys/log')
 const stadistic = require('../querys/stadistic')
 const providers = require('../querys/providers')
+const middleware = require('../querys/middleware')
  
 // middleware specific to this router
 router.use(function timeLog(req, res, next) {
@@ -23,43 +24,43 @@ router.get('/', (req, res) => {
 })
 
 // Obtener unidades existentes
-router.get('/getUnits', units.getUnits)
+router.get('/getUnits', middleware.middleware, units.getUnits)
 
 // Insertar nueva unidade
-router.post('/insertUnit', units.insertUnit)
+router.post('/insertUnit', middleware.middlewareOnlyChef, units.insertUnit)
 
 // Actualizar una unidades
-router.post('/updateUnit', units.updateUnit)
+router.post('/updateUnit',middleware.middlewareOnlyChef,  units.updateUnit)
 
 // Eliminar una unidad
-router.post('/deleteUnit', units.deleteUnit)
+router.post('/deleteUnit',middleware.middlewareOnlyChef,  units.deleteUnit)
 
 // Insertar nuevos insumos
-router.post('/insertSupply', supplies.insertSupply)
+router.post('/insertSupply',middleware.middlewareOnlyChef,  supplies.insertSupply)
 
 // Obtener los insumos existentes
-router.post('/getSupplies', supplies.getSupplies)
+router.post('/getSupplies', middleware.middleware, supplies.getSupplies)
 
 // Actualizar un insumo
-router.post('/updateSupply', supplies.updateSupply)
+router.post('/updateSupply',middleware.middlewareOnlyChef,  supplies.updateSupply)
 
 // Eliminar insumo
-router.post('/deleteSupply', supplies.deleteSupply)
+router.post('/deleteSupply',middleware.middlewareOnlyChef,  supplies.deleteSupply)
 
 // Insertar pedido de restock y todos sus insumos
-router.post('/insertRestock', restock.insertRestock)
+router.post('/insertRestock',middleware.middlewareOnlyChef,  restock.insertRestock)
 
 // Insertar solo pedido de restock
-router.post('/insertOnlyRestock', restock.insertOnlyRestock)
+router.post('/insertOnlyRestock',middleware.middlewareOnlyChef,  restock.insertOnlyRestock)
 
 // Obtener pedidos de restock y todos sus insumos
-router.get('/restock', restock.getRestock)
+router.get('/restock', middleware.middleware, restock.getRestock)
 
 // Obtener recomendación de pedido de restock y todos sus insumos
-router.get('/recommendationRestock', restock.getRestockRecommendation)
+router.get('/recommendationRestock', middleware.middleware, restock.getRestockRecommendation)
 
 // Modificar el estado de un pedido de restock y de todos sus insumos
-router.post('/statusRestock', restock.statusRestock)
+router.post('/statusRestock', middleware.middleware, restock.statusRestock)
 // Estados:
 // 0 = Cancelado: Ya no se requiere
 // 1 = Pendiente: Estado inicial
@@ -70,98 +71,98 @@ router.post('/statusRestock', restock.statusRestock)
 // 6 = Rechazado: No Aceptada la entrega del pedido por el chef
 
 // Insertar insumo a pedido restock
-router.post('/insertSupplyRestock', restock.insertRestockSupply)
+router.post('/insertSupplyRestock',middleware.middlewareOnlyChef,  restock.insertRestockSupply)
 
 // Modificar insumo de pedido restock
-router.post('/updateSupplyRestock', restock.updateRestockSupply)
+router.post('/updateSupplyRestock',middleware.middlewareOnlyChef,  restock.updateRestockSupply)
 
 // Eliminar insumo de pedido restock
-router.post('/deleteSupplyRestock', restock.deleteRestockSupply)
+router.post('/deleteSupplyRestock',middleware.middlewareOnlyChef,  restock.deleteRestockSupply)
 
 // Insertar merma de de un insumo
-router.post('/insertWaste', wastes.insertWaste)
+router.post('/insertWaste',middleware.middlewareOnlyChef,  wastes.insertWaste)
 
 // Obtener las memas 
-router.post('/getWastes', wastes.getWastes)
+router.post('/getWastes', middleware.middleware, wastes.getWastes)
 
 // Actualizar una merma
-router.post('/updateWaste', wastes.updateWaste)
+router.post('/updateWaste',middleware.middlewareOnlyChef,  wastes.updateWaste)
 
 // Eliminar una merma
-router.post('/deleteWaste', wastes.deleteWaste)
+router.post('/deleteWaste',middleware.middlewareOnlyChef,  wastes.deleteWaste)
 
 // Insertar receta y todos sus insumos
-router.post('/insertRecipe', recipes.insertRecipe)
+router.post('/insertRecipe',middleware.middlewareOnlyChef,  recipes.insertRecipe)
 
 // Obtener recetas y todos sus insumos
-router.post('/getRecipes', recipes.getRecipes)
+router.post('/getRecipes', middleware.middleware, recipes.getRecipes)
 
 // obtener imagen de recetas
-router.get('/recipes/:image', recipes.getRecipeImage)
+router.get('/recipes/:image', middleware.middleware, recipes.getRecipeImage)
 
 // Modificar receta
-router.post('/updateRecipe', recipes.updateRecipe)
+router.post('/updateRecipe',middleware.middlewareOnlyChef,  recipes.updateRecipe)
 // Estados de la receta:
 // 0: eliminada
 // 1: activa
 // 2: inactiva
 
 // Eliminar receta
-router.post('/deleteRecipe', recipes.deleteRecipe)
+router.post('/deleteRecipe',middleware.middlewareOnlyChef,  recipes.deleteRecipe)
 
 // Insertar insumo a receta
-router.post('/insertSupplyRecipe', recipes.insertRecipeSupply)
+router.post('/insertSupplyRecipe',middleware.middlewareOnlyChef,  recipes.insertRecipeSupply)
 
 // Modificar insumo de receta
-router.post('/updateSupplyRecipe', recipes.updateRecipeSupply)
+router.post('/updateSupplyRecipe',middleware.middlewareOnlyChef,  recipes.updateRecipeSupply)
 
 // Eliminar insumo de receta
-router.post('/deleteSupplyRecipe', recipes.deleteRecipeSupply)
+router.post('/deleteSupplyRecipe',middleware.middlewareOnlyChef,  recipes.deleteRecipeSupply)
 
 // Insertar orden y todos sus insumos y/o mermas
-router.post('/insertOrder', orders.insertOrder)
+router.post('/insertOrder',middleware.middlewareOnlyChef,  orders.insertOrder)
 
 // Obtener ordenes y todos sus insumos y/o mermas
-router.get('/orders', orders.getOrders)
+router.get('/orders', middleware.middleware, orders.getOrders)
 
 // Modificar orden
-router.post('/updateOrder', orders.updateOrder)
+router.post('/updateOrder',middleware.middlewareOnlyChef,  orders.updateOrder)
 
 // Insertar insumo a orden
-router.post('/insertSupplyOrder', orders.insertOrderSupply)
+router.post('/insertSupplyOrder',middleware.middlewareOnlyChef,  orders.insertOrderSupply)
 
 // Modificar insumo de orden
-router.post('/updateSupplyOrder', orders.updateOrderSupply)
+router.post('/updateSupplyOrder',middleware.middlewareOnlyChef,  orders.updateOrderSupply)
 
 // Eliminar insumo de orden
-router.post('/deleteSupplyOrder', orders.deleteOrderSupply)
+router.post('/deleteSupplyOrder',middleware.middlewareOnlyChef,  orders.deleteOrderSupply)
 
 // Insertar merma a orden
-router.post('/insertWasteOrder', orders.insertOrderWaste)
+router.post('/insertWasteOrder',middleware.middlewareOnlyChef,  orders.insertOrderWaste)
 
 // Modificar merma de orden
-router.post('/updateWasteOrder', orders.updateOrderWaste)
+router.post('/updateWasteOrder',middleware.middlewareOnlyChef,  orders.updateOrderWaste)
 
 // Eliminar merma de orden
-router.post('/deleteWasteOrder', orders.deleteOrderWaste)
+router.post('/deleteWasteOrder',middleware.middlewareOnlyChef,  orders.deleteOrderWaste)
 
 // Obtiene alarmas de restock y caducidad
-router.get('/alerts', alerts.alerts)
+router.get('/alerts', middleware.middleware, alerts.alerts)
 
 // Eliminar alarma de restock/caducidad
-router.post('/deleteAlert', alerts.deleteAlert)
+router.post('/deleteAlert', middleware.middleware, alerts.deleteAlert)
 
 // Obtiene usuarios registrados
-router.get('/users', users.getUsers)
+router.get('/users', middleware.middlewareOnlyAdmin, users.getUsers)
 
 // Inserta un nuevo usuario
-router.post('/insertUser', users.insertUser)
+router.post('/insertUser', middleware.middlewareOnlyAdmin, users.insertUser)
 
 // Actualiza datos de usuario
-router.post('/updateUser', users.updateUser)
+router.post('/updateUser', middleware.middlewareOnlyAdmin, users.updateUser)
 
 // Elimina usuario
-router.post('/deleteUser', users.deleteUser)
+router.post('/deleteUser', middleware.middlewareOnlyAdmin, users.deleteUser)
 
 // Inicia sesion
 router.post('/logIn', log.logIn)
@@ -173,15 +174,15 @@ router.get('/getSession', log.getSession)
 router.get('/logOut', log.logOut)
 
 // Obtiene estadisticas de mermas
-router.post('/stadisticWastes', stadistic.stadisticWastes)
+router.post('/stadisticWastes', middleware.middlewareOnlyAdmin, stadistic.stadisticWastes)
 
 // Obtiene estadisticas de recetas
-router.post('/stadisticRecipes', stadistic.stadisticRecipes)
+router.post('/stadisticRecipes', middleware.middlewareOnlyAdmin, stadistic.stadisticRecipes)
 
 // Obtiene estadisticas de pedidos
-router.post('/stadisticRestocks', stadistic.stadisticRestocks)
+router.post('/stadisticRestocks', middleware.middlewareOnlyAdmin, stadistic.stadisticRestocks)
 
 // Obtiene los proveedores registrados
-router.get('/providers', providers.getProviders)
+router.get('/providers', middleware.middleware, providers.getProviders)
 
 module.exports = router
