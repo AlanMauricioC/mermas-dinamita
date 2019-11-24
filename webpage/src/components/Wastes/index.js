@@ -49,9 +49,14 @@ class Table extends Component {
       this.setState({open:true})
   };
   render(){
+    const handleUpdateState=(waste)=>{
+      const oldData = this.state.data
+      const newData = oldData.push(waste)
+      this.setState({data:newData})
+    }
     return (
       <div style={{ minWidth: "100%" }}>
-          <AddWaste2></AddWaste2>
+          <AddWaste2 updateWaste={handleUpdateState}></AddWaste2>
           <br/>
           <MaterialTable
               title="Mermas"

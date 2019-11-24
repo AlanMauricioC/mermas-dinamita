@@ -4,13 +4,15 @@ import Navbar from './components/Navbar';
 import Container from './components/Container';
 import Login from './components/Login';
 import Sidebar from './components/Sidebar';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { signIn } from './actions';
 
 
 function App() {
 	
 	
-
+	const dispatch = signIn();
+	console.log(dispatch);
 
 	const isLogged = useSelector((state) => state.isLogged);
 	const content = (

@@ -48,6 +48,7 @@ class AddWaste extends Component {
     constructor(props) {
         super(props)
         const date = moment.now();
+       
         this.state = {
             supplies: [],
             quantity:0,
@@ -78,7 +79,7 @@ class AddWaste extends Component {
         
         const handleOnChangeDate = date => {
             let value = moment(date).format('YYYY-MM-DD');
-            this.setState({ date: value});
+            this.setState({ date: value });
           };
         
         
@@ -97,7 +98,8 @@ class AddWaste extends Component {
                 
             };
             
-            insertWaste(datos);
+            insertWaste(datos).then(()=>this.props.updateWaste(datos));
+
             this.setState({open:false});
             
         }
