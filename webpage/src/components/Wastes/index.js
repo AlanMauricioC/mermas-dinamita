@@ -52,7 +52,8 @@ class Table extends Component {
     const handleUpdateState=(waste)=>{
       const oldData = this.state.data
       const newData = oldData.push(waste)
-      this.setState({data:newData})
+      console.log(newData)
+      this.setState({data:oldData})
     }
     return (
       <div style={{ minWidth: "100%" }}>
