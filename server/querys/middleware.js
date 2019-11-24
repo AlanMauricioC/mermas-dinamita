@@ -2,6 +2,9 @@
 function middlewareOnlyAdmin(req, res, next) {
 	if(req.session.idUser) {
 		if(req.session.rol == 0) {
+			var time = 1800000
+			req.session.cookie.expires = new Date(Date.now() + time)
+
 			next()
 		}
 		else {
@@ -17,6 +20,9 @@ function middlewareOnlyAdmin(req, res, next) {
 function middlewareOnlyChef (req, res, next) {
 	if(req.session.idUser) {
 		if(req.session.rol == 1) {
+			var time = 1800000
+			req.session.cookie.expires = new Date(Date.now() + time)
+
 			next()
 		}
 		else {
@@ -32,6 +38,9 @@ function middlewareOnlyChef (req, res, next) {
 function middleware (req, res, next) {
 	if(req.session.idUser) {
 		if(req.session.rol == 0 || req.session.rol == 1) {
+			var time = 1800000
+			req.session.cookie.expires = new Date(Date.now() + time)
+			
 			next()
 		}
 		else {

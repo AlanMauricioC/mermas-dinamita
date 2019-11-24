@@ -8,11 +8,15 @@ function logIn (req, res){
         }
         else{
         	if(result.length == 1) {
+        		var time = 1800000
+
 	            result.forEach(element => {
 	                req.session.idUser = element.id
 	                req.session.email = element.email
 	                req.session.rol = element.rol
+	                req.session.cookie.expires = new Date(Date.now() + time)
 	            })
+	            
 	            res.status(200).json({ id: req.session.idUser, email: req.session.email, rol: req.session.rol, status: 200 })
 	        }
 	        else {
