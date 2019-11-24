@@ -12,6 +12,8 @@ import SelectSupply from '../../../Miscellaneous/SelectSupply';
 import OptionSupply from './OptionSupply';
 import imgPlaceHolder from './placeholder-image.png';
 import { validateNumber } from "../../../../services/validations";
+import InfoUpdateRecipe from "./InfoUpdateRecipe";
+import Info from '../../../Miscellaneous/Info';
 
 const styles = (theme) => ({
 	media: {
@@ -288,6 +290,7 @@ class DialogUpdateRecipe extends PureComponent {
 			>
 				<DialogTitle id="form-dialog-title" className={classes.top}>
 					{this.props.recipe.idRecipe ? 'Modificar' : 'Crear'} Receta
+					<Info><InfoUpdateRecipe isUpdate={this.state.isUpdate}/></Info>
 				</DialogTitle>
 				<DialogContent>
 					<Grid container alignItems={'center'}>

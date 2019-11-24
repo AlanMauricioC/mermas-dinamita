@@ -20,7 +20,7 @@ const UpdateInfoSupply = ({ isUpdate }) => {
 	);
 	return (
 		<div>
-			<Typography display="block">Crea un insumo con los siguientes datos:</Typography>
+			<Typography display="block">{isUpdate?'Actualiza':'Crea'} un insumo con los siguientes datos:</Typography>
 			<Box display="block">
 				<Box display="inline" fontWeight="fontWeightBold">
 					Nombre del insumo:

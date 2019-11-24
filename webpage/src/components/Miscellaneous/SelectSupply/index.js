@@ -15,7 +15,7 @@ class SelectSupply extends PureComponent {
 
 		const value = props.supplies.find((supply) => supply.id === props.value);
 		this.state = {
-			value: value || { name: 'ninguno', id: -1 }
+			value: value || { name: 'Ninguno', id: -1 }
 		};
     }
     
