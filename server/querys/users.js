@@ -11,7 +11,7 @@ function getUsers (req, res){
 }
 
 function insertUser(req, res) {
-    con.query('INSERT INTO users(emailUser, passwordUser, rolUser, pinUser) VALUES(?, ?, ?, ?)', [req.body.email, req.body.password, req.body.rol, req.body.pin],  function (err, result) {
+    con.query('INSERT INTO users(emailUser, passwordUser, rolUser, pinUser) VALUES(?, SHA1(?), ?, ?)', [req.body.email, req.body.password, req.body.rol, req.body.pin],  function (err, result) {
             if (err) {
                 console.log('Error' , err)
                 res.status(500).json({err})
@@ -29,7 +29,7 @@ function updateUser(req, res) {
 	var values = []
 
 	if(req.body.password) {
-		qry += ', passwordUser=? WHERE idUser=?'
+		qry += ', passwordUser=SHA1(?) WHERE idUser=?'
 		values = [req.body.email, req.body.rol, req.body.pin, req.body.password, req.body.id]
 	}
 	else {

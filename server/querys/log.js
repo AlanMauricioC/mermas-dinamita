@@ -1,7 +1,7 @@
 const con = require('../DB/connection')
 
 function logIn (req, res){
-    con.query('SELECT idUser AS id, emailUser AS email, rolUser AS rol FROM users WHERE emailUser=? AND passwordUser=?', [req.body.email, req.body.password], function (err, result) {
+    con.query('SELECT idUser AS id, emailUser AS email, rolUser AS rol FROM users WHERE emailUser=? AND passwordUser=SHA1(?)', [req.body.email, req.body.password], function (err, result) {
         if (err) {
             console.log('Error' , err)
             res.status(500).json({err})
@@ -16,7 +16,7 @@ function logIn (req, res){
 	                req.session.rol = element.rol
 	                req.session.cookie.expires = new Date(Date.now() + time)
 	            })
-	            
+
 	            res.status(200).json({ id: req.session.idUser, email: req.session.email, rol: req.session.rol, status: 200 })
 	        }
 	        else {
