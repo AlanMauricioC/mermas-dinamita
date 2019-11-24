@@ -3,10 +3,14 @@ import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Grid from '@material-ui/core/Grid';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core'
 import { getSupplies } from '../../../services/supplies';
 import 'date-fns';
+import moment from 'moment';
+import DateFnsUtils from '@date-io/date-fns';
 import { insertWaste} from '../../../services/wastes';
+import Table from "../index";
 import withStyles from '@material-ui/core/styles/withStyles'
 
 
@@ -43,11 +47,12 @@ class AddWaste extends Component {
 
     constructor(props) {
         super(props)
+        const date = moment.now();
         this.state = {
             supplies: [],
             quantity:0,
             type:'',
-            date:'2019-10-24T10:30',
+            date,
             open:false,
         }
 
@@ -70,8 +75,13 @@ class AddWaste extends Component {
         const handleOnChangeType = (event) => this.setState({ type: event.target.value });
 
         const handleOnChangeQuantity = (event) => this.setState({quantity:event.target.value});
-        const handleOnChangeDate = (event) => this.setState({date:event.target.value});
-
+        
+        const handleOnChangeDate = date => {
+            let value = moment(date).format('YYYY-MM-DD');
+            this.setState({ date: value});
+          };
+        
+        
         const handleToggle=e=>{
             this.setState({open:!this.state.open})
             console.log(this.state.open);
@@ -89,6 +99,7 @@ class AddWaste extends Component {
             
             insertWaste(datos);
             this.setState({open:false});
+            
         }
         
         return (
@@ -172,17 +183,21 @@ class AddWaste extends Component {
                                     
                                 </Grid>
                                 <Grid container item xs={12}>
-                                    <TextField
-                                        id="datetime-local"
-                                        label="Fecha de caducidad"
-                                        type="date"
-                                        defaultValue="2019-10-24"
-                                        className={classes.textField}
-                                        onChange={handleOnChangeDate}
-                                        InputLabelProps={{
-                                        shrink: true,
-                                        }}
-                                    />
+                                    
+                                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                        <KeyboardDatePicker
+                                            margin="normal"
+                                            label="Fecha de caducidad"
+                                            format="dd/MM/yyyy"
+                                            autoOk={true}
+                                            onChange={handleOnChangeDate}
+                                            value={this.state.date}
+                                            
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'Fecha de caducidad'
+                                            }}
+                                        />
+                                    </MuiPickersUtilsProvider>
                                 </Grid>
                                 <Grid container item xs={12}>
                                     <TextField

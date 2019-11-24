@@ -6,9 +6,13 @@ import Login from './components/Login';
 import Sidebar from './components/Sidebar';
 import { useSelector } from 'react-redux';
 
-function App() {
-	const isLogged = useSelector((state) => state.isLogged);
 
+function App() {
+	
+	
+
+
+	const isLogged = useSelector((state) => state.isLogged);
 	const content = (
 		<Fragment>
 			<Grid container>
@@ -26,7 +30,7 @@ function App() {
 		</Fragment>
 	);
 
-	return <div className="App">{isLogged ? content : <Login />}</div>;
+	return <div className="App">{true ? content : <Login />}</div>;
 }
 
 export default App;
