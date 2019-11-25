@@ -1,5 +1,4 @@
 const express = require("express");
-const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const routeWebPage = require('./routes/webPage');
@@ -24,12 +23,6 @@ app.use(cors({
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-app.use(session({
-    secret: 'dinamita',
-    resave: false,
-    saveUninitialized: true
-}));
 
 app.use('/public', public);
 app.use('/', routeWebPage);
