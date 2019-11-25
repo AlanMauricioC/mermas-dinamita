@@ -68,6 +68,11 @@ export const localization={
             cancelTooltip: "Cancelar",
             saveTooltip: "Guardar"
         },
+        deleteRow:{
+            deleteText: "¿Está seguro que desea eliminar este registro?",
+            cancelTooltip: "Cancelar",
+            saveTooltip: "Guardar"
+        },
         addTooltip: "Agregar",
         deleteTooltip: "Borrar",
         editTooltip: "Editar"

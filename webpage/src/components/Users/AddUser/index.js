@@ -22,10 +22,14 @@ const styles = theme => ({
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: 400,
+        width: '100%',
     },
     button: {
 		margin: theme.spacing.unit,
+		width: '100%'
+    },
+    select:{
+        margin: theme.spacing.unit,
 		width: '100%'
     },
     top: {
