@@ -19,8 +19,8 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Vivall
+      <Link color="inherit" href="#">
+        Restaurante Vivall
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
