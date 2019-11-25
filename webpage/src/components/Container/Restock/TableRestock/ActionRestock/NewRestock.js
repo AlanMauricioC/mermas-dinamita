@@ -146,21 +146,21 @@ class ActionRestock extends Component{
         
     };
 
-    tableHeaders=<Grid container justify="flex-start">
-                    <Grid item xs={3}>
+    tableHeaders=<Grid container justify="flex-start" style={{fontWeight: "bold",textAlign: "left",color: "black",backgroundColor: "lightgray", padding:10,}}>
+                    <Grid item xs={2} md={3}>
                         Insumo
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item xs={2} md={1}>
                         Cantidad
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item xs={2} md={1}>
                         Costo
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={3} md={3}>
                         Proveedor
                     </Grid>
                     
-                    <Grid item xs={4}>
+                    <Grid item xs={3} md={4}>
                         Comentarios
                     </Grid>
                 </Grid>;
@@ -172,10 +172,10 @@ class ActionRestock extends Component{
         return(
             <div>
                 <Grid container>
-                    <Grid item xs={8}>
+                    <Grid item xs={4} md={8}>
                         <h2>Insumos</h2>
                     </Grid>
-                    <Grid item xs={4}>
+                    <Grid item xs={8} md={4}>
                         <br/>
                         <Button onClick={()=>this.generateRecomendation()} color="primary" fullWidth variant="outlined">Generar recomendación de pedido</Button>
                     </Grid>
@@ -205,7 +205,7 @@ class ActionRestock extends Component{
                             {this.state.suppliesRestock.length > 0 ? this.tableHeaders : this.tableEmpty}
                             {this.state.suppliesRestock.map(supply => (
                                 <Grid container>
-                                    <Grid item xs={3}>
+                                    <Grid item xs={2} md={3}>
                                         <TextField
                                             id={supply.idSupply}
                                             margin="normal"
@@ -216,7 +216,7 @@ class ActionRestock extends Component{
                                             value={supply.nameSupply}
                                         />
                                     </Grid>
-                                    <Grid item xs={1}>
+                                    <Grid item xs={2} md={1}>
                                         <TextField
                                             id={supply.idSupply}
                                             name={"quantityRestockSupply"}
@@ -227,7 +227,7 @@ class ActionRestock extends Component{
                                             value={supply.quantityRestockSupply}
                                         />
                                     </Grid>
-                                    <Grid item xs={1}>
+                                    <Grid item xs={2} md={1}>
                                         <TextField
                                             id={supply.idSupply}
                                             name={"costRestockSupply"}
@@ -238,7 +238,7 @@ class ActionRestock extends Component{
                                             value={supply.costRestockSupply}
                                         />
                                     </Grid>
-                                    <Grid item xs={3}>
+                                    <Grid item xs={3} md={3}>
                                         <TextField
                                             id={supply.idSupply}
                                             name={"idProvider"}
@@ -255,7 +255,7 @@ class ActionRestock extends Component{
                                             ))}
                                         </TextField>
                                     </Grid>
-                                    <Grid item xs={3}>
+                                    <Grid item xs={2} md={3}>
                                         <TextField
                                             id={supply.idSupply}
                                             name={"commentaryRestockSupply"}
@@ -279,13 +279,13 @@ class ActionRestock extends Component{
                         <br/>
                     </Grid>
                     
-                    <Grid item xs={8}/>
-                    <Grid item xs={2}>
+                    <Grid item xs={0} md={8}/>
+                    <Grid item xs={6} md={2}>
                         <Link to={"/pedidos"}>
                             <Button onClick={()=>this.handleSubmit("cancel")} color="secondary" variant="contained">Cancelar</Button>
                         </Link>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={6} md={2}>
                         {this.state.suppliesRestock.length>0 ?
                             <Button onClick={()=>this.handleSubmit("save")} color="primary" variant="contained">Registrar pedido</Button>
                         : null}
