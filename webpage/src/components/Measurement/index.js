@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
 import { getUnits, deleteUnit,updateUnit,insertUnit, tableIcons, headCells,data} from '../../services/units';
-
+import AddUnit from "./AddUnit";
 
 
 class Table extends Component {
@@ -47,30 +47,21 @@ class Table extends Component {
       this.setState({open:true})
   };
   render(){
+    const handleUpdateState=(unit)=>{
+      const oldData = this.state.data
+      const newData = oldData.push(unit)
+      console.log(newData)
+      this.setState({data:oldData})
+    }
     return (
       <div style={{ minWidth: "100%" }}>
-          
+          <AddUnit updateUnit={handleUpdateState}></AddUnit>
           <MaterialTable
               title="Unidades de medida"
               columns={this.state.columns}
               data={this.state.data}
               icons={tableIcons}
               editable={{
-                onRowAdd: newData =>
-                new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                        {
-                            const data = this.state.data;
-                            console.log(newData);
-                            data.push(newData);
-                            var unidad = {'name': newData.name};
-
-                            insertUnit(unidad);
-                            this.setState({ data }, () => resolve());
-                        }
-                        resolve();
-                    }, 1000);
-                }),
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
