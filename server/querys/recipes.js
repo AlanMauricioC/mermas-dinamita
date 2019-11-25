@@ -10,10 +10,10 @@ function insertRecipe(req, res){
             var qry = `INSERT INTO recipes VALUES (NULL, ?, ?, ?, ?, ?, 1, ?)`
             var values = []
             if(!files.image){
-                values = [fields.nameRecipe, 'recipes/default.jpg', fields.detailRecipe, fields.idSupply, fields.quantity, req.session.idUser]
+                values = [fields.nameRecipe, 'recipes/default.jpg', fields.detailRecipe, fields.idSupply, fields.quantity, req.body.tokenIdUser]
             }
             else{
-                values = [fields.nameRecipe, 'recipes/' + files.image.name, fields.detailRecipe, fields.idSupply, fields.quantity, req.session.idUser]
+                values = [fields.nameRecipe, 'recipes/' + files.image.name, fields.detailRecipe, fields.idSupply, fields.quantity, req.body.tokenIdUser]
             }
             con.query(qry, values,
                 function (err, result) {

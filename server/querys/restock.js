@@ -2,7 +2,7 @@ const con = require('../DB/connection')
 
 function insertRestock(req, res){
     con.query("INSERT INTO restock (idUser) VALUES (?)", 
-        [req.session.idUser], 
+        [req.body.tokenIdUser], 
         function (err, result) {
             if (err) {
                 console.log("Error" , err)
@@ -31,7 +31,7 @@ function insertRestock(req, res){
 
 function insertOnlyRestock(req, res){
     con.query("INSERT INTO restock (idUser) VALUES (?)", 
-        [req.session.idUser], 
+        [req.body.tokenIdUser], 
         function (err, result) {
             if (err) {
                 console.log("Error" , err)

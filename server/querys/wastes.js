@@ -3,7 +3,7 @@ var con = require('../DB/connection')
 function insertWaste(req, res) {
     con.query(`INSERT INTO wastes(idSupply, quantityWaste, typeWaste, idUser, sellByDateWaste) 
         VALUES(?, ?, ?, ?, ?)`, 
-        [req.body.id, req.body.quantity, req.body.type, req.session.idUser, req.body.sellByDate], 
+        [req.body.id, req.body.quantity, req.body.type, req.body.tokenIdUser, req.body.sellByDate], 
         function (err, result) {
             if (err) {
                 console.log("Error" , err)
@@ -35,7 +35,7 @@ function getWastes(req, res) {
 
 function updateWaste(req, res) {
     con.query("UPDATE wastes SET quantityWaste=?, typeWaste=?, idUser=? WHERE idWaste=?",
-        [req.body.quantity, req.body.type, req.session.idUser, req.body.id], 
+        [req.body.quantity, req.body.type, req.body.tokenIdUser, req.body.id], 
         function(err, result) {
             if (err) {
                 console.log("Error" , err)
