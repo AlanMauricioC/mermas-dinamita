@@ -2,7 +2,7 @@ const con = require('../DB/connection')
 
 function insertOrder(req, res){
     con.query("INSERT INTO orders (idRecipe, supply, idUser) VALUES (?, ?, ?)", 
-        [req.body.idRecipe, req.body.supply, req.body.idUser], 
+        [req.body.idRecipe, req.body.supply, req.body.tokenIdUser], 
         function (err, result) {
             if (err) {
                 console.log("Error" , err)

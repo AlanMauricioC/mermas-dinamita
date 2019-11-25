@@ -47,6 +47,7 @@ CREATE TABLE recipes(
     idSupply INT NULL,
     quantitySupplyRecipe DOUBLE NULL, 
     statusRecipe TINYINT(1) NOT NULL DEFAULT 1,
+    idUser INT NOT NULL,
     PRIMARY KEY (idRecipe),
     FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;

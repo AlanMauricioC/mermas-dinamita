@@ -1,9 +1,9 @@
 const express = require("express");
-const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const routeWebPage = require('./routes/webPage');
+const public = require('./routes/public')
 
 const app = express();
 
@@ -25,13 +25,13 @@ app.use(cors({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(cookieParser());
 app.use(session({
     secret: 'dinamita',
     resave: false,
     saveUninitialized: true
 }));
 
+app.use('/public', public);
 app.use('/', routeWebPage);
 
 app.listen(3002, () => {

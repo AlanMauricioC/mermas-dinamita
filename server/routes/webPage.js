@@ -8,19 +8,68 @@ const recipes = require('../querys/recipes')
 const orders = require('../querys/orders')
 const alerts = require('../querys/alerts')
 const users = require('../querys/users')
-const log = require('../querys/log')
+const login = require('../querys/login')
 const stadistic = require('../querys/stadistic')
 const providers = require('../querys/providers')
- 
+const JWT = require('jsonwebtoken')
+
 // middleware specific to this router
 router.use(function timeLog(req, res, next) {
     console.log('Time: ', Date.now())
-    next()
+    if((/.(gif|jpg|jpeg|tiff|png)$/i).test(req.path)){
+        next()
+    }
+    else{
+        var token = req.headers['token']
+        if (!token) {
+            res.status(500).json({err : 'Token invalido'})
+        }
+        else{
+            token = token.replace('Bearer ', '')
+            try {
+                var decoded = JWT.verify(token, 'password');
+                req.body.tokenIdUser = decoded.id
+                req.body.tokenRolUser = decoded.rol
+                next()
+            } catch(err) {
+                res.status(500).json({err : err})
+            }
+        }
+    }
+})
+
+router.use(function middleware(req, res, next) {
+    //Arreglo de rutas de administrador y chef
+    const routesAdmin = ['/logOut', '/getUnits', '/getSupplies', '/restock', '/recommendationRestock', '/statusRestock', '/getWastes', '/getRecipes', '/recipes/:image', '/orders', '/alerts', '/deleteAlert', '/users', '/insertUser', '/updateUser', '/deleteUser', '/stadisticWastes', '/stadisticRecipes', '/stadisticRestocks', '/providers']
+    const routesChef = ['/logOut', '/getUnits', '/insertUnit', '/updateUnit', '/deleteUnit', '/insertSupply', '/getSupplies', '/updateSupply', '/deleteSupply', '/insertRestock', '/insertOnlyRestock', '/restock', '/recommendationRestock', '/statusRestock', '/getWastes', '/getRecipes', '/recipes/:image', '/orders', '/alerts', '/deleteAlert', '/providers', '/insertSupplyRestock', '/updateSupplyRestock', '/deleteSupplyRestock', '/insertWaste', '/updateWaste', '/deleteWaste', '/insertRecipe', '/updateRecipe', '/deleteRecipe', '/insertSupplyRecipe', '/updateSupplyRecipe', '/deleteSupplyRecipe', '/insertOrder', '/updateOrder', '/insertSupplyOrder', '/updateSupplyOrder', '/deleteSupplyOrder', '/insertWasteOrder', '/updateWasteOrder', '/deleteWasteOrder']
+    
+    if(req.body.tokenRolUser == 0) {
+        if(routesAdmin.includes(req.path)) {
+            next()
+        }
+        else {
+            res.status(500).json({err: 'Error, usuario no valido'})
+        }
+    }
+    else if(req.body.tokenRolUser == 1) {
+        if(routesChef.includes(req.path)) {
+            next()
+        }
+        else {
+            res.status(500).json({err: 'Error, usuario no valido'})
+        }
+    }
+    else {
+        res.status(403).json({err: 'Error, sesion no iniciada o expirada'})
+    }
 })
 
 router.get('/', (req, res) => {
     res.send('Saludos desde express').status(200)
 })
+
+// Cerrar sesión
+router.get('/logOut', login.logOut)
 
 // Obtener unidades existentes
 router.get('/getUnits', units.getUnits)
@@ -162,15 +211,6 @@ router.post('/updateUser', users.updateUser)
 
 // Elimina usuario
 router.post('/deleteUser', users.deleteUser)
-
-// Inicia sesion
-router.post('/logIn', log.logIn)
-
-// Obtiene sesion activa
-router.get('/getSession', log.getSession)
-
-// Cierra sesion
-router.get('/logOut', log.logOut)
 
 // Obtiene estadisticas de mermas
 router.post('/stadisticWastes', stadistic.stadisticWastes)
