@@ -42,7 +42,6 @@ export const updateRecipes = async function(recipe) {
 			method: 'POST',
 			body: formData,
 			headers: {
-				'Content-Type': 'application/json',
 				token: sessionStorage.getItem('token')
 			}
 		});
@@ -73,7 +72,6 @@ export const insertRecipes = async function(recipe) {
 			method: 'POST',
 			body: formData,
 			headers: {
-				'Content-Type': 'application/json',
 				token: sessionStorage.getItem('token')
 			}
 		});
