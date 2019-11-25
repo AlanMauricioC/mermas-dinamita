@@ -31,9 +31,9 @@ function logOut(req, res) {
     req.body.tokenRolUser = null
 
     if(req.body.tokenIdUser)
-        res.status(500).json('Error al cerrar sesion')
+        res.status(500).json({msg: 'Error al cerrar sesion'})
     else
-        res.status(200).json('Sesion cerrada exitosamente')
+        res.status(200).json({token: null, msg:'Sesion cerrada exitosamente'})
 }
 
 module.exports = {
