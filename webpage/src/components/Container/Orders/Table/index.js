@@ -6,6 +6,7 @@ import WatchIcon from '@material-ui/icons/RemoveRedEye'
 import DialogCreate from '../DialogCreate';
 import { Grid, Paper } from '@material-ui/core';
 import Info from "./../../../Miscellaneous/Info";
+import UpdateSp from './Dialog/TableSupplies/updateSp';
 
 
 class Table extends Component {
@@ -140,6 +141,7 @@ class Table extends Component {
                 </Grid>
                 <AlertDialog open={this.state.open} handleClose={this.handleClose} change={this.change} row={this.state.row}/>
                 <DialogCreate change={this.change}/>
+                <UpdateSp/>
             </Grid>
         )
     }
