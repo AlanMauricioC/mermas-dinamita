@@ -25,18 +25,8 @@ export default function Orders(){
     const classes = useStyles();
 
     return(
-        <div className={classes.root}>
-            <Grid container>
-                <Grid item xs={12}>
-                    {/*Pedidos*/}
-                </Grid>
-                <Grid item xs={12}>
+        
                     <Table classes={classes}/>
-                </Grid>
-                <Grid item xs={12}>
-                </Grid>
-            </Grid>
-        </div>
     );
 
 }

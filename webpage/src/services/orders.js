@@ -28,7 +28,7 @@ export const supplies=
 
 export const wastes=
 [
-    {idWaste: 1, nameSupply: "Azúcar"},
+    {idWaste: 1, nameWaste: "Azúcar", nameUnit: "KG"},
 ];
 
 export const getOrders =async function () {
@@ -74,12 +74,13 @@ export const insertOrder = async function (data) {
     const idUser=data.idUser;
     
     const supplies=data.supplies;
+    const wastes=data.wastes;
     console.log(supplies)
     const supply=data.supply;
     try {
         const response = await fetch(SERVER_URL + `insertOrder`, {
             method: 'POST',
-            body: JSON.stringify({idRecipe, idUser, supplies, supply}),
+            body: JSON.stringify({idRecipe, idUser, supplies,wastes, supply}),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -100,6 +101,28 @@ export const insertOrder = async function (data) {
 export const updateSupplyOrder = async function (data) {
     try {
         const response = await fetch(SERVER_URL + `updateSupplyOrder`, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }else{
+            const json = await response.json();
+            return json;
+        }
+        
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+}
+
+export const updateWasteOrder = async function (data) {
+    try {
+        const response = await fetch(SERVER_URL + `updateWasteOrder`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {

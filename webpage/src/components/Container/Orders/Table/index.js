@@ -4,6 +4,8 @@ import { tableIcons, data, getOrderDetail, getRestock, localization } from './..
 import AlertDialog from './Dialog';
 import WatchIcon from '@material-ui/icons/RemoveRedEye'
 import DialogCreate from '../DialogCreate';
+import { Grid, Paper } from '@material-ui/core';
+import Info from "./../../../Miscellaneous/Info";
 
 
 class Table extends Component {
@@ -94,37 +96,51 @@ class Table extends Component {
 
     render() {
         console.log(this.state.data)
-        const {classes}=this.props;
         return (
-            <div>
-                <MaterialTable
-                    title="Pedidos"
-                    columns={this.state.columns}
-                    data={this.state.data}
-                    icons={tableIcons}
-                    localization={localization}
-                    options={{
-                        actionsColumnIndex: -1
-                    }}
-                    actions={[
-                    {
-                        icon: tableIcons.SeeIcon,
-                        tooltip: 'Ver detalles de pedido',
-                        onClick: (event, rowData) => {
-                            this.setState({
-                                open: true,
-                                row:rowData,
-                            });
-                            console.log(this.state.row)
+            <Grid container>
+                <Grid item xs={10}/>
+                <Grid item xs={2}>
+                    <Info>
+                        Para modificar el status del pedido o ver los detalles del mismo, debe dar click en el ícono del ojo.
+                    </Info>
+                </Grid>
+                <Grid item xs={12}>
+                    <MaterialTable
+                        title="Pedidos"
+                        columns={this.state.columns}
+                        data={this.state.data}
+                        icons={tableIcons}
+                        localization={localization}
+                        options={{
+                            actionsColumnIndex: -1,
+                            showTitle: false,
+                            search: true,
+                            headerStyle:{
+                                fontWeight: 'bold',
+                                backgroundColor: 'lightgray',
+                            },
+                            searchFieldAlignment: 'left',
+                            searchFieldStyle:{
+                            }
+                        }}
+                        actions={[
+                        {
+                            icon: tableIcons.SeeIcon,
+                            tooltip: 'Ver detalles de pedido',
+                            onClick: (event, rowData) => {
+                                this.setState({
+                                    open: true,
+                                    row:rowData,
+                                });
+                                console.log(this.state.row)
+                            }
                         }
-                    }
-                    ]}
-                    editable={{
-                    }}
-                />
+                        ]}
+                    />
+                </Grid>
                 <AlertDialog open={this.state.open} handleClose={this.handleClose} change={this.change} row={this.state.row}/>
                 <DialogCreate change={this.change}/>
-            </div>
+            </Grid>
         )
     }
 }
