@@ -87,8 +87,8 @@ class AddWaste extends Component {
               'password':this.state.pass,
               'rol' :this.state.rol
             };
+            insertUser(datos).then(()=>this.props.updateUser(datos));
             
-            insertUser(datos);
           }
             
             this.setState({open:false});

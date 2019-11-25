@@ -8,6 +8,7 @@ import NotificationsRoundedIcon from '@material-ui/icons/NotificationsRounded';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { menuOpen } from '../../actions';
+import { logout } from '../../services/login';
 import PopOverNotification from './PopOverNotification';
 
 const useStyles = makeStyles((theme) => ({
@@ -29,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Navbar() {
 	const [ open, setOpen ] = useState(false);
+	const [username, setUsername] = useState('juan');
 	const [ notificationCount, setNotificationCount ] = useState(1);
 	const classes = useStyles();
 	const dispatch = useDispatch();
@@ -38,6 +40,9 @@ export default function Navbar() {
 	const handleNotificationQuantity = (quantity) => setNotificationCount(quantity);
 	const handleOnClickNotification = () => setOpen(!open);
 	const handleOnClose = () => setOpen(false);
+	const handleOnClickExit = () => {
+		logout();
+	}
 	return (
 		<div className={classes.root}>
 			<AppBar position="static" className={classes.navBar}>
@@ -46,14 +51,14 @@ export default function Navbar() {
 					<Grid container justify="flex-end" alignItems="center">
 						<Avatar alt="Image profile" src="logo192.png" className={classes.bigAvatar} />
 						<Typography variant="h6" className={classes.title}>
-							Juanito Banana
+							<span>{username}</span>
 						</Typography>
 						<IconButton color="inherit" onClick={handleOnClickNotification}>
 							<Badge color="secondary" badgeContent={notificationCount} className={classes.margin}>
 								<NotificationsRoundedIcon />
 							</Badge>
 						</IconButton>
-						<ExitIcon />
+						<ExitIcon onClick={handleOnClickExit}/>
 						<PopOverNotification
 							isOpen={open}
 							close={handleOnClose}

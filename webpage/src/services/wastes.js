@@ -15,6 +15,9 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import 'date-fns';
+import moment from 'moment';
+import DateFnsUtils from '@date-io/date-fns';
 import { SERVER_URL } from "../constants";
 
 export const tableIcons = {
@@ -41,7 +44,7 @@ export const headCells =
 [
     { title: 'Nombre del insumo', field: 'nameSupply' },
     { title: 'Fecha', field: 'registrationDateWaste', type: 'datetime',editable: 'never'},
-    { title: 'Fecha de caducidad', field: 'sellByDateWaste', type: 'datetime',editable: 'never' },
+    { title: 'Fecha de caducidad', field: 'sellByDateWaste', type: 'date',editable: 'never' },
     { title: 'Cantidad', field: 'quantityWaste', type:'double'},
     { title: 'Tipo de merma', field: 'typeWaste', type:'double',lookup:{1:'reutilizable',2:'devolución',3:'accidente',4:'comida del personal',5:'caduco'}, editable:'never'},
     { title: 'Nombre del empleado', field: 'idUser',editable: 'never'},    
@@ -128,8 +131,12 @@ export const getWastes =async function () {
             throw Error(response.statusText);
         }
         const json = await response.json();
+        
+        for(var i=0; i<json.wastes.length;i++){
+            json.wastes[i].sellByDateWaste = moment(json.wastes[i].sellByDateWaste).format('YYYY-MM-DD');
+            json.wastes[i].registrationDateWaste = moment(json.wastes[i].registrationDateWaste).format('YYYY-MM-DD');
+        }
         console.log(json);
-
         return json;
     } catch (error) {
         console.log(error);

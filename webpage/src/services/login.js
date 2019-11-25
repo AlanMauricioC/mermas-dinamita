@@ -14,7 +14,49 @@ export const login = async function (user) {
             throw Error(response.statusText);
         }
         const json = await response.json();
+        console.log(json);
+        return json;
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+}
 
+export const sesion = async function(){
+    try {
+
+        const response = await fetch(SERVER_URL +`getSession`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        const json = await response.json();
+        console.log(json);
+        return json;
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+}
+
+export const logout = async function(){
+    try {
+
+        const response = await fetch(SERVER_URL +`logOut`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+        const json = await response.json();
+        console.log(json);
         return json;
     } catch (error) {
         console.log(error);

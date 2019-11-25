@@ -47,9 +47,15 @@ class Table extends Component {
       this.setState({open:true})
   };
   render(){
+    const handleUpdateState=(user)=>{
+      const oldData = this.state.data
+      const newData = oldData.push(user)
+      console.log(newData)
+      this.setState({data:oldData})
+    }
     return (
       <div style={{ minWidth: "100%" }}>
-          <AddUser></AddUser>
+          <AddUser updateUser={handleUpdateState}></AddUser>
           <MaterialTable
               title="Usuarios"
               columns={this.state.columns}

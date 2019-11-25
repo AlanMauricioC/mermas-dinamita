@@ -19,8 +19,8 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Vivall
+      <Link color="inherit" href="#">
+        Restaurante Vivall
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -72,6 +72,7 @@ export default function SignInSide() {
     //entrar en la app
     let usuario = {'email': user,'password':pass};
     let resp = await login(usuario);
+    
     
     if (resp.rol==0||resp.rol==1) {
       dispatch(signIn())
