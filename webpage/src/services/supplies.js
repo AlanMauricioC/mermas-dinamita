@@ -5,7 +5,8 @@ export const getSupplies = async function (search,state) {
             method: 'POST',
             body: JSON.stringify({search, state}),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -27,7 +28,8 @@ export const updateSupplies = async function (supply) {
             method: 'POST',
             body: JSON.stringify(supply),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -46,7 +48,8 @@ export const insertSupplies = async function (supply) {
             method: 'POST',
             body: JSON.stringify(supply),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -66,7 +69,8 @@ export const deleteSupplies = async function (supply) {
             method: 'POST',
             body: JSON.stringify(supply),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {

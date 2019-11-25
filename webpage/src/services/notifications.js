@@ -1,7 +1,12 @@
 import { SERVER_URL } from '../constants';
 export const getStockNotifications = async () => {
 	try {
-		const response = await fetch(SERVER_URL + 'alerts');
+		const response = await fetch(SERVER_URL + 'alerts',{
+			headers: {
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
+            }
+		});
 		if (!response.ok) {
 			throw Error(response.statusText);
 		}
@@ -22,8 +27,9 @@ export const deleteExpirationNotification = async (id) => {
 			method: 'POST',
 			body: JSON.stringify({ type, id, typeNotification }),
 			headers: {
-				'Content-Type': 'application/json'
-			}
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
+            }
 		});
 		if (!response.ok) {
 			throw Error(response.statusText);
@@ -47,8 +53,9 @@ export const deleteStockNotification = async (id) => {
 			method: 'POST',
 			body: JSON.stringify({ type, id, typeNotification }),
 			headers: {
-				'Content-Type': 'application/json'
-			}
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
+            }
 		});
 		if (!response.ok) {
 			throw Error(response.statusText);

@@ -45,7 +45,7 @@ export default function CenteredGrid() {
         <Drawer open={useSelector(state => state.menu.open)} onClose={toggleDrawer(false)}  classes={{ paper: classes.paper }} >
             <Grid container className={classes.root}>
                 <Grid item xs={12} className={classes.backgoundGradient}>
-                    <Avatar alt="Logo Vivall" src="logo192.png" className={classes.imageLogo} />
+                    <Avatar alt="Logo Vivall" src="img/logoHR2.png" className={classes.imageLogo} />
                 </Grid>
                 <Grid item xs={12} onClick={toggleDrawer(false)} >
                     <ListSidebar />

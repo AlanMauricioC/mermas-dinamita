@@ -78,18 +78,7 @@ export const localization={
         editTooltip: "Editar"
     }
 }
-const details=[
-    {
-        idSupply: 1, 
-        nameSupply: "Insumo 1", 
-        quantityRestockSupply: 50, 
-        costRestockSupply: "$10,000", 
-        arrivalDateRestockSupply:"30/10/1997", 
-        sellByDateRestockSupply:"09/07/2003", 
-        idProvider:1, nameProvider: "Juan Pérez", 
-        statusRestockSupply: 1
-    }
-]
+
 export const data=[
     
 ]
@@ -102,7 +91,8 @@ export const insertWaste = async function (waste) {
             method: 'POST',
             body: JSON.stringify(waste),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -123,7 +113,8 @@ export const getWastes =async function () {
         const response = await fetch(SERVER_URL +`getWastes`,{
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
 
@@ -150,7 +141,8 @@ export const deleteWaste = async function(waste){
             method: 'POST',
             body: JSON.stringify(waste),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -172,7 +164,8 @@ export const updateWaste = async function(data){
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
