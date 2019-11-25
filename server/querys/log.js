@@ -2,9 +2,9 @@ const con = require('../DB/connection')
 const validations = require('./validations')
 
 function logIn (req, res){
-    if (validations.isValidEmail(req.body.email) && req.body.password) {
+    if (validations.isValidEmail(req.body.email) && validations.isValidPassword(req.body.password)) {
         con.query('SELECT idUser AS id, emailUser AS email, rolUser AS rol FROM users WHERE emailUser=? AND passwordUser=SHA1(?)', [req.body.email, req.body.password], function (err, result) {
-            if (err) {
+            if (err) {s
                 console.log('Error' , err)
                 res.status(500).json({err})
             }
