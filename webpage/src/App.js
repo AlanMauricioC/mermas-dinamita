@@ -6,14 +6,14 @@ import Login from './components/Login';
 import Sidebar from './components/Sidebar';
 import { useSelector, useDispatch } from 'react-redux';
 import { signIn } from './actions';
-import { sesion } from "./services/login";
+import { login } from "./services/login";
 
 function App() {
 	const dispatch = useDispatch()
 
-	useEffect(() => {
-		
-	})
+	if (sessionStorage.getItem('token')) {
+		dispatch(signIn())
+	}
 
 	const isLogged = useSelector((state) => state.isLogged);
 	const content = (

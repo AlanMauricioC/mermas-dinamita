@@ -94,3 +94,9 @@ export const signIn = (recipes) => {
         type: 'SIGN_IN',
     }
 }
+
+export const signOut = (recipes) => {
+    return {
+        type: 'SIGN_OUT',
+    }
+}
