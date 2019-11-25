@@ -4,6 +4,7 @@ import { tableIcons, getOrderDetail, updateRestockSupply, deleteRestockSupply, i
 import { TextField, MenuItem, Grid, Button } from '@material-ui/core';
 import alertifyjs from "alertifyjs";
 import { getSupplies } from "./../../../../../../services/supplies";
+import SelectSupply from "./../../../../../Miscellaneous/SelectSupply"
 
 class Table extends Component {
     constructor(props) {
@@ -74,13 +75,20 @@ class Table extends Component {
             supplies: [],
             data: row.supplies,
             idRestock: row.idRestock,
-            rowStatus: row.statusRestock
+            rowStatus: row.statusRestock,
+            isEditable: true
         }
         console.log(row)
     }
 
     componentDidMount(){
         this.getSupplies();
+        this.setEditable();
+    }
+
+    setEditable=()=>{
+        const row=this.props.row;
+        if(row.statusRestock===5) this.setState({isEditable:false})
     }
     
     async getSupplies() {
@@ -109,7 +117,7 @@ class Table extends Component {
     
 
     render() {
-
+        const {isEditable}=this.state;
         const validateUnique=(id)=>{
             const data=this.state.data;
             console.log(data)
@@ -235,6 +243,21 @@ class Table extends Component {
 				alertifyjs.success("El insumo se ha eliminado correctamente")
 			}, (e) => console.error(e))
         }
+
+        const validateRows=(row)=>{
+            const {arrivalDateRestockSupply, costRestockSupply, quantityRestockSupply, sellByDateRestockSupply, statusRestockSupply}=row;
+            const today = new Date();
+            //alert(statusRestockSupply)
+            console.log(row)
+            if(statusRestockSupply===4) if(!arrivalDateRestockSupply) return "Debe seleccionarse una fecha de llegada";
+            if(statusRestockSupply===5 || statusRestockSupply==="5") if(!sellByDateRestockSupply) return "Debe seleccionarse una fecha de caducidad";
+            if(arrivalDateRestockSupply) if(arrivalDateRestockSupply<today) return "La fecha de llegada no puede ser inferior al día de hoy";
+            if(sellByDateRestockSupply) if(!arrivalDateRestockSupply) return "La fecha de llegada no puede estar vacía";
+            if(sellByDateRestockSupply) if(arrivalDateRestockSupply) if(sellByDateRestockSupply<arrivalDateRestockSupply) return "La fecha de caducidad no puede ser inferior a la fecha de llegada";
+            if(costRestockSupply<=0) return "El costo debe ser mayor a 0";
+            if(quantityRestockSupply<=0) return "La cantidad debe ser mayor a 0";
+            return false;
+        }
         
         return (
             <div>
@@ -311,23 +334,7 @@ class Table extends Component {
                     </TextField> }
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField
-                            id="supplies"
-                            select
-                            fullWidth
-                            value={-1}
-                            onChange={handleSelectSupply}
-                            margin="normal"
-                        >
-                            <MenuItem key={-1} value={-1}>
-                                Elija un insumo para añadirlo al pedido
-                            </MenuItem>
-                            {this.state.supplies.map(supply => (
-                                <MenuItem key={supply.id} value={supply.id}>
-                                    {supply.name}
-                                </MenuItem>
-                            ))}
-                        </TextField>
+                        <SelectSupply onChange={handleSelectSupply} value={-1}/>
                     </Grid>
                     <Grid item xs={12}>
                         <h2>Pedido</h2>
@@ -343,20 +350,32 @@ class Table extends Component {
                         actionsColumnIndex: -1,
                         search: false,
                         toolbar: false,
+                        headerStyle:{
+                            fontWeight: 'bold',
+                            backgroundColor: 'lightgray',
+                        },
                     }}
-                    editable={{
+                    editable={isEditable ? {
                         onRowUpdate: (newData, oldData) =>
                             new Promise((resolve, reject) => {
-                                setTimeout(() => {
-                                    {
-                                        const data = this.state.data;
-                                        const index = data.indexOf(oldData);
-                                        data[index] = newData;
-                                        this.setState({ data }, () => resolve());
-                                        updateDetail(newData);
-                                    }
-                                    resolve()
-                                }, 1000)
+                                const validateStatus=validateRows(newData);
+                                if(validateStatus){
+                                    alertifyjs.warning(validateStatus);
+                                    reject();
+                                }else{
+
+                                    setTimeout(() => {
+                                        {
+                                            const data = this.state.data;
+                                            const index = data.indexOf(oldData);
+                                            data[index] = newData;
+                                            this.setState({ data }, () => resolve());
+                                            updateDetail(newData);
+                                        }
+                                        resolve()
+                                    }, 1000)
+                                }
+                                
                             }),
                         onRowDelete: oldData =>
                             new Promise((resolve, reject) => {
@@ -371,7 +390,7 @@ class Table extends Component {
                                 resolve()
                             }, 1000)
                             }),
-                        }}
+                        } : null}
                 />
                 <br/>
                 <Grid container justify={"flex-end"}>

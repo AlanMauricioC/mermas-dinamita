@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
         //minHeight: 200,
     },
     paper: {
-        padding: theme.spacing(4),
+        padding: theme.spacing(0),
         textAlign: 'center',
         color: theme.palette.text.secondary,
         boxShadow: '5px 4px 18px -2px rgba(0,0,0,0.75)',

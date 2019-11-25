@@ -26,10 +26,14 @@ const styles = theme => ({
     textField: {
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        width: 400,
+        width: '100%'
     },
     button: {
 		margin: theme.spacing.unit,
+		width: '100%'
+    },
+    select:{
+        margin: theme.spacing.unit,
 		width: '100%'
     },
     top: {
@@ -206,6 +210,7 @@ class AddWaste extends Component {
                                             label="Fecha de caducidad"
                                             format="dd/MM/yyyy"
                                             autoOk={true}
+                                            className={classes.textField}
                                             onChange={handleOnChangeDate}
                                             value={this.state.date}
                                             KeyboardButtonProps={{

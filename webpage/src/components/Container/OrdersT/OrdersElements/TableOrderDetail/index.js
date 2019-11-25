@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
 import { Button, Grid, TextField, MenuItem, Paper, Divider, Switch, FormControlLabel } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete'
-import { recipes, getRecipes, supplies, wastes, insertOrder, updateSupplyOrder, insertSupplyOrder, deleteSupplyOrder } from "./../../../../../services/orders";
+import { recipes, getRecipes, supplies, wastes, insertOrder, updateSupplyOrder, insertSupplyOrder, deleteSupplyOrder, updateWasteOrder } from "./../../../../../services/orders";
 import { getSupplies } from "./../../../../../services/supplies";
+import { getWastes } from "./../../../../../services/wastes";
 import alertifyjs from "alertifyjs";
+import SelectSupply from "./../../../../Miscellaneous/SelectSupply"
+import Info from "./../../../../Miscellaneous/Info";
 
 class TableOrderDetail extends Component{
     constructor(props){
@@ -46,7 +49,9 @@ class TableOrderDetail extends Component{
     componentDidMount() {
         const {idOrder, orderDetail}=this.props;
         if(idOrder){
+            console.log(orderDetail)
             let newSupplies=[];
+            let newWastes=[];
             for(let i=0;i<orderDetail.supplies.length;i++){
                 newSupplies.push({
                     idSupply: orderDetail.supplies[i].idSupply,
@@ -55,17 +60,29 @@ class TableOrderDetail extends Component{
                     unitSupply: orderDetail.supplies[i].nameUnit}
                 );
             }
+            if(orderDetail.wastes){
+                for(let i=0;i<orderDetail.wastes.length;i++){
+                    newWastes.push({
+                        idWaste: orderDetail.wastes[i].idWaste,
+                        nameSupply: orderDetail.wastes[i].nameSupply,
+                        quantityOrderWaste:  orderDetail.wastes[i].quantityOrderWaste, 
+                        nameUnit: orderDetail.wastes[i].nameUnit}
+                    );
+                }
+            }
             const newData={
                 idOrder: orderDetail.idOrder,
                 idRecipe: orderDetail.idRecipe,
                 idUser: orderDetail.idUser,
-                supplies: newSupplies
+                supplies: newSupplies,
+                wastes: newWastes
             }
             this.setState({orderRecipe:newData});
         }
         this.getRecipes();
         this.getRecipesBU();
         this.getSupplies();
+        this.getWastes();
     }
 
     async getRecipesBU() {
@@ -121,6 +138,23 @@ class TableOrderDetail extends Component{
 
     }
 
+    async getWastes() {
+        getWastes("").then(({ wastes }) => {
+            let newWastes=[];
+            for(let i=0; i<wastes.length; i++){
+                if(wastes[i].typeWaste===1){
+                    const idWaste=wastes[i].idWaste;
+                    const nameWaste=wastes[i].nameSupply;
+                    const nameUnit="ml"
+                    newWastes.push({idWaste, nameWaste, nameUnit});
+                }
+            }
+            this.setState({wastes: newWastes})
+            console.log(wastes)
+        })
+
+    }
+
     getIndexSupply=(idSupply)=>{
         const supplies=this.state.supplies;
         for(let i=0;i<supplies.length;i++) if(supplies[i].idSupply===idSupply) return i;
@@ -148,11 +182,11 @@ class TableOrderDetail extends Component{
                     idUser: 1,
                     supply: isSupply,
                     supplies:orderRecipe.supplies,
-                    wastes: orderWastes,
+                    wastes: orderRecipe.wastes,
                 }
                 if(!idOrder){
                     insertOrder(data).then(()=>{
-                        alertifyjs.success('Orden creada correctamente');
+                        alertifyjs.success('Comanda creada correctamente');
                         this.props.handleReturnOrdersView();
                     }, (e) => console.error(e))
                 }else{
@@ -171,7 +205,18 @@ class TableOrderDetail extends Component{
                             this.props.handleReturnOrdersView();
                         }, (e) => console.error(e))
                     }
-                    alertifyjs.success('Orden actualizada correctamente');
+                    if(data.wastes){
+                        for(let i=0; i<data.wastes.length; i++){
+                            //Hace falta arreglar esto
+                            const updataData={idOrder: this.props.idOrder, idWaste: data.wastes[i].idWaste, quantityOrderWaste: data.wastes[i].quantityOrderWaste}
+                            updateWasteOrder(updataData).then(()=>{
+                                insertSupplyOrder(updataData).then(()=>{
+                                    this.props.handleReturnOrdersView();
+                                }, (e) => console.error(e))
+                            }, (e) => console.error(e))
+                        }
+                    }
+                    alertifyjs.success('Comanda actualizada correctamente');
                 }
         }else{
             alertifyjs.warning("Asegúrese de colocar cantidades válidas")
@@ -198,7 +243,11 @@ class TableOrderDetail extends Component{
             console.log(deleteSupplies);
         }
         const handleClickDeleteWaste=(supply)=>{
-            
+            const idWaste=supply.idWaste;
+            const indexWaste=getIDWaste(idWaste);
+            let data=orderRecipe;
+            data.wastes.splice(indexWaste,1)
+            this.setState({orderDetail:data});
         }
         const getIDSupply=(idSupply)=>{
             for(let i=0;i<orderRecipe.supplies.length;i++) if(orderRecipe.supplies[i].idSupply===idSupply) return i;
@@ -218,12 +267,29 @@ class TableOrderDetail extends Component{
         const getUnitSupply=(idSupply)=>{
             for(let i=0;i<supplies.length;i++) if(supplies[i].idSupply===idSupply) return supplies[i].unitSupply;
         }
+
+        const handleSelectSupply=(event)=>{
+            const val = event.target.value
+            if(val!=-1){
+                let dataSupply=orderRecipe;
+                let duplicated=false;
+                for(let i=0;i<dataSupply.supplies.length;i++) if(dataSupply.supplies[i].idSupply===val) duplicated=true;
+                if(!duplicated) dataSupply.supplies.push({idSupply: val, quantity: 0});
+                else alertifyjs.warning("El insumo seleccionado ya se encuentra en la comanda");
+                this.setState({orderRecipe: dataSupply,});
+                console.log(orderRecipe)
+            }
+        }
+
         const handleChangeInput = event => {
             const val = event.target.value
+            let data=null;
             switch(event.target.name){
                 case "selectRecipe":
                     let i;
                     for(i=0;i<recipes.length;i++) if(recipes[i].idRecipe===val) break;
+                    recipes[i]["wastes"]=[];
+                    console.log(recipes[i])
                     this.setState({ 
                         [event.target.name]: val ,
                         orderRecipe: recipes[i],
@@ -232,43 +298,28 @@ class TableOrderDetail extends Component{
                     });
                     console.log(recipesBU)
                     break;
-                case "selectSupply":
-                    if(val){
-                            let dataSupply=orderRecipe;
-                            let duplicated=false;
-                            for(let i=0;i<dataSupply.supplies.length;i++) if(dataSupply.supplies[i].idSupply===val) duplicated=true;
-                            if(!duplicated) dataSupply.supplies.push({idSupply: val, quantity: 0});
-                            this.setState({orderRecipe: dataSupply,});
-                            console.log(orderRecipe)
-                    }
-                    break;
                 case "selectWaste":
                     if(val){
+                        console.log(orderRecipe)
                         let dataSupply=orderRecipe;
-                        if(!dataSupply.wastes){
-                            const detailRecipe=orderRecipe.detailRecipe;
-                            const idRecipe=orderRecipe.idRecipe;
-                            const idSupply=orderRecipe.idSupply;
-                            const imageRecipe=orderRecipe.imageRecipe;
-                            const nameRecipe=orderRecipe.nameRecipe;
-                            const nameSupply=orderRecipe.nameSupply;
-                            const statusRecipe=orderRecipe.statusRecipe;
-                            const supplies=orderRecipe.supplies;
-                            const wastes=[];
-                            dataSupply={detailRecipe,idRecipe,idSupply,imageRecipe,nameRecipe,nameSupply,statusRecipe,supplies,wastes}
-                        }
                         let duplicated=false;
-                        console.log(dataSupply)
-                        for(let i=0;i<dataSupply.wastes.length;i++) if(dataSupply.wastes[i].wastes===val) duplicated=true;
-                        if(!duplicated) dataSupply.wastes.push({idWaste: val, quantity: 0});
+                        for(let i=0;i<dataSupply.wastes.length;i++) if(dataSupply.wastes[i].idWaste===val) duplicated=true;
+                        if(!duplicated) dataSupply.wastes.push({idWaste: val, quantityOrderWaste: 0, nameUnit: "litros"});
+                        else alertifyjs.warning("La merma seleccionado ya se encuentra en la comanda");
                         this.setState({orderRecipe: dataSupply,});
                         console.log(orderRecipe)
                     }
                     break;
                 case "quantity":
                     console.log(orderRecipe.supplies[getIDSupply(parseFloat(event.target.id))].quantity)
-                    let data=orderRecipe;
+                    data=orderRecipe;
                     data.supplies[getIDSupply(parseFloat(event.target.id))].quantity=(parseFloat(val) || 0);
+                    this.setState({orderRecipe: data});
+                    break;
+                case "quantityOrderWaste":
+                    console.log(orderRecipe)
+                    data=orderRecipe;
+                    data.wastes[getIDWaste(parseFloat(event.target.id))].quantityOrderWaste=(parseFloat(val) || 0);
                     this.setState({orderRecipe: data});
                     break;
                 default:
@@ -283,10 +334,10 @@ class TableOrderDetail extends Component{
         const selectRecipe=
             <div>
                 <Grid container>
-                    <Grid item xs={10}>
-                        <h2>Nueva orden</h2>
+                    <Grid item xs={5} md={9}>
+                        <h2>Nueva comanda</h2>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={6} md={2}>
                         <br/>
                         <FormControlLabel
                             label="Es insumo"
@@ -299,6 +350,11 @@ class TableOrderDetail extends Component{
                             />
                             }
                         />
+                    </Grid>
+                    <Grid item xs={1}>
+                        <Info>
+                            Para comenzar a realizar la comanda selecciona una receta.
+                        </Info>
                     </Grid>
                 </Grid>
                 <Divider/>
@@ -320,6 +376,59 @@ class TableOrderDetail extends Component{
             </div>
         ;
         //Pasar a otro componente, maybe
+
+        const tableWastes=<div>
+            <h2>Mermas reutilizadas</h2>
+            <Paper>
+        {orderRecipe.wastes.map(waste => (
+            <div>
+                <Grid container>
+                    <Grid item xs={1}>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            name="nameWaste"
+                            id={waste.idWaste}
+                            className={classes.textField}
+                            fullWidth
+                            InputProps={{
+                              readOnly: true,
+                            }}
+                            value={getNameWaste(waste.idWaste)}
+                            margin="normal"
+                        />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <TextField
+                            name="quantityOrderWaste"
+                            id={waste.idWaste}
+                            className={classes.textField}
+                            fullWidth
+                            value={orderRecipe.wastes[getIDWaste(waste.idWaste)].quantityOrderWaste}
+                            onChange={handleChangeInput}
+                            margin="normal"
+                        />
+                    </Grid>
+                    <Grid item xs={1}>
+                        <TextField
+                            name="unitWaste"
+                            id={waste.idWaste}
+                            className={classes.textField}
+                            fullWidth
+                            InputProps={{
+                              readOnly: true,
+                            }}
+                            value={waste.nameUnit}
+                            margin="normal"
+                        />
+                    </Grid>
+                        <Button id={waste.idWaste}  onClick={()=>handleClickDeleteWaste({waste})}><DeleteIcon id={waste.idWaste}/></Button>
+                </Grid>
+            </div>
+        ))}
+        </Paper>
+        </div>
+
         const tableSupplies=
             orderRecipe.supplies.map(supply => (
                 <div>
@@ -365,59 +474,13 @@ class TableOrderDetail extends Component{
                         </Grid>
                             <Button id={supply.idSupply}  onClick={()=>handleClickDeleteSupply({supply})}><DeleteIcon id={supply.idSupply}/></Button>
                     </Grid>
-                    {/*orderRecipe.wastes ? tableWastes : null*/}
+                    
                 </div>
             ))
         ;
 
-     {/*   const tableWastes=
-        orderRecipe.wastes.map(waste => (
-            <div>
-                <Grid container>
-                    <Grid item xs={1}>
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            name="nameWaste"
-                            id={waste.idWaste}
-                            className={classes.textField}
-                            fullWidth
-                            InputProps={{
-                              readOnly: true,
-                            }}
-                            value={getNameWaste(waste.idWaste)}
-                            margin="normal"
-                        />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <TextField
-                            name="quantity"
-                            id={waste.idWaste}
-                            className={classes.textField}
-                            fullWidth
-                            value={orderRecipe.wastes[getIDWaste(waste.idWaste)].quantity}
-                            onChange={handleChangeInput}
-                            margin="normal"
-                        />
-                    </Grid>
-                    <Grid item xs={1}>
-                        <TextField
-                            name="unitWaste"
-                            id={waste.idWaste}
-                            className={classes.textField}
-                            fullWidth
-                            InputProps={{
-                              readOnly: true,
-                            }}
-                            value={getUnitWaste(waste.idWaste)}
-                            margin="normal"
-                        />
-                    </Grid>
-                        <Button id={waste.idWaste}  onClick={()=>handleClickDeleteWaste({waste})}><DeleteIcon id={waste.idWaste}/></Button>
-                </Grid>
-            </div>
-        ))
-                        ;*/}
+     
+                        
 
         const tableSupplies2=
             orderRecipeBU.supplies.map(supply => (
@@ -472,26 +535,16 @@ class TableOrderDetail extends Component{
 
         const selectSupplies=
             <Grid container>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                     <h2>Insumos disponibles</h2>
                 </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        name="selectSupply"
-                        select
-                        label="Seleccione un insumo para añadirlo a la orden"
-                        fullWidth
-                        onChange={handleChangeInput}
-                        margin="normal"
-                    >
-                        {supplies.map(supply => (
-                            <MenuItem key={supply.idSupply} value={supply.idSupply}>
-                                {supply.nameSupply}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                <Grid item xs={6}>
+                    <h2>Mermas disponibles</h2>
                 </Grid>
-                {/*<Grid item xs={6}>
+                <Grid item xs={6}>
+                    <SelectSupply onChange={handleSelectSupply} value={-1}/>
+                </Grid>
+                <Grid item xs={6}>
                     <TextField
                         name="selectWaste"
                         select
@@ -503,12 +556,12 @@ class TableOrderDetail extends Component{
                     >
                         {wastes.map(waste => (
                             <MenuItem key={waste.idWaste} value={waste.idWaste}>
-                                {waste.nameSupply}
+                                {waste.nameWaste}
                             </MenuItem>
                         ))}
                     </TextField>
 
-                        </Grid>*/}
+                        </Grid>
                 <br/>
                 <Grid item xs={12}>
                     <h2>Insumos utilizados</h2>
@@ -516,7 +569,7 @@ class TableOrderDetail extends Component{
             </Grid>
         ;
 
-        const headers=
+        const headers=<div>
             <Paper>
                 <Grid container>
                     <Grid item xs={1}>
@@ -538,6 +591,8 @@ class TableOrderDetail extends Component{
                 </Grid>
                 {isSupply ? tableSupplies2 : tableSupplies}
             </Paper>
+                {orderRecipe.wastes ? tableWastes : null}
+                </div>
         ;
 
         return (
@@ -559,7 +614,7 @@ class TableOrderDetail extends Component{
                                 <Button onClick={handleReturnOrdersView} color="secondary" variant="contained">Cancelar</Button>
                             </Grid>
                             <Grid item xs={2}>
-                                <Button onClick={this.handleClickInsertOrder} color="primary" variant="contained">Registrar orden</Button>
+                                <Button onClick={this.handleClickInsertOrder} color="primary" variant="contained">Registrar comanda</Button>
                             </Grid>
                         </Grid>
                         

@@ -6,6 +6,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { getOrders } from './../../../../services/orders';
 import { tableIcons, localization } from './../../../../services/restock';
 import alertifyjs from "alertifyjs";
+import Info from "./../../../Miscellaneous/Info";
 
 class OrdersElements extends React.Component {
     constructor(props) {
@@ -16,7 +17,7 @@ class OrdersElements extends React.Component {
             orderDetail: null,
             idRecipe: null, 
             columns: [
-                { title: 'Número de orden', field: 'idOrder'},
+                { title: 'Número de comanda', field: 'idOrder'},
                 { title: 'Receta', field: 'nameRecipe' },
                 { title: 'Fecha de registro', field: 'dateOrder', render: rowData => {
                     if(rowData.dateOrder) return rowData.dateOrder.substring(0,10);
@@ -61,7 +62,15 @@ class OrdersElements extends React.Component {
             );
         }else{
             return (
-                <div>
+                <Grid container>
+                    <Grid item xs={11}/>
+                    <Grid item xs={1}>
+                        <Info>
+                            Puedes ver los detalles de las comandas dando click sobre ellas.
+                        </Info>
+                    </Grid>
+                    <Grid item xs={12}>
+
                     <MaterialTable
                         title="Órdenes"
                         columns={columns}
@@ -85,22 +94,31 @@ class OrdersElements extends React.Component {
                         ]}
                         options={{
                             actionsColumnIndex: -1,
+                            showTitle: false,
+                            search: true,
+                            headerStyle:{
+                                fontWeight: 'bold',
+                                backgroundColor: 'lightgray',
+                            },
+                            searchFieldAlignment: 'left',
+                            searchFieldStyle:{
+                            }
                         }}
                         editable={{
                             onRowDelete: oldData =>
-                              new Promise((resolve, reject) => {
+                            new Promise((resolve, reject) => {
                                 setTimeout(() => {
-                                  {
-                                    let data = this.state.data;
-                                    const index = data.indexOf(oldData);
-                                    data.splice(index, 1);
-                                    this.setState({ data }, () => resolve());
-                                    alertifyjs.success('Orden eliminada correctamente');
-                                  }
-                                  resolve()
+                                    {
+                                        let data = this.state.data;
+                                        const index = data.indexOf(oldData);
+                                        data.splice(index, 1);
+                                        this.setState({ data }, () => resolve());
+                                        alertifyjs.success('Orden eliminada correctamente');
+                                    }
+                                    resolve()
                                 }, 1000)
-                              }),
-                          }}
+                            }),
+                        }}
                         detailPanel={rowData => {
                             if(rowData.supplies[0]){
                                 return (
@@ -134,7 +152,36 @@ class OrdersElements extends React.Component {
                                                                     <Grid item xs={1}/>
                                                                 </Grid>
                                                             ))}
+                                                            <Divider/>
                                                         </Grid>
+                                                        {rowData.wastes.length ? 
+                                                        <Grid container>
+                                                            <Grid item xs={1}/>
+                                                            <Grid item xs={8}>
+                                                                <h4>Merma</h4>
+                                                                <Divider/>
+                                                            </Grid>
+                                                            <Grid item xs={2}>
+                                                                <h4>Cantidad</h4>
+                                                                <Divider/>
+                                                            </Grid>
+                                                            <Grid item xs={1}/>
+                                                            <Grid item xs={12}>
+                                                                {rowData.wastes.map(waste => (
+                                                                    <Grid container>
+                                                                        <Grid item xs={1}/>
+                                                                        <Grid item xs={8}>
+                                                                            {waste.nameSupply}
+                                                                        </Grid>
+                                                                        <Grid item xs={2}>
+                                                                            {waste.quantityOrderWaste+" "+waste.nameUnit}
+                                                                        </Grid>
+                                                                        <Grid item xs={1}/>
+                                                                    </Grid>
+                                                                ))}
+                                                            </Grid>
+                                                            </Grid>
+                                                        : null}
                                                     </Grid>
                                                 </Paper>
                                             </Grid>
@@ -157,13 +204,15 @@ class OrdersElements extends React.Component {
                                     </div>
                                 )
                             }
-                            
-                        }}
-                    />
+                        }
+                    }
+                        />
+                        </Grid>
+                        
                     <Fab aria-label="Add" className={classes.fab} color="primary" onClick={this.handleClickNewOrder}>
                         <AddIcon/>
                     </Fab>
-                </div>
+                    </Grid>
             );
         }
     }

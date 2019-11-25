@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
 import AddWaste2 from "./AddWaste2";
-import { getWastes, insertWaste, updateWaste, deleteWaste, tableIcons, headCells,data} from '../../services/wastes';
+import { getWastes, insertWaste, updateWaste, deleteWaste, tableIcons, localization,headCells,data} from '../../services/wastes';
 
 
 
@@ -64,6 +64,7 @@ class Table extends Component {
               columns={this.state.columns}
               data={this.state.data}
               icons={tableIcons}
+              localization={localization}
               editable={{
                 
                 onRowUpdate: (newData, oldData) =>

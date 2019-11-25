@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MaterialTable from 'material-table';
-import { getUnits, deleteUnit,updateUnit,insertUnit, tableIcons, headCells,data} from '../../services/units';
+import { getUnits, deleteUnit,updateUnit,localization, tableIcons, headCells,data} from '../../services/units';
 import AddUnit from "./AddUnit";
 
 
@@ -61,6 +61,7 @@ class Table extends Component {
               columns={this.state.columns}
               data={this.state.data}
               icons={tableIcons}
+              localization={localization}
               editable={{
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {

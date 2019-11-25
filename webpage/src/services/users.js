@@ -48,7 +48,7 @@ export const headCells =
 
 export const localization={
     pagination: {
-        labelDisplayedRows: '{from}-{to} of {count}'
+        labelDisplayedRows: '{from}-{to} de {count}'
     },
     toolbar: {
         nRowsSelected: '{0} row(s) selected',
@@ -59,15 +59,16 @@ export const localization={
         actions: 'Acciones'
     },
     body: {
-        emptyDataSourceMessage: 'No records to display',
+        emptyDataSourceMessage: 'No hay registros para mostrar',
         filterRow: {
-            filterTooltip: 'Filter'
+            filterTooltip: 'Filtrar'
         },
         editRow: {
             deleteText: "¿Está seguro que desea eliminar este registro?",
             cancelTooltip: "Cancelar",
             saveTooltip: "Guardar"
         },
+       
         addTooltip: "Agregar",
         deleteTooltip: "Borrar",
         editTooltip: "Editar"
