@@ -48,7 +48,7 @@ router.use(function middleware(req, res, next) {
             next()
         }
         else {
-            res.status(500).json('Error, usuario no valido')
+            res.status(500).json({err: 'Error, usuario no valido'})
         }
     }
     else if(req.body.tokenRolUser == 1) {
@@ -56,11 +56,11 @@ router.use(function middleware(req, res, next) {
             next()
         }
         else {
-            res.status(500).json('Error, usuario no valido')
+            res.status(500).json({err: 'Error, usuario no valido'})
         }
     }
     else {
-        res.status(500).json('Error, sesion no iniciada o expirada')
+        res.status(403).json({err: 'Error, sesion no iniciada o expirada'})
     }
 })
 
