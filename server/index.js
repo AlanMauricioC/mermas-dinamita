@@ -3,6 +3,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const routeWebPage = require('./routes/webPage');
+const public = require('./routes/public')
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use(session({
     saveUninitialized: true
 }));
 
+app.use('/public', public);
 app.use('/', routeWebPage);
 
 app.listen(3002, () => {

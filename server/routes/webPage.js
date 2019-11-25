@@ -8,20 +8,43 @@ const recipes = require('../querys/recipes')
 const orders = require('../querys/orders')
 const alerts = require('../querys/alerts')
 const users = require('../querys/users')
-const log = require('../querys/log')
+const login = require('../querys/login')
 const stadistic = require('../querys/stadistic')
 const providers = require('../querys/providers')
 const middleware = require('../querys/middleware')
+const JWT = require('jsonwebtoken')
 
 // middleware specific to this router
 router.use(function timeLog(req, res, next) {
     console.log('Time: ', Date.now())
-    next()
+    if((/.(gif|jpg|jpeg|tiff|png)$/i).test(req.path)){
+        next()
+    }
+    else{
+        var token = req.headers['token']
+        if (!token) {
+            res.status(500).json({err : 'Token invalido'})
+        }
+        else{
+            token = token.replace('Bearer ', '')
+            try {
+                var decoded = JWT.verify(token, 'password');
+                req.body.tokenIdUser = decoded.id
+                req.body.tokenRolUser = decoded.rol
+                next()
+            } catch(err) {
+                res.status(500).json({err : err})
+            }
+        }
+    }
 })
 
 router.get('/', (req, res) => {
     res.send('Saludos desde express').status(200)
 })
+
+// Cerrar sesión
+router.get('/logOut', login.logOut)
 
 // Obtener unidades existentes
 router.get('/getUnits', middleware.middleware, units.getUnits)
@@ -163,15 +186,6 @@ router.post('/updateUser', middleware.middlewareOnlyAdmin, users.updateUser)
 
 // Elimina usuario
 router.post('/deleteUser', middleware.middlewareOnlyAdmin, users.deleteUser)
-
-// Inicia sesion
-router.post('/logIn', log.logIn)
-
-// Obtiene sesion activa
-router.get('/getSession', log.getSession)
-
-// Cierra sesion
-router.get('/logOut', log.logOut)
 
 // Obtiene estadisticas de mermas
 router.post('/stadisticWastes', middleware.middlewareOnlyAdmin, stadistic.stadisticWastes)
