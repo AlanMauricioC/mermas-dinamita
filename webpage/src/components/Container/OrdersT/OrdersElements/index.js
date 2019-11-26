@@ -7,6 +7,7 @@ import { getOrders } from './../../../../services/orders';
 import { tableIcons, localization } from './../../../../services/restock';
 import alertifyjs from "alertifyjs";
 import Info from "./../../../Miscellaneous/Info";
+import UpdateSp from '../../Orders/Table/Dialog/TableSupplies/updateSp';
 
 class OrdersElements extends React.Component {
     constructor(props) {
@@ -69,6 +70,7 @@ class OrdersElements extends React.Component {
                             Puedes ver los detalles de las comandas dando click sobre ellas.
                         </Info>
                     </Grid>
+                    <UpdateSp/>
                     <Grid item xs={12}>
 
                     <MaterialTable

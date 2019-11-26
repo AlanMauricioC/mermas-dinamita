@@ -457,8 +457,8 @@ class Table extends Component {
                 />
                 <br/>
                 <Grid container justify={"flex-end"}>
-                    <Grid item xs={9}/>
-                    <Grid item xs={3}>
+                    <Grid item xs={0} md={9}/>
+                    <Grid item xs={12} md={3}>
                         <Button onClick={this.props.handleClose} color="primary" variant="contained">Finalizar modificación</Button>
                     </Grid>
                 </Grid>

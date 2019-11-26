@@ -33,7 +33,7 @@ export const wastes=
 
 export const getOrders =async function () {
     try {
-        const response = await fetch(`http://localhost:3002/orders`,{
+        const response = await fetch(SERVER_URL +`orders`,{
             headers: {
                 'Content-Type': 'application/json',
                 'token':sessionStorage.getItem('token')
