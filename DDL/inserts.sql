@@ -19,11 +19,10 @@ INSERT INTO `recipesupply` (`idRecipe`, `idSupply`, `quantityRecipeSupply`) VALU
 -- Orders
 INSERT INTO `orders` (`idOrder`, `dateOrder`, `idRecipe`, `supply`, `idUser`, `statusOrder`) VALUES (1, '2019-11-26 05:01:15', 1, 0, 1, 1);
 
+
 -- ordersupply
 INSERT INTO `ordersupply` (`idOrder`, `idSupply`, `quantityOrderSupply`) VALUES (1, 2, 2), (1, 7, 4);
 
--- providers
-INSERT INTO `providers` (`idProvider`, `nameProvider`, `statusProvider`) VALUES (1, 'Lala', 1), (2, 'Abarrotes López', 1);
 
 -- restock
 INSERT INTO `restock` (`idRestock`, `registrationDateRestock`, `idUser`, `statusRestock`) VALUES (1, '2019-11-26 05:06:34', 1, 5);
