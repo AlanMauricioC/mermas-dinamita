@@ -7,3 +7,9 @@ export const SUPPLY_SELECTOR = {
 	ERROR: 'error',
 	WARNING: 'warning'
 };
+
+export const USER_ROLES={
+	NONE:'',
+	ADMIN:'0',
+	CHEF:'1',
+}

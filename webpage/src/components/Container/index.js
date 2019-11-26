@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid } from "@material-ui/core";
 import { makeStyles } from '@material-ui/styles';
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, } from "react-router-dom";
 import Supplies from "./Supplies";
 import 'alertifyjs/build/css/alertify.min.css'
 import 'alertifyjs/build/css/themes/default.css'
@@ -11,12 +11,13 @@ import Orders from "./Orders";
 import Recipes from "./Recipes";
 import OrdersT from "./OrdersT";
 import Users from "../Users";
-import Login from "../Login";
 import Measurement from "../Measurement";
 import Restock from './Restock';
 import { getSupplies } from "../../services/supplies";
 import { useDispatch} from "react-redux";
 import {setSupplies} from '../../actions'
+import ProtectedRoute from "../Miscellaneous/ProtectedRouteHOC";
+
 const useStyles = makeStyles(theme => ({
     root: {
         padding: 20,
@@ -61,15 +62,9 @@ const Container = ()=>{
             <Route exact path="/nuevoPedido">
                 <Restock/>
             </Route>
-            <Route exact path="/graficas">
-                <Charts/>
-            </Route>
-            <Route exact path="/usuarios">
-                <Users/>
-            </Route>
-            <Route exact path="/login">
-                <Login/>
-            </Route>
+            <ProtectedRoute  exact path="/graficas" component={Charts}/>
+            <ProtectedRoute  exact path="/usuarios" component={Users}/>
+
 
         </Switch>
     </Grid>

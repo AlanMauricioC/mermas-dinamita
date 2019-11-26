@@ -11,66 +11,65 @@ import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import ItemSidebar from './ItemSidebar';
 import ColorizeIcon from '@material-ui/icons/Colorize';
 import ReceiptIcon from '@material-ui/icons/Receipt';
-
-
+import { USER_ROLES } from '../../../constants';
 
 const data = [
-    {
-        title: "Insumos",
-        icon: <FoodIcon/>,
-        link:'insumos'
-    },
-    {
-        title: "Recetas",
-        icon: <RecipiesIcon/>,
-        link:'recetas'
-    },
-    {
-        title: "Comandas",
-        icon: <ReceiptIcon/>,
-        link:'ordenes'
-    },
-    {
-        title: "Mermas",
-        icon: <AppleIcon/>,
-        link:'mermas'
-    },
-    {
-        title: "Pedidos",
-        icon: <StoreIcon/>,
-        link:'pedidos'
-    },
-    {
-        title: "Unidades de medida",
-        icon: <ColorizeIcon/>,
-        link:'unidades'
-    },
-     {
-        title: "Gráficas",
-        icon: <ChartIcon/>,
-        link:'graficas'
-    },
-    {
-        title: "Usuarios",
-        icon: <PeopleAltIcon/>,
-        link:'usuarios'
-    }
+	{
+		title: 'Insumos',
+		icon: <FoodIcon />,
+		link: 'insumos'
+	},
+	{
+		title: 'Recetas',
+		icon: <RecipiesIcon />,
+		link: 'recetas'
+	},
+	{
+		title: 'Comandas',
+		icon: <ReceiptIcon />,
+		link: 'ordenes'
+	},
+	{
+		title: 'Mermas',
+		icon: <AppleIcon />,
+		link: 'mermas'
+	},
+	{
+		title: 'Pedidos',
+		icon: <StoreIcon />,
+		link: 'pedidos'
+	},
+	{
+		title: 'Unidades de medida',
+		icon: <ColorizeIcon />,
+		link: 'unidades'
+	},
+	{
+		title: 'Gráficas',
+		icon: <ChartIcon />,
+        link: 'graficas',
+        enable: sessionStorage.getItem('rol') === USER_ROLES.ADMIN
+	},
+	{
+		title: 'Usuarios',
+		icon: <PeopleAltIcon />,
+		link: 'usuarios',
+		enable: sessionStorage.getItem('rol') === USER_ROLES.ADMIN
+	}
 ];
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        
-    },
+const useStyles = makeStyles((theme) => ({
+	root: {}
 }));
-  
+
 export default function ListSidebar() {
-    const classes = useStyles();
-    return (
-        <div className={classes.root}>
-              <List component="nav" aria-label="">
-                  {data.map((option) => <ItemSidebar option={option} key={option.title}/>)}
-              </List>
-            <Divider />
-        </div>
-    );
+	const classes = useStyles();
+	return (
+		<div className={classes.root}>
+			<List component="nav" aria-label="">
+				{data.map((option) => <ItemSidebar option={option} key={option.title} />)}
+			</List>
+			<Divider />
+		</div>
+	);
 }
