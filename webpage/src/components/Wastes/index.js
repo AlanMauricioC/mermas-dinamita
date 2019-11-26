@@ -54,6 +54,7 @@ class Table extends Component {
       const newData = oldData.push(waste)
       console.log(newData)
       this.setState({data:oldData})
+      this.getData()
     }
     return (
       <div style={{ minWidth: "100%" }}>
