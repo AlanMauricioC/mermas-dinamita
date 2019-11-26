@@ -9,7 +9,7 @@ export const SUPPLY_SELECTOR = {
 };
 
 export const USER_ROLES={
-	NONE:-1,
-	ADMIN:0,
-	CHEF:1,
+	NONE:'',
+	ADMIN:'0',
+	CHEF:'1',
 }

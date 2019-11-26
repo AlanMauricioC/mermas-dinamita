@@ -48,13 +48,13 @@ const data = [
 		title: 'Gráficas',
 		icon: <ChartIcon />,
         link: 'graficas',
-        enable: sessionStorage.getItem('role') === USER_ROLES.ADMIN
+        enable: sessionStorage.getItem('rol') === USER_ROLES.ADMIN
 	},
 	{
 		title: 'Usuarios',
 		icon: <PeopleAltIcon />,
 		link: 'usuarios',
-		enable: sessionStorage.getItem('role') === USER_ROLES.ADMIN
+		enable: sessionStorage.getItem('rol') === USER_ROLES.ADMIN
 	}
 ];
 
