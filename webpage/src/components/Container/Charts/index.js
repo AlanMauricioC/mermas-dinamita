@@ -129,7 +129,7 @@ class Charts extends Component {
 							maxDate={moment()}
 							minDate={moment(this.state.startDate).add(1, 'day')}
 							KeyboardButtonProps={{
-								'aria-label': 'Fecha de inicio'
+								'aria-label': 'Fecha de final'
 							}}
 						/>
 					</MuiPickersUtilsProvider>

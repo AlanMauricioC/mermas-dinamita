@@ -47,7 +47,8 @@ const data = [
 	{
 		title: 'Gráficas',
 		icon: <ChartIcon />,
-		link: 'graficas'
+        link: 'graficas',
+        enable: sessionStorage.getItem('role') === USER_ROLES.ADMIN
 	},
 	{
 		title: 'Usuarios',

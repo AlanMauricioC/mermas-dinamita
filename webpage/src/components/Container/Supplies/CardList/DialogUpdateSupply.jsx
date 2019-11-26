@@ -116,8 +116,11 @@ class DialogUpdateSupply extends PureComponent {
 			if (!unit) return null;
 			this.setState({ supply: { ...this.state.supply, unit } });
 		};
-		const handleOnChangeName = (event) =>
-			this.setState({ supply: { ...this.state.supply, [event.target.name]: event.target.value } });
+		const handleOnChangeName = (event) =>{
+			console.log(this.state);
+			
+			this.setState({ supply: { ...this.state.supply, [event.target.name]: event.target.value } })
+		}
 		const handleOnEnter = (ev) => {
 			if (ev.key === 'Enter') {
 				const enter = this.state.supply.id ? updateSupply : createSupply;
@@ -190,13 +193,17 @@ class DialogUpdateSupply extends PureComponent {
 		};
 
 		const validateSupply = (supply) => {
+			console.log(supply);
+			
 			let invalidName = !validateText(supply.name, 1, 45);
-			let invalidMin = !validateNumber(supply.min, 0, supply.max);
-			let invalidMax = !validateNumber(supply.max, supply.min);
+			let invalidMin = !(supply.min>0&&supply.min<supply.max);
+			let invalidMax = !(supply.max>supply.min);
 			let invalidDate = false;
 			if (!supply.id) {
 				invalidDate = !moment(supply.date).isAfter(moment());
 			}
+			console.log({ invalidMax, invalidMin, invalidName });
+			
 			this.setState({ invalidMax, invalidMin, invalidName });
 			return !(invalidName || invalidMin || invalidMax || invalidDate);
 		};
@@ -270,6 +277,7 @@ class DialogUpdateSupply extends PureComponent {
 									autoOk={true}
 									onChange={handleOnChangeDate}
 									value={this.state.date}
+									minDate={moment()}
 									KeyboardButtonProps={{
 										'aria-label': 'Caducidad'
 									}}
