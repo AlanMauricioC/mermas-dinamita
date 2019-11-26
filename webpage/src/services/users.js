@@ -74,18 +74,7 @@ export const localization={
         editTooltip: "Editar"
     }
 }
-const details=[
-    {
-        idSupply: 1, 
-        nameSupply: "Insumo 1", 
-        quantityRestockSupply: 50, 
-        costRestockSupply: "$10,000", 
-        arrivalDateRestockSupply:"30/10/1997", 
-        sellByDateRestockSupply:"09/07/2003", 
-        idProvider:1, nameProvider: "Juan Pérez", 
-        statusRestockSupply: 1
-    }
-]
+
 export const data=[
     {
         id: 0,
@@ -103,7 +92,8 @@ export const insertUser = async function (user) {
             method: 'POST',
             body: JSON.stringify(user),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -122,9 +112,9 @@ export const insertUser = async function (user) {
 export const getUsers =async function () {
     try {
         const response = await fetch(SERVER_URL +`users`,{
-            method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
 
@@ -147,7 +137,8 @@ export const deleteUser = async function(user){
             method: 'POST',
             body: JSON.stringify(user),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -169,7 +160,8 @@ export const updateUser = async function(data){
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {

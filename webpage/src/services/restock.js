@@ -76,7 +76,12 @@ export const headCells3=[
 
 export const getRestock =async function () {
     try {
-        const response = await fetch(`${SERVER_URL}restock`);
+        const response = await fetch(`${SERVER_URL}restock`,{
+            headers: {
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
+            }
+        });
         if (!response.ok) {
             throw Error(response.statusText);
         }
@@ -97,7 +102,8 @@ export const insertRestockSupply = async function (data) {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -120,7 +126,8 @@ export const updateRestockSupply = async function (data) {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -143,7 +150,8 @@ export const deleteRestockSupply = async function (data) {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -166,7 +174,8 @@ export const setStatusRestock = async function (data) {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -189,7 +198,8 @@ export const createRestock = async function (data) {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -212,7 +222,8 @@ export const getSupplies = async function () {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -289,7 +300,8 @@ export const insertOnlyRestock = async function (data) {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -307,7 +319,12 @@ export const insertOnlyRestock = async function (data) {
 
 export const getRestockRecomendation =async function () {
     try {
-        const response = await fetch(`${SERVER_URL}recommendationRestock`);
+        const response = await fetch(`${SERVER_URL}recommendationRestock`,{
+            headers: {
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
+            }
+        });
         if (!response.ok) {
             throw Error(response.statusText);
         }

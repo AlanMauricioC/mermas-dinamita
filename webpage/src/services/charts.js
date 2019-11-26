@@ -80,8 +80,9 @@ export const getWasteChart=async (dateStart,dateEnd)=>{
 			method: 'POST',
 			body: JSON.stringify({ dateStart,dateEnd }),
 			headers: {
-				'Content-Type': 'application/json'
-			}
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
+            }
 		});
 		if (!response.ok) {
 			throw Error(response.statusText);
@@ -102,8 +103,9 @@ export const getRestockChart=async (dateStart,dateEnd)=>{
 			method: 'POST',
 			body: JSON.stringify({ dateStart,dateEnd }),
 			headers: {
-				'Content-Type': 'application/json'
-			}
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
+            }
 		});
 		if (!response.ok) {
 			throw Error(response.statusText);
@@ -124,8 +126,9 @@ export const getRecipesChart=async (dateStart,dateEnd)=>{
 			method: 'POST',
 			body: JSON.stringify({ dateStart,dateEnd }),
 			headers: {
-				'Content-Type': 'application/json'
-			}
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
+            }
 		});
 		if (!response.ok) {
 			throw Error(response.statusText);

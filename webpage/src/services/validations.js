@@ -52,22 +52,10 @@ function validateNumber(value, min, max) {
 	return validated;
 }
 
-// function validateStatus(status) {
-//     switch (status) {
-//         case 200:
-//             alertify.success('Operación realizada exitosamente.');
-//             break;
-//         case 203:
-//             alertify.error('Datos invalidos');
-//             break;
-//         case 406:
-//             alertify.error('Campos invalidos.');
-//             break;
-//         case 500:
-//             alertify.error('Error en el servidor.');
-//             break;
-//         default:
-//             alertify.error('Error desconocido.');
-//             break;
-//     }
-// }
+export function isValidEmail(email) { 
+    return /^\w+([\.\+\-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(email); 
+}
+
+export function isValidPassword(password) { 
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&_-])([A-Za-z\d$@$!%*?&]|[^ ]){8,45}$/.test(password); 
+}

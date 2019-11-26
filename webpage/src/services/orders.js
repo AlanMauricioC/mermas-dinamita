@@ -33,7 +33,12 @@ export const wastes=
 
 export const getOrders =async function () {
     try {
-        const response = await fetch(`http://localhost:3002/orders`);
+        const response = await fetch(`http://localhost:3002/orders`,{
+            headers: {
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
+            }
+        });
         if (!response.ok) {
             throw Error(response.statusText);
         }
@@ -52,7 +57,8 @@ export const getRecipes = async function (search) {
             method: 'POST',
             body: JSON.stringify({search}),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -82,7 +88,8 @@ export const insertOrder = async function (data) {
             method: 'POST',
             body: JSON.stringify({idRecipe, idUser, supplies,wastes, supply}),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -104,7 +111,8 @@ export const updateSupplyOrder = async function (data) {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -126,7 +134,8 @@ export const updateWasteOrder = async function (data) {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -148,7 +157,8 @@ export const insertSupplyOrder = async function (data) {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {
@@ -170,7 +180,8 @@ export const deleteSupplyOrder = async function (data) {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
             }
         });
         if (!response.ok) {

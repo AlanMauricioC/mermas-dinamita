@@ -39,28 +39,33 @@ router.use(function timeLog(req, res, next) {
 })
 
 router.use(function middleware(req, res, next) {
-    //Arreglo de rutas de administrador y chef
-    const routesAdmin = ['/logOut', '/getUnits', '/getSupplies', '/restock', '/recommendationRestock', '/statusRestock', '/getWastes', '/getRecipes', '/recipes/:image', '/orders', '/alerts', '/deleteAlert', '/users', '/insertUser', '/updateUser', '/deleteUser', '/stadisticWastes', '/stadisticRecipes', '/stadisticRestocks', '/providers']
-    const routesChef = ['/logOut', '/getUnits', '/insertUnit', '/updateUnit', '/deleteUnit', '/insertSupply', '/getSupplies', '/updateSupply', '/deleteSupply', '/insertRestock', '/insertOnlyRestock', '/restock', '/recommendationRestock', '/statusRestock', '/getWastes', '/getRecipes', '/recipes/:image', '/orders', '/alerts', '/deleteAlert', '/providers', '/insertSupplyRestock', '/updateSupplyRestock', '/deleteSupplyRestock', '/insertWaste', '/updateWaste', '/deleteWaste', '/insertRecipe', '/updateRecipe', '/deleteRecipe', '/insertSupplyRecipe', '/updateSupplyRecipe', '/deleteSupplyRecipe', '/insertOrder', '/updateOrder', '/insertSupplyOrder', '/updateSupplyOrder', '/deleteSupplyOrder', '/insertWasteOrder', '/updateWasteOrder', '/deleteWasteOrder']
-    
-    if(req.body.tokenRolUser == 0) {
-        if(routesAdmin.includes(req.path)) {
-            next()
+    if((/.(gif|jpg|jpeg|tiff|png)$/i).test(req.path)){
+        next()
+    }
+    else{
+        //Arreglo de rutas de administrador y chef
+        const routesAdmin = ['/logOut', '/getUnits', '/getSupplies', '/restock', '/recommendationRestock', '/statusRestock', '/getWastes', '/getRecipes', '/recipes/:image', '/orders', '/alerts', '/deleteAlert', '/users', '/insertUser', '/updateUser', '/deleteUser', '/stadisticWastes', '/stadisticRecipes', '/stadisticRestocks', '/providers']
+        const routesChef = ['/logOut', '/getUnits', '/insertUnit', '/updateUnit', '/deleteUnit', '/insertSupply', '/getSupplies', '/updateSupply', '/deleteSupply', '/insertRestock', '/insertOnlyRestock', '/restock', '/recommendationRestock', '/statusRestock', '/getWastes', '/getRecipes', '/recipes/:image', '/orders', '/alerts', '/deleteAlert', '/providers', '/insertSupplyRestock', '/updateSupplyRestock', '/deleteSupplyRestock', '/insertWaste', '/updateWaste', '/deleteWaste', '/insertRecipe', '/updateRecipe', '/deleteRecipe', '/insertSupplyRecipe', '/updateSupplyRecipe', '/deleteSupplyRecipe', '/insertOrder', '/updateOrder', '/insertSupplyOrder', '/updateSupplyOrder', '/deleteSupplyOrder', '/insertWasteOrder', '/updateWasteOrder', '/deleteWasteOrder']
+        
+        if(req.body.tokenRolUser == 0) {
+            if(routesAdmin.includes(req.path)) {
+                next()
+            }
+            else {
+                res.status(500).json({err: 'Error, usuario no valido'})
+            }
+        }
+        else if(req.body.tokenRolUser == 1) {
+            if(routesChef.includes(req.path)) {
+                next()
+            }
+            else {
+                res.status(500).json({err: 'Error, usuario no valido'})
+            }
         }
         else {
-            res.status(500).json({err: 'Error, usuario no valido'})
+            res.status(403).json({err: 'Error, sesion no iniciada o expirada'})
         }
-    }
-    else if(req.body.tokenRolUser == 1) {
-        if(routesChef.includes(req.path)) {
-            next()
-        }
-        else {
-            res.status(500).json({err: 'Error, usuario no valido'})
-        }
-    }
-    else {
-        res.status(403).json({err: 'Error, sesion no iniciada o expirada'})
     }
 })
 
