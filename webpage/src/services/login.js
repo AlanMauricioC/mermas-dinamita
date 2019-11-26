@@ -14,7 +14,10 @@ export const login = async function (user) {
         }
         const json = await response.json();
         if (json.token) {
-            sessionStorage.setItem('token',json.token)
+            const {token,rol,email}=json
+            sessionStorage.setItem('token',token)
+            sessionStorage.setItem('rol',rol)
+            sessionStorage.setItem('userName',email)
         }
         return true;
     } catch (error) {

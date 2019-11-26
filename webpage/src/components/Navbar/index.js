@@ -7,7 +7,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsRoundedIcon from '@material-ui/icons/NotificationsRounded';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { menuOpen,signOut } from '../../actions';
+import { menuOpen, signOut } from '../../actions';
 import { logout } from '../../services/login';
 import PopOverNotification from './PopOverNotification';
 
@@ -30,10 +30,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Navbar() {
 	const [ open, setOpen ] = useState(false);
-	const [username, setUsername] = useState('juan');
 	const [ notificationCount, setNotificationCount ] = useState(1);
 	const classes = useStyles();
 	const dispatch = useDispatch();
+
+	const username = sessionStorage.getItem('userName') || '';
+
 	const toggleMenu = () => {
 		dispatch(menuOpen(true));
 	};
@@ -41,9 +43,9 @@ export default function Navbar() {
 	const handleOnClickNotification = () => setOpen(!open);
 	const handleOnClose = () => setOpen(false);
 	const handleOnClickExit = () => {
-		sessionStorage.removeItem('token')
-		dispatch(signOut())
-	}
+		sessionStorage.removeItem('token');
+		dispatch(signOut());
+	};
 	return (
 		<div className={classes.root}>
 			<AppBar position="static" className={classes.navBar}>
@@ -59,7 +61,9 @@ export default function Navbar() {
 								<NotificationsRoundedIcon />
 							</Badge>
 						</IconButton>
-						<ExitIcon onClick={handleOnClickExit}/>
+						<IconButton color="inherit" onClick={handleOnClickExit}>
+							<ExitIcon />
+						</IconButton>
 						<PopOverNotification
 							isOpen={open}
 							close={handleOnClose}
