@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { getSupplies } from "./../../../../../services/supplies";
 import { createRestock, getRestockRecomendation } from "./../../../../../services/restock";
+import { getProviders } from "./../../../../../services/providers"
 import { Grid, Typography, TextField, MenuItem, Paper, Select, Button } from '@material-ui/core';
 import { Link } from "react-router-dom";
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -21,6 +22,14 @@ class ActionRestock extends Component{
 
     componentDidMount(){
         this.getSupplies();
+        this.getProviders();
+    }
+
+    async getProviders() {
+        getProviders().then(({ providers }) => {
+            this.setState({ providers })
+            console.log('Insumos: \n',providers);
+        })
     }
 
     async getSupplies() {
@@ -222,6 +231,7 @@ class ActionRestock extends Component{
                                             name={"quantityRestockSupply"}
                                             margin="normal"
                                             placeholder="Cantidad"
+                                            type="number"
                                             onChange={this.handleEditSupply}
                                             fullWidth
                                             value={supply.quantityRestockSupply}
@@ -233,6 +243,7 @@ class ActionRestock extends Component{
                                             name={"costRestockSupply"}
                                             margin="normal"
                                             placeholder="Costo"
+                                            type="number"
                                             onChange={this.handleEditSupply}
                                             fullWidth
                                             value={supply.costRestockSupply}

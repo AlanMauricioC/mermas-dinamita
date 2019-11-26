@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import { Button, Grid, TextField, MenuItem, Paper, Divider, Switch, FormControlLabel } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete'
-import { recipes, getRecipes, supplies, wastes, insertOrder, updateSupplyOrder, insertSupplyOrder, deleteSupplyOrder, updateWasteOrder } from "./../../../../../services/orders";
+import { recipes, getRecipes, supplies, wastes, insertOrder, deleteWasteOrder, updateSupplyOrder, insertSupplyOrder, deleteSupplyOrder, insertWasteOrder, updateWasteOrder } from "./../../../../../services/orders";
 import { getSupplies } from "./../../../../../services/supplies";
-import { getWastes } from "./../../../../../services/wastes";
+import { getWastes, deleteWaste } from "./../../../../../services/wastes";
 import alertifyjs from "alertifyjs";
 import SelectSupply from "./../../../../Miscellaneous/SelectSupply"
 import Info from "./../../../../Miscellaneous/Info";
@@ -34,6 +34,7 @@ class TableOrderDetail extends Component{
             isSupply:false,
             index: 0,
             recipesBU:recipes,
+            wastesSelect: [],
             orderRecipeBU:{
                 idRecipe: null, 
                 nameRecipe: "No se ha seleccionado una receta", 
@@ -140,15 +141,20 @@ class TableOrderDetail extends Component{
 
     async getWastes() {
         getWastes("").then(({ wastes }) => {
+            console.log(wastes)
             let newWastes=[];
+            let wastesSelect=[];
             for(let i=0; i<wastes.length; i++){
-                if(wastes[i].typeWaste===1){
-                    const idWaste=wastes[i].idWaste;
-                    const nameWaste=wastes[i].nameSupply;
-                    const nameUnit="ml"
-                    newWastes.push({idWaste, nameWaste, nameUnit});
+                const idWaste=wastes[i].idWaste;
+                const nameWaste=wastes[i].nameSupply;
+                const quantityWaste=wastes[i].quantityWaste;
+                const nameUnit=wastes[i].nameUnit;
+                newWastes.push({idWaste, nameWaste, nameUnit, quantityWaste});
+                if(wastes[i].typeWaste===1 && wastes[i].quantityWaste>0){
+                    wastesSelect.push({idWaste, nameWaste, nameUnit, quantityWaste});
                 }
             }
+            this.setState({wastesSelect})
             this.setState({wastes: newWastes})
             console.log(wastes)
         })
@@ -160,19 +166,31 @@ class TableOrderDetail extends Component{
         for(let i=0;i<supplies.length;i++) if(supplies[i].idSupply===idSupply) return i;
     }
 
+    getIndexWaste=(idWaste)=>{
+        const wastes=this.state.wastes;
+        for(let i=0;i<wastes.length;i++) if(wastes[i].idWaste===idWaste) return i;
+    }
+
     validateData=()=>{
-        let {orderRecipe, supplies, orderRecipeBU, isSupply}=this.state;
+        let {orderRecipe, supplies, orderRecipeBU, isSupply, wastes}=this.state;
         if(isSupply) orderRecipe = orderRecipeBU;
+        console.log(wastes)
         console.log(orderRecipe)
         for(let i=0;i<orderRecipe.supplies.length;i++) if(orderRecipe.supplies[i].quantity<=0) return false;
         for(let i=0;i<orderRecipe.supplies.length;i++){
             const index=this.getIndexSupply(orderRecipe.supplies[i].idSupply);
             if(supplies[index].quantityOrderSupply<orderRecipe.supplies[i].quantity) return false;
         }
+        for(let i=0;i<orderRecipe.wastes.length;i++) if(orderRecipe.wastes[i].quantityOrderWaste<=0) return false;
+        for(let i=0;i<orderRecipe.wastes.length;i++){
+            const index=this.getIndexWaste(orderRecipe.wastes[i].idWaste);
+            if(wastes[index].quantityWaste<orderRecipe.wastes[i].quantityOrderWaste) return false;
+        }
         return true;
     }
 
     handleClickInsertOrder=()=>{
+        console.log(this.state.deleteWastes);
         if(this.validateData()){
                 let {orderRecipe, orderWastes, isSupply, orderRecipeBU}=this.state;
                 if(isSupply) orderRecipe = orderRecipeBU;
@@ -210,10 +228,19 @@ class TableOrderDetail extends Component{
                             //Hace falta arreglar esto
                             const updataData={idOrder: this.props.idOrder, idWaste: data.wastes[i].idWaste, quantityOrderWaste: data.wastes[i].quantityOrderWaste}
                             updateWasteOrder(updataData).then(()=>{
-                                insertSupplyOrder(updataData).then(()=>{
+                                insertWasteOrder(updataData).then(()=>{
                                     this.props.handleReturnOrdersView();
                                 }, (e) => console.error(e))
                             }, (e) => console.error(e))
+                        }
+                    }
+                    if(this.state.deleteWastes.length){
+                        console.log(this.state.deleteWastes)
+                        for(let i=0;i<this.state.deleteWastes.length;i++){
+                            deleteWasteOrder(this.state.deleteWastes[i]).then(()=>{
+                                this.props.handleReturnOrdersView();
+                            }, (e) => console.error(e))
+
                         }
                     }
                     alertifyjs.success('Comanda actualizada correctamente');
@@ -227,7 +254,7 @@ class TableOrderDetail extends Component{
 
     render(){
         const {handleReturnOrdersView, idOrder, classes}=this.props;
-        const {recipes, isSupply, supplies, recipesBU, wastes, orderRecipe, orderRecipeBU, orderWastes, updateSupplies, deleteSupplies, updateWastes, deleteWastes}=this.state;
+        const {recipes, isSupply, supplies, recipesBU, wastes, wastesSelect, orderRecipe, orderRecipeBU, orderWastes, updateSupplies, deleteSupplies, updateWastes, deleteWastes}=this.state;
         const handleClickDeleteSupply=(supply)=>{
             const idSupply=supply.supply.idSupply;
             const indexSupply=getIDSupply(idSupply);
@@ -243,11 +270,17 @@ class TableOrderDetail extends Component{
             console.log(deleteSupplies);
         }
         const handleClickDeleteWaste=(supply)=>{
-            const idWaste=supply.idWaste;
+            const idWaste=supply;
             const indexWaste=getIDWaste(idWaste);
             let data=orderRecipe;
             data.wastes.splice(indexWaste,1)
             this.setState({orderDetail:data});
+            const {deleteWastes}=this.state;
+            if(idOrder){
+                const newDeletionWaste={idOrder, idWaste};
+                deleteWastes.push(newDeletionWaste);
+                this.setState({deleteWastes});
+            }
         }
         const getIDSupply=(idSupply)=>{
             for(let i=0;i<orderRecipe.supplies.length;i++) if(orderRecipe.supplies[i].idSupply===idSupply) return i;
@@ -262,7 +295,7 @@ class TableOrderDetail extends Component{
             for(let i=0;i<wastes.length;i++) if(wastes[i].idWaste===idWaste) return wastes[i].nameWaste;
         }
         const getUnitWaste=(idWaste)=>{
-            for(let i=0;i<wastes.length;i++) if(wastes[i].idWaste===idWaste) return wastes[i].unitWaste;
+            for(let i=0;i<wastes.length;i++) if(wastes[i].idWaste==idWaste) return wastes[i].nameUnit;
         }
         const getUnitSupply=(idSupply)=>{
             for(let i=0;i<supplies.length;i++) if(supplies[i].idSupply===idSupply) return supplies[i].unitSupply;
@@ -418,11 +451,11 @@ class TableOrderDetail extends Component{
                             InputProps={{
                               readOnly: true,
                             }}
-                            value={waste.nameUnit}
+                            value={getUnitWaste(waste.idWaste)}
                             margin="normal"
                         />
                     </Grid>
-                        <Button id={waste.idWaste}  onClick={()=>handleClickDeleteWaste({waste})}><DeleteIcon id={waste.idWaste}/></Button>
+                        <Button id={waste.idWaste}  onClick={()=>handleClickDeleteWaste(waste.idWaste)}><DeleteIcon id={waste.idWaste}/></Button>
                 </Grid>
             </div>
         ))}
@@ -554,7 +587,7 @@ class TableOrderDetail extends Component{
                         onChange={handleChangeInput}
                         margin="normal"
                     >
-                        {wastes.map(waste => (
+                        {wastesSelect.map(waste => (
                             <MenuItem key={waste.idWaste} value={waste.idWaste}>
                                 {waste.nameWaste}
                             </MenuItem>

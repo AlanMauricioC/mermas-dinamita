@@ -158,7 +158,7 @@ class OrdersElements extends React.Component {
                                                         <Grid container>
                                                             <Grid item xs={1}/>
                                                             <Grid item xs={8}>
-                                                                <h4>Merma</h4>
+                                                                <h4>Merma reutilizada</h4>
                                                                 <Divider/>
                                                             </Grid>
                                                             <Grid item xs={2}>

@@ -151,6 +151,29 @@ export const updateWasteOrder = async function (data) {
     }
 }
 
+export const insertWasteOrder = async function (data) {
+    try {
+        const response = await fetch(SERVER_URL + `insertWasteOrder`, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
+            }
+        });
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }else{
+            const json = await response.json();
+            return json;
+        }
+        
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+}
+
 export const insertSupplyOrder = async function (data) {
     try {
         const response = await fetch(SERVER_URL + `insertSupplyOrder`, {
@@ -177,6 +200,29 @@ export const insertSupplyOrder = async function (data) {
 export const deleteSupplyOrder = async function (data) {
     try {
         const response = await fetch(SERVER_URL + `deleteSupplyOrder`, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+                'token':sessionStorage.getItem('token')
+            }
+        });
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }else{
+            const json = await response.json();
+            return json;
+        }
+        
+    } catch (error) {
+        console.log(error);
+        return []
+    }
+}
+
+export const deleteWasteOrder = async function (data) {
+    try {
+        const response = await fetch(SERVER_URL + `deleteWasteOrder`, {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
