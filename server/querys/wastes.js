@@ -18,9 +18,8 @@ function insertWaste(req, res) {
 }
 
 function getWastes(req, res) {
-    qry = `SELECT idWaste, s.idSupply, sp.nameSupply, registrationDateWaste, sellByDateWaste,
-    quantityWaste, typeWaste, s.idUser FROM wastes AS s INNER JOIN supplies AS sp ON s.idSupply=sp.idSupply 
-    WHERE statusWaste=1 AND DATE(sellByDateWaste)>=?`
+    qry = `SELECT idWaste, s.idSupply, sp.nameSupply, registrationDateWaste, sellByDateWaste, quantityWaste, typeWaste, u.idUnit, u.nameUnit, s.idUser 
+        FROM wastes AS s INNER JOIN supplies AS sp ON s.idSupply=sp.idSupply INNER JOIN units AS u ON sp.idUnit=u.idUnit WHERE statusWaste=1 AND DATE(sellByDateWaste)>=?`
     values = [dateNow()]
 	con.query(qry, values, function (err, result) {
 		if (err) {
