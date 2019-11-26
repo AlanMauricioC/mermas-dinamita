@@ -146,7 +146,7 @@ class DialogUpdateSupply extends PureComponent {
 				max,
 				min,
 				name,
-				date: this.state.date,
+				date: moment(this.state.date).format('YYYY-MM-DD'),
 				quantity,
 				unit
 			};
@@ -172,7 +172,7 @@ class DialogUpdateSupply extends PureComponent {
 				max,
 				min,
 				name,
-				date: this.state.date,
+				date: moment(this.state.date).format('YYYY-MM-DD'),
 				quantity
 			};
 			if (!validateSupply(data)) {
