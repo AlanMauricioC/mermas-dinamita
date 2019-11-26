@@ -10,6 +10,7 @@ import 'date-fns';
 import moment from 'moment';
 import DateFnsUtils from '@date-io/date-fns';
 import { insertWaste} from '../../../services/wastes';
+import alertifyjs from "alertifyjs";
 import Table from "../index";
 import withStyles from '@material-ui/core/styles/withStyles'
 
@@ -51,7 +52,7 @@ class AddWaste extends Component {
 
     constructor(props) {
         super(props)
-        const date = moment.now();
+        const date = moment(moment.now()).add(1,'day');
        
         this.state = {
             supplies: [],
@@ -83,6 +84,7 @@ class AddWaste extends Component {
         
         const handleOnChangeDate = date => {
             let value = moment(date).format('YYYY-MM-DD');
+            value = moment(value).add(0, 'day');
             this.setState({ date: value });
           };
         
@@ -93,6 +95,15 @@ class AddWaste extends Component {
             
         }
         const sendData=e=>{
+            var contador = 0;
+            
+            if(this.state.quantityWaste>=1)contador++;
+            else alertifyjs.warning("Cantidad no válida");
+            if(this.state.selectSupply !=null && this.state.selectSupply!=-1)contador++;
+            else alertifyjs.warning("Olvidaste seleccionar un insumo");
+            if(this.state.type!=-1 && this.state.type!=3)contador++;
+            if(this.state.type==-1) alertifyjs.warning("Olvidaste seleccionar un tipo de merma");
+            
             var datos = { 
                 'id':this.state.selectSupply,
                 'quantity':this.state.quantityWaste,
@@ -115,10 +126,9 @@ class AddWaste extends Component {
                 'sellByDateWaste' : this.state.date,
                 'registrationDateWaste': moment(moment.now()).format('YYYY-MM-DD')
             }
-            
             insertWaste(datos).then(()=>this.props.updateWaste(nuevosDatos));
-
             this.setState({open:false});
+            //
             
         }
         
@@ -210,6 +220,8 @@ class AddWaste extends Component {
                                             label="Fecha de caducidad"
                                             format="dd/MM/yyyy"
                                             autoOk={true}
+                                            allowKeyboardControl={false}
+                                            minDate={moment(moment.now()).add(1, 'day')}
                                             className={classes.textField}
                                             onChange={handleOnChangeDate}
                                             value={this.state.date}
