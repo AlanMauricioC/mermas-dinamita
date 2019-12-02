@@ -18,7 +18,7 @@ function logIn (req, res){
                     }
                     
                     toke = JWT.sign(data, 'password', { expiresIn: 60 * 60 * 24}) //token expira en 1 dia
-                    res.status(200).json({ token : toke, id: result[0].id, rol: result[0].rol, email: result[0].email })
+                    res.status(200).json({ token : toke, rol: result[0].rol, email: result[0].email })
                 }else
                     res.status(500).json({ status : 406 })
             }

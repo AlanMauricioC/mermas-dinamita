@@ -1,16 +1,27 @@
 var con = require('../DB/connection')
 
 function insertSupply(req, res) {
-    con.query(`INSERT INTO supplies (idUnit, idUser, quantitySupply, maxQuantitySupply, minQuantitySupply, nameSupply) VALUES (?, ?, ?, ?, ?, ?)`, 
-        [req.body.idUnit, req.body.tokenIdUser, req.body.quantity, req.body.max, req.body.min, req.body.name], 
+    con.query(`INSERT INTO supplies (idUnit, idUser, quantitySupply, maxQuantitySupply, minQuantitySupply, nameSupply) VALUES (?, ?, 0, ?, ?, ?)`, 
+        [req.body.idUnit, req.body.tokenIdUser, req.body.max, req.body.min, req.body.name], 
         function (err, result) {
             if (err) {
                 console.log("Error" , err)
                 res.status(500).json({err})
             }
             else {
-                console.log("insert "+result.affectedRows+" supply, ID: "+ result.insertId)
-                res.status(200).json("insert "+result.affectedRows+" supply, ID: "+ result.insertId)
+                con.query(`INSERT INTO restocksupply VALUES (1, ?, ?, 0, current_timestamp(), ?, 1, 7, 'inventario inicial')`, 
+                [result.insertId, req.body.quantity, req.body.date], 
+                    function (err, resul) {
+                        if (err) {
+                            console.log("Error" , err)
+                            res.status(500).json({err})
+                        }
+                        else {
+                            console.log("insert "+result.affectedRows+" supply, ID: "+ result.insertId)
+                            res.status(200).json("insert "+result.affectedRows+" supply, ID: "+ result.insertId)
+                        }
+                    }
+                ) 
             }
         }
     )  

@@ -110,6 +110,7 @@ CREATE TABLE restock(
 -- 4 = Pedido: Aceptado y pedido a provedor
 -- 5 = Entregado: Aceptada la entrega del pedido por el chef
 -- 6 = Rechazado: No Aceptada la entrega del pedido por el chef
+-- 7 = Inventario inicial: cantidad y fecha de caducidad de insumo registrado por primera vez
 
 -- Tabla de detalle de restock con insumos
 CREATE TABLE restocksupply(
@@ -124,7 +125,8 @@ CREATE TABLE restocksupply(
     commentaryRestockSupply VARCHAR(300) NULL,
     PRIMARY KEY (idRestock, idSupply),
     FOREIGN KEY (idRestock) REFERENCES restock (idRestock) ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION,FOREIGN KEY (idProvider) REFERENCES providers (idProvider) ON DELETE NO ACTION ON UPDATE NO ACTION
+    FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    FOREIGN KEY (idProvider) REFERENCES providers (idProvider) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
 -- Tabla de mermas
 CREATE TABLE wastes(
@@ -160,6 +162,7 @@ CREATE TABLE orderwaste(
 CREATE OR REPLACE TABLE notificationsSupply(
     typeNotification TINYINT(1) NOT NULL,
     idSupply INT NOT NULL,
+    sellByDateNotifSupply timestamp NOT NULL,
     registrationDateNotifSupply timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (idSupply, typeNotification),
     FOREIGN KEY (idSupply) REFERENCES supplies (idSupply) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -168,6 +171,7 @@ CREATE OR REPLACE TABLE notificationsSupply(
 CREATE TABLE notificationsWaste(
     typeNotification TINYINT(1) NOT NULL,
     idWaste INT NOT NULL,
+    sellByDateNotifWaste timestamp NOT NULL,
     registrationDateNotifWaste timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (idWaste, typeNotification),
     FOREIGN KEY (idWaste) REFERENCES wastes (idWaste) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -177,6 +181,18 @@ CREATE TABLE notificationsWaste(
 -- 2: caducidad
 
 -- Triggers
+-- Trigger para actualizar cantidad de insumo cada que se agrega un insumo con inventario inicial
+DELIMITER //
+CREATE OR REPLACE TRIGGER initialRestockSupply AFTER INSERT ON restocksupply FOR EACH ROW 
+    BEGIN
+        DECLARE quantity DOUBLE;
+        IF NEW.statusRestockSupply = 7 THEN
+            SELECT quantitySupply INTO quantity FROM supplies WHERE idSupply=NEW.idSupply;
+            SET quantity = NEW.quantityRestockSupply + quantity;
+            UPDATE supplies SET quantitySupply=quantity WHERE idSupply=NEW.idSupply;
+        END IF;
+    END//
+DELIMITER ;
 -- Trigger para actualizar cantidad de insumo cada que se recibe un pedido
 DELIMITER //
 CREATE OR REPLACE TRIGGER acceptRestockSupply AFTER UPDATE ON restocksupply FOR EACH ROW 
@@ -312,7 +328,7 @@ CREATE OR REPLACE PROCEDURE createnotificationsupply ()
         DECLARE dat date;
         DECLARE fin INTEGER DEFAULT 0;
         -- Declarar cursor
-        DECLARE st_cursor CURSOR FOR SELECT n.idSupply, DATE_FORMAT(DATE_SUB(n.sellByDateRestockSupply, INTERVAL 2 DAY), '%Y-%m-%d') as beforeSellByDateRestockSupply, DATE_FORMAT(sellByDateRestockSupply, '%Y-%m-%d') as SellByDateRestockSupply FROM (SELECT rs.idSupply, rs.sellByDateRestockSupply FROM restocksupply as rs WHERE rs.statusRestockSupply=1 AND rs.quantityRestockSupply>0 GROUP BY rs.idSupply, rs.sellByDateRestockSupply) as n GROUP BY n.idSupply;
+        DECLARE st_cursor CURSOR FOR SELECT n.idSupply, DATE_FORMAT(DATE_SUB(n.sellByDateRestockSupply, INTERVAL 2 DAY), '%Y-%m-%d') as beforeSellByDateRestockSupply, DATE_FORMAT(sellByDateRestockSupply, '%Y-%m-%d') as SellByDateRestockSupply FROM (SELECT rs.idSupply, rs.sellByDateRestockSupply FROM restocksupply as rs WHERE rs.statusRestockSupply=5 AND rs.quantityRestockSupply>0 GROUP BY rs.idSupply, rs.sellByDateRestockSupply) as n GROUP BY n.idSupply;
         -- Condición de salida
         DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin=1;
         SET dat = DATE_FORMAT(NOW(), '%Y-%m-%d');
@@ -323,7 +339,7 @@ CREATE OR REPLACE PROCEDURE createnotificationsupply ()
                 LEAVE st;
             END IF;
             IF dat >= beforeSellByDate AND dat <= sellByDate THEN
-                INSERT INTO notificationsSupply VALUES (2, id, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotifSupply=current_timestamp();
+                INSERT INTO notificationsSupply VALUES (2, id, sellByDate, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotifSupply=current_timestamp();
             END IF;
         END LOOP st;
         CLOSE st_cursor;
@@ -351,7 +367,7 @@ CREATE OR REPLACE PROCEDURE createnotificationwaste ()
                 LEAVE st;
             END IF;
             IF dat >= beforeSellByDate AND dat <= sellByDate THEN
-                INSERT INTO notificationsWaste VALUES (2, id, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotifWaste=current_timestamp();
+                INSERT INTO notificationsWaste VALUES (2, id, sellByDate, current_timestamp()) ON DUPLICATE KEY UPDATE registrationDateNotifWaste=current_timestamp();
             END IF;
         END LOOP st;
         CLOSE st_cursor;

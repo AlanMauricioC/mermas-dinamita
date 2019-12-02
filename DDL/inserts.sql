@@ -2,11 +2,11 @@
 -- users
 INSERT INTO `users` (`idUser`, `emailUser`, `passwordUser`, `rolUser`, `pinUser`, `statusUser`) VALUES (1, 'diana@vivall.com', '80fbc3cdbfa8886d2d9da10a8649b3e77993cf5b', 1, '1234', 1), (2, 'joel@vivall.com', '80fbc3cdbfa8886d2d9da10a8649b3e77993cf5b', 0, '1234', 1);
 
--- units
-INSERT INTO `units` (`idUnit`, `nameUnit`, `statusUnit`) VALUES (1, 'Litros', 1), (2, 'Mililitros', 1), (3, 'Kilogramos', 1), (4, 'Gramos', 1), (5, 'Piezas', 1);
+-- usuarios
+INSERT INTO users VALUES (NULL, 'admi@vivall.com', SHA1('Aa123456_'), 1, '12345', 1);
 
--- supplies
-INSERT INTO `supplies` (`idSupply`, `nameSupply`, `minQuantitySupply`, `maxQuantitySupply`, `quantitySupply`, `idUser`, `idUnit`, `statusSupply`) VALUES (1, 'Papas', 10, 22, 10, 2, 3, 1), (2, 'Chorizo', 5, 18, 8, 2, 3, 1), (3, 'Chocolate', 18, 24, 21, 2, 5, 1), (4, 'Leche', 10, 30, 16, 2, 1, 1), (5, 'Cafe', 4, 13, 9, 2, 3, 1), (6, 'Aguacate', 12, 35, 19, 2, 3, 1), (7, 'Huevo', 15, 40, 28, 2, 3, 1), (8, 'Mantequilla', 5, 20, 18, 2, 5, 1);
+-- proveedores
+INSERT INTO providers VALUES (NULL, 'Inventario', 0), (NULL, 'lala', 1);
 
 -- wastes
 INSERT INTO `wastes` (`idWaste`, `idSupply`, `registrationDateWaste`, `sellByDateWaste`, `quantityWaste`, `typeWaste`, `idUser`, `statusWaste`) VALUES (1, 1, '2019-11-26 05:02:45', '2019-11-26 06:00:00', 8, 5, 1, 1);
@@ -14,9 +14,8 @@ INSERT INTO `wastes` (`idWaste`, `idSupply`, `registrationDateWaste`, `sellByDat
 -- units
 INSERT INTO `units` (`idUnit`, `nameUnit`, `statusUnit`) VALUES (1, 'Litros', 1), (2, 'Mililitros', 1), (3, 'Kilogramos', 1), (4, 'Gramos', 1), (5, 'Piezas', 1);
 
--- users
-INSERT INTO `users` ( `emailUser`, `passwordUser`, `rolUser`, `pinUser`, `statusUser`) 
-VALUES ( 'alan@vivall.com', sha1('Zxzx121245*'), 1, '1234', 1);
+-- recetas
+INSERT INTO recipes VALUES (NULL, 'chocomilk', 'recipes/default.jpg', 'sdfghj', 3, 1.5, 1, 1);
 
 -- Recipes
 INSERT INTO `recipes` (`idRecipe`, `nameRecipe`, `imageRecipe`, `detailRecipe`, `idSupply`, `quantitySupplyRecipe`, `statusRecipe`, `idUser`) VALUES (1, 'Huevo con chorizo', 'recipes/default.jpg', 'Huevo revuelto con chorizo', NULL, NULL, 1, 1), (2, 'Chocolate caliente', 'recipes/default.jpg', 'Chocolate caliente', NULL, NULL, 1, 1);
@@ -49,15 +48,7 @@ INSERT INTO `ordersupply` (`idOrder`, `idSupply`, `quantityOrderSupply`) VALUES 
 
 
 -- restock
-INSERT INTO `restock` (`idRestock`, `registrationDateRestock`, `idUser`, `statusRestock`) VALUES (1, '2019-11-26 05:06:34', 1, 5);
+INSERT INTO restock VALUES (NULL, current_timestamp(), 1, 7), (NULL, current_timestamp(), 1, 1);
 
--- restocksupply
-INSERT INTO `restocksupply` (`idRestock`, `idSupply`, `quantityRestockSupply`, `costRestockSupply`, `arrivalDateRestockSupply`, `sellByDateRestockSupply`, `idProvider`, `statusRestockSupply`, `commentaryRestockSupply`) VALUES (1, 1, 3, 50, NULL, NULL, 1, 5, '');
-
-<<<<<<< Updated upstream
-=======
-
-
--- wastes
-INSERT INTO `wastes` (`idWaste`, `idSupply`, `registrationDateWaste`, `sellByDateWaste`, `quantityWaste`, `typeWaste`, `idUser`, `statusWaste`) VALUES (1, 1, '2019-11-26 05:02:45', '2019-11-26 06:00:00', 8, 5, 1, 1);
->>>>>>> Stashed changes
+-- insumo de restock
+INSERT INTO restocksupply VALUES (2, 1, 5, 21, current_timestamp(), current_timestamp(), 1, 1, 'asdfghjkl');
